@@ -12,7 +12,15 @@ export const config = {
 const app = new Hono().basePath('/')
 
 app.get('/', (c) => {
-  return c.json({ message: 'Hello Hono!' })
+  return c.text(
+    'Welcome to the readme-contribs API!\n\n'
+    + 'This service will generate an SVG badge with the avatars of GitHub contributors or sponsors.\n'
+    + 'Just make a request to `/contributors/:owner/:repo` or `/sponsors/:author`\n\n'
+    + 'Example usage (paste this in your README.md)\n'
+    + '\t![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)\n'
+    + '\t![Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy)\n\n'
+    + 'For full usage docs, deployment guide, contributing and bug reports, see: https://github.com/lissy93/readme-contribs'
+  )
 })
 
 app.get('/sponsors/:author', async (c) => {
