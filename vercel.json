@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/sponsors/:user",
+      "destination": "/sponsors/:user"
+    },
+    {
+      "source": "/api/contributors/:owner/:repo",
+      "destination": "/contributors/:owner/:repo"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ]
+}
