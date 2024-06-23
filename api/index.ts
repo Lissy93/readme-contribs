@@ -27,12 +27,13 @@ app.get('/sponsors/:author', async (c) => {
   const author = c.req.param('author')
   const options = parseUrlOptions(c.req.query())
 
-  return fetchSponsors(author).then((sponsors) => {
-    const svg = createUserSVG(sponsors, options)
+  return fetchSponsors(author).then(async (sponsors) => {
+    const svg = await createUserSVG(sponsors, options)
     c.res.headers.set('Content-Type', 'image/svg+xml')
     return c.body(svg)
   })
   .catch((error) => {
+    console.log(error);
     return returnSvg(c, createErrorSVG(error, options), 500)
   });
 })
@@ -42,11 +43,12 @@ app.get('/contributors/:owner/:repo', async (c) => {
   const repo = c.req.param('repo');
   const options = parseUrlOptions(c.req.query());
 
-  return fetchContributors(owner, repo, options.limit).then((contributors) => {
-    const svg = createUserSVG(contributors, options);
+  return fetchContributors(owner, repo, options.limit).then(async (contributors) => {
+    const svg = await createUserSVG(contributors, options);
     c.res.headers.set('Content-Type', 'image/svg+xml');
     return c.body(svg);
   }).catch((error) => {
+    console.log(error);
     return returnSvg(c, createErrorSVG(error, options), 500)
   });
 });
