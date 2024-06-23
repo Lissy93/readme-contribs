@@ -1,0 +1,42 @@
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.url-container {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+  .snippet {
+    width: 80%;
+    pre {
+      border-radius: 6px;
+      font-size: 1.1rem;
+      color: var(--bulma-primary-70) !important;
+      background: #101215;
+    }
+  }
+  .format-chooser {
+    width: 20%;
+    .dropdown, .dropdown-trigger, dropdown-menu, button {
+      width: 100% !important;
+    }
+  }
+}
+
+.output-image {
+  border-radius: 6px;
+  color: var(--bulma-primary-70) !important;
+  background: #101215;
+}
+
+section {
+  width: 80vw;
+  max-width: 1000px;
+  margin: 1rem auto;
+  padding: 2rem;
+}

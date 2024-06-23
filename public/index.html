@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readme-Contrib API Interface</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="//unpkg.com/alpinejs" defer></script>
+</head>
+<body x-data="apiForm()">
+
+  <div class="hero is-primary">
+    <div class="hero-body">
+      <p class="title">Readme Contribs</p>
+      <p class="subtitle">Give credit to users who've contributed to or sponsored your GitHub Projects</p>
+      <i>Simple widgets to embed into your GitHub README</i>
+    </div>
+  </div>
+
+  <section>
+    <div class="tabs is-toggle is-toggle-rounded">
+      <ul>
+        <li @click="toggleForm('contributors')" :class="{'is-active': currentForm === 'contributors'}">
+          <a>
+            <span>Contributors</span>
+          </a>
+        </li>
+        <li @click="toggleForm('sponsors')" :class="{'is-active': currentForm === 'sponsors'}">
+          <a>
+            <span>Sponsors</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <form @submit.prevent="submitForm">
+      <div class="field">
+        <label class="label" for="user">GitHub User:</label>
+        <div class="control">
+          <input class="input" type="text" id="user" x-model="user" required>
+        </div>
+      </div>
+
+      <div x-show="currentForm === 'contributors'" class="field">
+        <label class="label" for="repo">Repository:</label>
+        <div class="control">
+          <input class="input" type="text" id="repo" x-model="repo" required>
+        </div>
+      </div>
+
+      <div x-show="showAdvancedOptions" x-transition class="mb-4">
+        <template x-for="(option, index) in options" :key="index">
+          <div class="field">
+            <label class="label" x-text="option.label + ':'"></label>
+            <div class="control">
+              <input class="input" type="text" :id="option.name" :placeholder="option.placeholder" x-model="option.value">
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="columns is-flex" style="justify-content: space-between; align-items: center;">
+        <div class="column is-narrow">
+          <button class="button is-primary" type="submit" @click="submitForm()">Show Results</button>
+        </div>
+        <div class="column is-narrow">
+          <button class="button is-primary is-outlined" type="button" @click="showAdvancedOptions = !showAdvancedOptions">Advanced Configuration</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <div x-data="{ open: false, format: 'Markdown' }" class="url-container">
+      <!-- Show URL to image -->
+      <div class="snippet">
+        <pre
+          x-text="generateSnippet(format)"
+          @click="$clipboard(generateSnippet(format))"></pre>
+      </div>
+
+      <!-- Choose URL format -->
+      <div class="format-chooser">
+        <div @click.away="open = false" class="dropdown" :class="{'is-active': open}">
+          <div class="dropdown-trigger">
+            <button class="button" @click="open = !open" aria-haspopup="true" aria-controls="dropdown-menu">
+              <span x-text="format"></span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              <a @click="format = 'Markdown'; open = false" class="dropdown-item">Markdown</a>
+              <a @click="format = 'HTML'; open = false" class="dropdown-item">HTML</a>
+              <a @click="format = 'BB Code'; open = false" class="dropdown-item">BB Code</a>
+              <hr class="dropdown-divider" />
+              <a @click="format = 'Direct Link'; open = false" class="dropdown-item">Direct Link</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section x-show="showResults" x-transition>
+    <h2 class="title is-4">Preview</h2>
+    <div class="output-image">
+      <img :src="generatedUrl" alt="Sponsors">
+    </div>
+  </section>
+
+  <footer class="footer has-text-centered pb-4 pt-4">
+    <p>
+      <strong><a href="/">readme-contribs</a></strong>
+      is licensed under <a>MIT</a> (C) <a href="https://aliciasykes.com">Alicia Sykes</a> 2024.
+      View source on GitHub at
+      <a href="https://github.com/lissy93/readme-contribs">lissy93/readme-contribs</a>
+    </p>
+  </footer>
+
+  <script>
+    function apiForm() {
+      return {
+        currentForm: 'contributors',
+        showAdvancedOptions: false,
+        showResults: false,
+        loading: false,
+        format: 'Markdown',
+        user: '',
+        repo: '',
+        options: [
+          { name: 'title', value: '', label: 'Title', placeholder: 'Enter title' },
+          { name: 'avatarSize', value: '', label: 'Avatar Size', placeholder: '80' },
+          { name: 'perRow', value: '', label: 'Per Row', placeholder: 'Number per row' },
+          { name: 'shape', value: '', label: 'Shape', placeholder: 'e.g., circle, square' },
+          { name: 'fontSize', value: '', label: 'Font Size', placeholder: '16' },
+          { name: 'textColor', value: '', label: 'Text Color', placeholder: 'e.g., black, #333' },
+          { name: 'backgroundColor', value: '', label: 'Background Color', placeholder: 'e.g., white, #fff' },
+          { name: 'fontFamily', value: '', label: 'Font Family', placeholder: 'e.g., Arial' },
+          { name: 'margin', value: '', label: 'Margin', placeholder: '35' },
+          { name: 'textOffset', value: '', label: 'Text Offset', placeholder: 'Offset for text' },
+          { name: 'limit', value: '', label: 'Limit', placeholder: 'Limit number displayed' }
+        ],
+        get generatedUrl() {
+          const host = window.location.host || 'git-contribs.as93.net';
+          let baseUrl = `https://${host}/${this.currentForm}/${this.user || '[username]'}`;
+          if (this.currentForm === 'contributors') {
+              baseUrl += `/${this.repo || '[repo]'}`;
+          }
+          const queryParams = this.options.filter(option => option.value).map(option => `${option.name}=${encodeURIComponent(option.value)}`).join('&');
+          return queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
+        },
+        toggleForm(formType) {
+          this.currentForm = formType;
+          this.showResults = false;
+        },
+        submitForm() {
+          this.showResults = true;
+        },
+        copyToClipboard(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            alert('Copied to clipboard!');
+          }).catch(err => {
+            alert('Failed to copy!');
+          });
+        },
+        generateSnippet(format) {
+          switch (format) {
+            case 'Markdown':
+              return `![${this.currentForm} badge](${this.generatedUrl})`;
+            case 'HTML':
+              return `<img src="${this.generatedUrl}" alt="Badge">`;
+            case 'BB Code':
+              return `[img]${this.generatedUrl}[/img]`;
+            case 'Direct Link':
+              return this.generatedUrl;
+            default:
+              return '';
+          }
+        },
+        toggleForm(formType) {
+          this.currentForm = formType;
+          this.showResults = false;
+          this.loading = false;
+        },
+        submitForm() {
+          this.loading = true;
+          this.showResults = true;
+        }
+      }
+    }
+    </script>
+
+
+</body>
+</html>
