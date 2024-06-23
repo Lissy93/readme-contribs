@@ -9,6 +9,14 @@
       "destination": "/contributors/:owner/:repo"
     },
     {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(js|css|img|html)/(.*)",
+      "destination": "/public/$1/$2"
+    },
+    {
       "source": "/(.*)",
       "destination": "/api"
     }
