@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
 
-import { fetchContributors, fetchSponsors, fetchStargazers } from './fetch-users'
+import { fetchContributors, fetchSponsors, fetchStargazers, fetchForkers } from './fetch-users'
 import { createUserSVG, createErrorSVG } from './svg-output'
 import { parseUrlOptions, returnSvg } from './utilities'
 
@@ -59,6 +59,21 @@ app.get('/stargazers/:owner/:repo', async (c) => {
   const options = parseUrlOptions(c.req.query());
 
   return fetchStargazers(owner, repo, options.limit).then(async (contributors) => {
+    const svg = await createUserSVG(contributors, options);
+    c.res.headers.set('Content-Type', 'image/svg+xml');
+    return c.body(svg);
+  }).catch((error) => {
+    console.log(error);
+    return returnSvg(c, createErrorSVG(error, options), 500)
+  });
+});
+
+app.get('/forkers/:owner/:repo', async (c) => {
+  const owner = c.req.param('owner');
+  const repo = c.req.param('repo');
+  const options = parseUrlOptions(c.req.query());
+
+  return fetchForkers(owner, repo, options.limit).then(async (contributors) => {
     const svg = await createUserSVG(contributors, options);
     c.res.headers.set('Content-Type', 'image/svg+xml');
     return c.body(svg);

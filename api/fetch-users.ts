@@ -42,7 +42,7 @@ export const fetchStargazers = async (owner: string, repo: string, limit: number
     const stargazers = await response.json();
     return stargazers.map((user: any) => ({
       login: user.login,
-      name: user.name || "",  // Not all user profiles have a "name" publicly available
+      name: user.name || "",
       avatarUrl: user.avatar_url
     }));
   } catch (error) {
@@ -50,6 +50,40 @@ export const fetchStargazers = async (owner: string, repo: string, limit: number
     throw error;
   }
 }
+
+/**
+ * Fetches forkers of a specific repository.
+ * @param owner The username of the repository owner.
+ * @param repo The repository name.
+ * @param limit The maximum number of forkers to fetch (up to 100).
+ * @returns An array of User objects representing the users who have forked the repository.
+ */
+export const fetchForkers = async (owner: string, repo: string, limit: number = 100): Promise<User[]> => {
+  const headers: { Authorization?: string; } = {};
+
+  // Use a GitHub token if available for higher rate limits and access to private repos
+  if (process.env.GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+  }
+
+  const apiBase = 'https://api.github.com';
+  const endpoint = `${apiBase}/repos/${owner}/${repo}/forks?per_page=${limit}`;
+
+  const response = await fetch(endpoint, { headers });
+
+  if (!response.ok) {
+    throw new Error(`GitHub API returned a ${response.status} ${response.statusText || 'Unknown Error'}`);
+  }
+
+  const forks = await response.json();
+  return forks.map((fork: any) => ({
+    login: fork.owner.login,
+    name: fork.owner.login,
+    avatarUrl: fork.owner.avatar_url
+  }));
+}
+
+
 
 const fallbackFetchSponsors = async (author: string): Promise<User[]> => {
   const response = await fetch(`https://github-sponsors.as93.workers.dev/${author}`)
