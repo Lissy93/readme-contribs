@@ -23,6 +23,34 @@ export const fetchContributors = async (owner: string, repo: string, limit: numb
   }));
 }
 
+export const fetchStargazers = async (owner: string, repo: string, limit: number = 100): Promise<User[]> => {
+  const headers: { Authorization?: string; } = {};
+
+  if (process.env.GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+  }
+
+  const apiBase = 'https://api.github.com';
+  const endpoint = `${apiBase}/repos/${owner}/${repo}/stargazers?per_page=${limit}`;
+
+  try {
+    const response = await fetch(endpoint, { headers });
+    if (!response.ok) {
+      throw new Error(`GitHub API returned a ${response.status} ${response.statusText || 'Unknown Error'}`);
+    }
+    
+    const stargazers = await response.json();
+    return stargazers.map((user: any) => ({
+      login: user.login,
+      name: user.name || "",  // Not all user profiles have a "name" publicly available
+      avatarUrl: user.avatar_url
+    }));
+  } catch (error) {
+    console.error(`Error fetching stargazers: ${error}`);
+    throw error;
+  }
+}
+
 const fallbackFetchSponsors = async (author: string): Promise<User[]> => {
   const response = await fetch(`https://github-sponsors.as93.workers.dev/${author}`)
   if (!response.ok) {
