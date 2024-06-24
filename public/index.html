@@ -7,28 +7,41 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body x-data="apiForm()">
 
   <div class="hero is-primary">
     <div class="hero-body">
       <p class="title">Readme Contribs</p>
-      <p class="subtitle">Give credit to users who've contributed to or sponsored your GitHub Projects</p>
-      <i>Simple widgets to embed into your GitHub README</i>
+      <p class="subtitle">Give credit to your supporters <i class="fas fa-heart"></i></p>
+      <i>Simple embeddable contributor and sponsor widgets for your GitHub README</i>
+      <br />
+      <a href="https://github.com/lissy93/readme-contribs">
+        <button class="button is-large is-responsive is-link is-outline mt-4">
+          <i class="fa-brands fa-github-alt"></i>
+          GitHub
+        </button>
+      </a>
     </div>
   </div>
 
-  <section>
+  <section class="input-section">
     <div class="tabs is-toggle is-toggle-rounded">
       <ul>
         <li @click="toggleForm('contributors')" :class="{'is-active': currentForm === 'contributors'}">
           <a>
-            <span>Contributors</span>
+            <span><i class="fa-solid fa-users"></i>Contributors</span>
           </a>
         </li>
         <li @click="toggleForm('sponsors')" :class="{'is-active': currentForm === 'sponsors'}">
           <a>
-            <span>Sponsors</span>
+            <span><i class="fa-solid fa-hand-holding-dollar"></i>Sponsors</span>
+          </a>
+        </li>
+        <li @click="toggleForm('stargazers')" :class="{'is-active': currentForm === 'stargazers'}">
+          <a>
+            <span><i class="fa-solid fa-star"></i>Stargazers</span>
           </a>
         </li>
       </ul>
@@ -42,14 +55,14 @@
         </div>
       </div>
 
-      <div x-show="currentForm === 'contributors'" class="field">
+      <div x-show="currentForm === 'contributors' || currentForm === 'stargazers'" class="field">
         <label class="label" for="repo">Repository:</label>
         <div class="control">
           <input class="input" type="text" id="repo" x-model="repo" required>
         </div>
       </div>
 
-      <div x-show="showAdvancedOptions" x-transition class="mb-4">
+      <div x-show="showAdvancedOptions" x-transition>
         <template x-for="(option, index) in options" :key="index">
           <div class="field">
             <label class="label" x-text="option.label + ':'"></label>
@@ -60,12 +73,18 @@
         </template>
       </div>
 
-      <div class="columns is-flex" style="justify-content: space-between; align-items: center;">
+      <div class="columns is-flex mt-4" style="justify-content: space-between; align-items: center;">
         <div class="column is-narrow">
-          <button class="button is-primary" type="submit" @click="submitForm()">Show Results</button>
+          <button class="button is-primary" type="submit" @click="submitForm()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Show Results
+          </button>
         </div>
         <div class="column is-narrow">
-          <button class="button is-primary is-outlined" type="button" @click="showAdvancedOptions = !showAdvancedOptions">Advanced Configuration</button>
+          <button class="button is-primary is-outlined" type="button" @click="showAdvancedOptions = !showAdvancedOptions">
+            <i class="fas fa-gear"></i>
+            Advanced Configuration
+          </button>
         </div>
       </div>
     </form>
@@ -75,13 +94,16 @@
     <div x-data="{ open: false, format: 'Markdown' }" class="url-container">
       <!-- Show URL to image -->
       <div class="snippet">
-        <pre
-          x-text="generateSnippet(format)"
-          @click="$clipboard(generateSnippet(format))"></pre>
+        <pre x-text="generateSnippet(format)"></pre>
+          <span class="tag is-link is-normal copy-button" @click="copyToClipboard(generateSnippet(format))">
+            <i class="fa-solid fa-copy"></i>
+            Copy
+          </span>
       </div>
 
       <!-- Choose URL format -->
       <div class="format-chooser">
+        <span>Format</span>
         <div @click.away="open = false" class="dropdown" :class="{'is-active': open}">
           <div class="dropdown-trigger">
             <button class="button" @click="open = !open" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -146,8 +168,8 @@
         ],
         get generatedUrl() {
           const host = window.location.host || 'git-contribs.as93.net';
-          let baseUrl = `https://${host}/${this.currentForm}/${this.user || '[username]'}`;
-          if (this.currentForm === 'contributors') {
+          let baseUrl = `http://${host}/${this.currentForm}/${this.user || '[username]'}`;
+          if (this.currentForm === 'contributors' || this.currentForm === 'stargazers') {
               baseUrl += `/${this.repo || '[repo]'}`;
           }
           const queryParams = this.options.filter(option => option.value).map(option => `${option.name}=${encodeURIComponent(option.value)}`).join('&');

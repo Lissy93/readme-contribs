@@ -13,11 +13,21 @@ body {
   }
   .snippet {
     width: 80%;
+    position: relative;
     pre {
       border-radius: 6px;
       font-size: 1.1rem;
       color: var(--bulma-primary-70) !important;
       background: #101215;
+    }
+    .copy-button {
+      position: absolute;
+      right: 0.25rem;
+      top: 0.25rem;
+      cursor: pointer;
+      &:hover {
+        color: var(--bulma-primary-70);
+      }
     }
   }
   .format-chooser {
@@ -39,4 +49,19 @@ section {
   max-width: 1000px;
   margin: 1rem auto;
   padding: 2rem;
+  &.input-section {
+    flex-grow: 1;
+  }
 }
+
+.fa-solid, .fas, .fa-brands {
+  margin-right: 0.5rem;
+}
+
+.hero-body {
+  text-align: center;
+  .subtitle {
+    margin-bottom: 0 !important;
+  }
+}
+
