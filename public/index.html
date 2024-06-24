@@ -23,6 +23,10 @@
           GitHub
         </button>
       </a>
+      <br />
+      <iframe class="built-by-iframe"
+      scrolling="no"
+      src="http://localhost:3000/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true"></iframe>
     </div>
   </div>
 
@@ -44,6 +48,11 @@
             <span><i class="fa-solid fa-star"></i> Stargazers</span>
           </a>
         </li>
+        <li @click="toggleForm('forkers')" :class="{'is-active': currentForm === 'forkers'}">
+          <a>
+            <span><i class="fa-solid fa-code-fork"></i> Forkers</span>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -55,7 +64,7 @@
         </div>
       </div>
 
-      <div x-show="currentForm === 'contributors' || currentForm === 'stargazers'" class="field">
+      <div x-show="currentForm != 'sponsors'" class="field">
         <label class="label" for="repo">Repository:</label>
         <div class="control">
           <input class="input" type="text" id="repo" x-model="repo" autocomplete="off" required>
@@ -131,7 +140,7 @@
   </section>
 
   <section x-show="showResults" x-transition class="output-image">
-    <h2 class="title is-4">Preview</h2>
+    <h2 class="title is-3">Preview</h2>
     <div x-show="loading">
       <p class="has-text-centered">Building your Badge <i class="fa-solid fa-gears"></i></p>
       <progress class="progress is-small is-primary" max="100">15%</progress>
@@ -150,6 +159,19 @@
     <template x-if="outputMode">
       <iframe :src="imageUrl" :title="currentForm" style="width: 100%; height: 300px;" @load="loading = false" x-show="!loading"></iframe>
     </template>
+  </section>
+
+  <section>
+    <h2 class="title is-3">Examples</h2>
+    <p class="subtitle">Want to get an idea of what readme-contribs can do? Generate some examples!</p>
+    <button @click="showExample" class="button is-link">
+      <i class="fa-solid fa-dice"></i>
+      Generate an Example
+    </button>
+    <progress id="load-frame" class="load-iframe progress is-link mt-8" max="100"></progress>
+    <div class="example-grid">
+      <iframe></iframe>
+    </div>
   </section>
 
   <footer class="footer has-text-centered pb-4 pt-4">
@@ -186,13 +208,39 @@
           { name: 'textOffset', value: '', label: 'Text Offset', placeholder: 'Offset for text' },
           { name: 'limit', value: '', label: 'Limit', placeholder: 'Limit number displayed' }
         ],
+        exampleIndex: -1,
+        examples: [
+        'http://localhost:3000/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&isResponsive=true&dynamic=true',
+        'http://localhost:3000/sponsors/lissy93?shape=squircle&dynamic=true&margin=16&textOffset='
+        + '8&perRow=6&title=@Lissy93%27s%20Sponsors&textColor=white&isResponsive=true&backgroundC'
+        + 'olor=black&fontFamily=Courier%20New&fontSize=8',
+        'http://localhost:3000/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&titl'
+        + 'e=Web-Check\'s Stargazers&textColor=9fef00&isResponsive=true&backgroundColor=101215&fo'
+        + 'ntFamily=cursive&fontSize=14&limit=90',
+        'http://localhost:3000/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%'
+        + '2FDashy%27s%20Top%20Contributors&textColor=black&isResponsive=true&backgroundColor=00d'
+        + '1b2&margin=6&hideLabel=true&textOffset=2',
+        ],
+        showExample() {
+          const frameLoader = document.getElementById('load-frame');
+          const iframe = document.querySelector('.example-grid iframe');
+          frameLoader.style.display = 'block';
+          iframe.style.display = 'none';
+          this.exampleIndex = (this.exampleIndex + 1) % this.examples.length;
+          iframe.src = this.examples[this.exampleIndex];
+          iframe.className = `example-${this.exampleIndex + 1}`;
+          iframe.onload = () => {
+            frameLoader.style.display = 'none';
+            iframe.style.display = 'block';
+          };
+        },
         toggleForm(formType) {
           this.currentForm = formType;
           this.showResults = false;
           this.loading = false;
         },
         submitForm() {
-          if (!this.user || (this.currentForm === 'contributors' || this.currentForm === 'stargazers') && !this.repo) {
+          if (!this.user || (this.currentForm != 'sponsors') && !this.repo) {
             this.showError = true;
             return;
           }
@@ -227,10 +275,14 @@
         get generatedUrl() {
           const host = window.location.host || 'localhost:3000';
           let baseUrl = `http://${host}/${this.currentForm}/${this.user || '[username]'}`;
-          if (this.currentForm === 'contributors' || this.currentForm === 'stargazers') {
+          if (this.currentForm != 'sponsors') {
             baseUrl += `/${this.repo || '[repo]'}`;
           }
-          const queryParams = this.options.filter(option => option.value).map(option => `${option.name}=${encodeURIComponent(option.value)}`).join('&');
+          const formatValue = (val) => (val || '').replaceAll('#', ''); 
+          const queryParams = this.options
+            .filter(option => option.value)
+            .map(option => `${option.name}=${encodeURIComponent(formatValue(option.value))}`)
+            .join('&');
           return queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
         }
       }

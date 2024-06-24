@@ -42,6 +42,11 @@ body {
   border-radius: 6px;
   color: var(--bulma-primary-70) !important;
   background: #101215;
+  padding: 1rem;
+  p {
+    font-size: 1.2rem;
+    margin: 0.5rem auto 1rem auto;
+  }
 }
 
 section {
@@ -49,6 +54,7 @@ section {
   max-width: 1000px;
   margin: 1rem auto;
   padding: 2rem;
+  position: relative;
   &.input-section {
     flex-grow: 1;
   }
@@ -60,8 +66,115 @@ section {
 
 .hero-body {
   text-align: center;
+  .title {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+  }
   .subtitle {
     margin-bottom: 0 !important;
+  }
+}
+
+.button.is-primary.is-outlined:hover {
+  background: hsl(var(--bulma-button-h),var(--bulma-button-s),var(--bulma-button-l));
+  color: #101215;
+}
+
+.built-by-iframe {
+  width: 690px;
+  margin: 1rem auto 0 auto;
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 17px;
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 17px;
+    &:before {
+      position: absolute;
+      content: "";
+      height: 13px;
+      width: 13px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 50%;
+    }
+  }
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(13px);
+  }
+}
+
+.tabs ul { justify-content: center; }
+
+.load-iframe {
+  margin: 2rem auto;
+  width: 10rem;
+  display: none;
+}
+.example-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  iframe, img {
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+  .example-1 {
+    height: 540px;
+    width: 600px;
+    border: 2px solid #bfbfbf;
+  }
+  .example-2 {
+    height: 496px;
+    width: 600px;
+  }
+  .example-3 {
+    height: 535px;
+    width: 1006px;
+  }
+  .example-4 {
+    height: 622px;
+    width: 566px;
   }
 }
 
