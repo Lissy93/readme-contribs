@@ -26,7 +26,7 @@
       <br />
       <iframe class="built-by-iframe"
       scrolling="no"
-      src="http://localhost:3000/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true"></iframe>
+      src="https://readme-contribs.as93.net/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true"></iframe>
     </div>
   </div>
 
@@ -210,14 +210,14 @@
         ],
         exampleIndex: -1,
         examples: [
-        'http://localhost:3000/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&isResponsive=true&dynamic=true',
-        'http://localhost:3000/sponsors/lissy93?shape=squircle&dynamic=true&margin=16&textOffset='
+        'https://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&isResponsive=true&dynamic=true',
+        'https://readme-contribs.as93.net/sponsors/lissy93?shape=squircle&dynamic=true&margin=16&textOffset='
         + '8&perRow=6&title=@Lissy93%27s%20Sponsors&textColor=white&isResponsive=true&backgroundC'
         + 'olor=black&fontFamily=Courier%20New&fontSize=8',
-        'http://localhost:3000/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&titl'
+        'https://readme-contribs.as93.net/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&titl'
         + 'e=Web-Check\'s Stargazers&textColor=9fef00&isResponsive=true&backgroundColor=101215&fo'
         + 'ntFamily=cursive&fontSize=14&limit=90',
-        'http://localhost:3000/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%'
+        'https://readme-contribs.as93.net/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%'
         + '2FDashy%27s%20Top%20Contributors&textColor=black&isResponsive=true&backgroundColor=00d'
         + '1b2&margin=6&hideLabel=true&textOffset=2',
         ],
@@ -273,8 +273,8 @@
           }
         },
         get generatedUrl() {
-          const host = window.location.host || 'localhost:3000';
-          let baseUrl = `http://${host}/${this.currentForm}/${this.user || '[username]'}`;
+          const host = window.location.host || 'readme-contribs.as93.net';
+          let baseUrl = `https://${host}/${this.currentForm}/${this.user || '[username]'}`;
           if (this.currentForm != 'sponsors') {
             baseUrl += `/${this.repo || '[repo]'}`;
           }
