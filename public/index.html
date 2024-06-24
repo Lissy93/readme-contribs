@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Readme-Contrib API Interface</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <script src="//unpkg.com/alpinejs" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readme-Contrib API Interface</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body x-data="apiForm()">
 
@@ -31,17 +31,17 @@
       <ul>
         <li @click="toggleForm('contributors')" :class="{'is-active': currentForm === 'contributors'}">
           <a>
-            <span><i class="fa-solid fa-users"></i>Contributors</span>
+            <span><i class="fa-solid fa-users"></i> Contributors</span>
           </a>
         </li>
         <li @click="toggleForm('sponsors')" :class="{'is-active': currentForm === 'sponsors'}">
           <a>
-            <span><i class="fa-solid fa-hand-holding-dollar"></i>Sponsors</span>
+            <span><i class="fa-solid fa-hand-holding-dollar"></i> Sponsors</span>
           </a>
         </li>
         <li @click="toggleForm('stargazers')" :class="{'is-active': currentForm === 'stargazers'}">
           <a>
-            <span><i class="fa-solid fa-star"></i>Stargazers</span>
+            <span><i class="fa-solid fa-star"></i> Stargazers</span>
           </a>
         </li>
       </ul>
@@ -51,14 +51,14 @@
       <div class="field">
         <label class="label" for="user">GitHub User:</label>
         <div class="control">
-          <input class="input" type="text" id="user" x-model="user" required>
+          <input class="input" type="text" id="user" x-model="user" autocomplete="off" required>
         </div>
       </div>
 
       <div x-show="currentForm === 'contributors' || currentForm === 'stargazers'" class="field">
         <label class="label" for="repo">Repository:</label>
         <div class="control">
-          <input class="input" type="text" id="repo" x-model="repo" required>
+          <input class="input" type="text" id="repo" x-model="repo" autocomplete="off" required>
         </div>
       </div>
 
@@ -72,6 +72,8 @@
           </div>
         </template>
       </div>
+
+      <p x-show="showError" class="has-text-danger has-text-centered">Don't forget to complete the required fields!</p>
 
       <div class="columns is-flex mt-4" style="justify-content: space-between; align-items: center;">
         <div class="column is-narrow">
@@ -95,10 +97,10 @@
       <!-- Show URL to image -->
       <div class="snippet">
         <pre x-text="generateSnippet(format)"></pre>
-          <span class="tag is-link is-normal copy-button" @click="copyToClipboard(generateSnippet(format))">
-            <i class="fa-solid fa-copy"></i>
-            Copy
-          </span>
+        <span class="tag is-link is-normal copy-button" @click="copyToClipboard(generateSnippet(format))">
+          <i class="fa-solid fa-copy"></i>
+          Copy
+        </span>
       </div>
 
       <!-- Choose URL format -->
@@ -116,7 +118,8 @@
           <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content">
               <a @click="format = 'Markdown'; open = false" class="dropdown-item">Markdown</a>
-              <a @click="format = 'HTML'; open = false" class="dropdown-item">HTML</a>
+              <a @click="format = 'HTML Image'; open = false" class="dropdown-item">HTML Image</a>
+              <a @click="format = 'HTML Embed'; open = false" class="dropdown-item">HTML Embed</a>
               <a @click="format = 'BB Code'; open = false" class="dropdown-item">BB Code</a>
               <hr class="dropdown-divider" />
               <a @click="format = 'Direct Link'; open = false" class="dropdown-item">Direct Link</a>
@@ -127,17 +130,31 @@
     </div>
   </section>
 
-  <section x-show="showResults" x-transition>
+  <section x-show="showResults" x-transition class="output-image">
     <h2 class="title is-4">Preview</h2>
-    <div class="output-image">
-      <img :src="generatedUrl" alt="Sponsors">
+    <div x-show="loading">
+      <p class="has-text-centered">Building your Badge <i class="fa-solid fa-gears"></i></p>
+      <progress class="progress is-small is-primary" max="100">15%</progress>
     </div>
+    <div class="switch-container">
+      <span :class="{'is-link': !outputMode}" @click="outputMode = false">Static</span>
+      <label class="switch">
+        <input type="checkbox" x-model="outputMode">
+        <span class="slider round"></span>
+      </label>
+      <span :class="{'is-link': outputMode}" @click="outputMode = true">Dynamic</span>
+    </div>
+    <template x-if="!outputMode">
+      <img :src="imageUrl" :alt="currentForm" @load="loading = false" @error="loading = false" x-show="!loading">
+    </template>
+    <template x-if="outputMode">
+      <iframe :src="imageUrl" :title="currentForm" style="width: 100%; height: 300px;" @load="loading = false" x-show="!loading"></iframe>
+    </template>
   </section>
 
   <footer class="footer has-text-centered pb-4 pt-4">
     <p>
-      <strong><a href="/">readme-contribs</a></strong>
-      is licensed under <a>MIT</a> (C) <a href="https://aliciasykes.com">Alicia Sykes</a> 2024.
+      <strong><a href="/">readme-contribs</a></strong> is licensed under <a>MIT</a> (C) <a href="https://aliciasykes.com">Alicia Sykes</a> 2024.
       View source on GitHub at
       <a href="https://github.com/lissy93/readme-contribs">lissy93/readme-contribs</a>
     </p>
@@ -150,9 +167,12 @@
         showAdvancedOptions: false,
         showResults: false,
         loading: false,
+        imageUrl: '',
         format: 'Markdown',
         user: '',
         repo: '',
+        outputMode: false, // false = static, true = dynamic
+        showError: false,
         options: [
           { name: 'title', value: '', label: 'Title', placeholder: 'Enter title' },
           { name: 'avatarSize', value: '', label: 'Avatar Size', placeholder: '80' },
@@ -166,21 +186,20 @@
           { name: 'textOffset', value: '', label: 'Text Offset', placeholder: 'Offset for text' },
           { name: 'limit', value: '', label: 'Limit', placeholder: 'Limit number displayed' }
         ],
-        get generatedUrl() {
-          const host = window.location.host || 'git-contribs.as93.net';
-          let baseUrl = `http://${host}/${this.currentForm}/${this.user || '[username]'}`;
-          if (this.currentForm === 'contributors' || this.currentForm === 'stargazers') {
-              baseUrl += `/${this.repo || '[repo]'}`;
-          }
-          const queryParams = this.options.filter(option => option.value).map(option => `${option.name}=${encodeURIComponent(option.value)}`).join('&');
-          return queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
-        },
         toggleForm(formType) {
           this.currentForm = formType;
           this.showResults = false;
+          this.loading = false;
         },
         submitForm() {
+          if (!this.user || (this.currentForm === 'contributors' || this.currentForm === 'stargazers') && !this.repo) {
+            this.showError = true;
+            return;
+          }
+          this.loading = true;
+          this.imageUrl = this.generatedUrl;
           this.showResults = true;
+          this.showError = false;
         },
         copyToClipboard(text) {
           navigator.clipboard.writeText(text).then(() => {
@@ -193,8 +212,10 @@
           switch (format) {
             case 'Markdown':
               return `![${this.currentForm} badge](${this.generatedUrl})`;
-            case 'HTML':
+            case 'HTML Image':
               return `<img src="${this.generatedUrl}" alt="Badge">`;
+            case 'HTML Embed':
+              return `<iframe src="${this.generatedUrl}" title="${this.currentForm}"></iframe>`;
             case 'BB Code':
               return `[img]${this.generatedUrl}[/img]`;
             case 'Direct Link':
@@ -203,19 +224,18 @@
               return '';
           }
         },
-        toggleForm(formType) {
-          this.currentForm = formType;
-          this.showResults = false;
-          this.loading = false;
-        },
-        submitForm() {
-          this.loading = true;
-          this.showResults = true;
+        get generatedUrl() {
+          const host = window.location.host || 'localhost:3000';
+          let baseUrl = `http://${host}/${this.currentForm}/${this.user || '[username]'}`;
+          if (this.currentForm === 'contributors' || this.currentForm === 'stargazers') {
+            baseUrl += `/${this.repo || '[repo]'}`;
+          }
+          const queryParams = this.options.filter(option => option.value).map(option => `${option.name}=${encodeURIComponent(option.value)}`).join('&');
+          return queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
         }
       }
     }
-    </script>
-
+  </script>
 
 </body>
 </html>
