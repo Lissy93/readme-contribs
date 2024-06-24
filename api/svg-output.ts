@@ -67,6 +67,10 @@ const escapeXml = (str: string): string => {
             .replace(/'/g, '&apos;');
 };
 
+const parseColor = (color: string): string => {
+  return color.match(/^#?[0-9A-Fa-f]{6}$/) ? `#${color}` : color;
+}
+
 async function fetchAndEncodeImage(url: string): Promise<string> {
   const fetchUrl = `${url}&size=50`;
   try {
@@ -84,8 +88,8 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
 
 export const createUserSVG = async (users: User[], options: SvgOptions): Promise<string> => {
   const {
-    title, avatarSize, perRow, shape, fontSize, textColor,
-    backgroundColor, fontFamily, margin, textOffset, limit,
+    title, avatarSize, perRow, shape, hideLabel, fontSize, textColor,
+    backgroundColor, fontFamily, margin, textOffset, limit, dynamic,
   } = options;
 
   const maxTextWidth = avatarSize;
@@ -96,7 +100,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
   const numberToDisplay = Math.min(limit, users.length);
 
   // Controlled concurrency for image fetching
-  const encodedImages = await processWithConcurrency(
+  const encodedImages = dynamic ? [] : await processWithConcurrency(
     users.slice(0, numberToDisplay).map((user: User) => user.avatarUrl),
     fetchAndEncodeImage,
     5 // concurrency level
@@ -117,11 +121,22 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       displayName = displayName.substring(0, maxCharacters - 2) + '…';
     }
 
-    // If on iframe, we could instead use href="${escapedAvatarUrl}"
-    // As it'll be faster than base64-encoding each profile picture
+    const text = hideLabel ? '' : `
+      <text
+        x="${x}"
+        y="${y + avatarSize + textOffset}"
+        font-family="${fontFamily}"
+        font-size="${fontSize}px"
+        fill="${parseColor(textColor)}"
+      >
+        ${displayName}
+      </text>
+    `;
+
     return `
       <a xlink:href="${profileUrl}" target="_blank">
         <image
+          ${ dynamic ? 'href="' + escapedAvatarUrl + '"' : '' }
           xlink:href="${imageSrc}"
           x="${x}"
           y="${y}"
@@ -129,15 +144,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
           width="${avatarSize}px"
           clip-path="inset(0% round ${pathRounding})"
         />
-          <text
-            x="${x}"
-            y="${y + avatarSize + textOffset}"
-            font-family="${fontFamily}"
-            font-size="${fontSize}px"
-            fill="${textColor}"
-          >
-            ${displayName}
-          </text>
+        ${text}
       </a>
     `;
   }).join('');
@@ -148,7 +155,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       y="${margin + fontSize * 1.5}"
       font-family="${fontFamily}"
       font-size="${titleFontSize}px"
-      fill="${textColor}"
+      fill="${parseColor(textColor)}"
       text-anchor="middle"
       dominant-baseline="middle"
     >
@@ -162,7 +169,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
 
   return `
     <svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <rect width="100%" height="100%" fill="${backgroundColor}"/>
+      <rect width="100%" height="100%" fill="${parseColor(backgroundColor)}"/>
       ${titleSvg}
       ${svgContent}
     </svg>

@@ -12,13 +12,15 @@ export const parseUrlOptions = (query: Record<string, string | undefined>): SvgO
     avatarSize: Math.max(30, parseInt(query.avatarSize || '50')),
     perRow: Math.max(1, parseInt(query.perRow || '8')),
     shape: query.shape as Shape || 'square',
+    hideLabel: query.hideLabel === 'true',
     fontSize: Math.max(10, parseInt(query.fontSize || '12')),
     textColor: query.textColor || '#333333',
     backgroundColor: query.backgroundColor || 'transparent',
     fontFamily: query.fontFamily || '\'Mona Sans\', \'Open Sans\', Verdana, Arial, sans-serif',
     margin: parseInt(query.margin || '20'),
     textOffset: parseInt(query.textOffset || '20'),
-    limit: parseInt(query.limit || '100')
+    limit: parseInt(query.limit || '100'),
+    dynamic: query.dynamic === 'true',
   };
 };
 

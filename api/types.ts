@@ -12,6 +12,7 @@ export interface SvgOptions {
   avatarSize: number;
   perRow: number;
   shape: Shape;
+  hideLabel: boolean;
   fontSize: number;
   textColor: string;
   backgroundColor: string;
@@ -19,4 +20,5 @@ export interface SvgOptions {
   margin: number;
   textOffset: number;
   limit: number;
+  dynamic?: boolean;
 }
