@@ -21,6 +21,7 @@ export const parseUrlOptions = (query: Record<string, string | undefined>): SvgO
     textOffset: parseInt(query.textOffset || '20'),
     limit: parseInt(query.limit || '100'),
     dynamic: query.dynamic === 'true',
+    isResponsive: query.isResponsive === 'true',
   };
 };
 

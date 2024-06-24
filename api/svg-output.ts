@@ -89,7 +89,7 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
 export const createUserSVG = async (users: User[], options: SvgOptions): Promise<string> => {
   const {
     title, avatarSize, perRow, shape, hideLabel, fontSize, textColor,
-    backgroundColor, fontFamily, margin, textOffset, limit, dynamic,
+    backgroundColor, fontFamily, margin, textOffset, limit, dynamic, isResponsive,
   } = options;
 
   const maxTextWidth = avatarSize;
@@ -167,11 +167,20 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
   const svgHeight = totalRows * rowHeight + margin + titleHeight;
   const svgWidth = perRow * (avatarSize + margin) + margin;
 
+  const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
+
   return `
-    <svg width="${svgWidth}" height="${svgHeight}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg 
+      width="${isResponsive ? '100%' : svgWidth + 'px'}" 
+      height="${isResponsive ? '100%' : svgHeight + 'px'}"
+      viewBox="${isResponsive ? viewBox : ''}"
+      preserveAspectRatio="xMidYMid meet"
+      xmlns="http://www.w3.org/2000/svg" 
+      xmlns:xlink="http://www.w3.org/1999/xlink">
       <rect width="100%" height="100%" fill="${parseColor(backgroundColor)}"/>
-      ${titleSvg}
+      ${title ? titleSvg : ''}
       ${svgContent}
     </svg>
   `;
 };
+

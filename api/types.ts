@@ -21,4 +21,5 @@ export interface SvgOptions {
   textOffset: number;
   limit: number;
   dynamic?: boolean;
+  isResponsive?: boolean;
 }
