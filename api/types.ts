@@ -14,12 +14,18 @@ export interface SvgOptions {
   shape: Shape;
   hideLabel: boolean;
   fontSize: number;
+  fontFamily: string;
   textColor: string;
   backgroundColor: string;
-  fontFamily: string;
+  limit: number;
+  outerBorderWidth: number;
+  outerBorderColor: string;
+  outerBorderRadius: number;
   margin: number;
   textOffset: number;
-  limit: number;
+  svgWidth: number;
+  svgHeight: number;
+  footerText: string;
   dynamic?: boolean;
   isResponsive?: boolean;
 }

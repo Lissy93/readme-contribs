@@ -56,8 +56,6 @@ async function processWithConcurrency<T, U>(items: T[], worker: (item: T) => Pro
   return results;
 }
 
-
-
 const escapeXml = (str: string): string => {
   if (!str) return 'Unknown';
   return str.replace(/&/g, '&amp;')
@@ -67,8 +65,10 @@ const escapeXml = (str: string): string => {
             .replace(/'/g, '&apos;');
 };
 
-const parseColor = (color: string): string => {
-  return color.match(/^#?[0-9A-Fa-f]{6}$/) ? `#${color}` : color;
+const parseColor = (color: string, hasTransparency: boolean = false): string => {
+  if (!color) return 'transparent';
+  const alpha = hasTransparency ? '80' : '';
+  return color.match(/^#?[0-9A-Fa-f]{6}$/) ? `#${color}${alpha}` : color;
 }
 
 async function fetchAndEncodeImage(url: string): Promise<string> {
@@ -90,6 +90,8 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
   const {
     title, avatarSize, perRow, shape, hideLabel, fontSize, textColor,
     backgroundColor, fontFamily, margin, textOffset, limit, dynamic, isResponsive,
+    outerBorderWidth, outerBorderColor, outerBorderRadius, footerText: customFooterText,
+    svgWidth: customSvgWidth, svgHeight: customSvgHeight
   } = options;
 
   const maxTextWidth = avatarSize;
@@ -98,6 +100,12 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
   const titleFontSize = fontSize * 2;
   const titleHeight = title ? fontSize * 3 : 0;
   const numberToDisplay = Math.min(limit, users.length);
+  const footerText = customFooterText || process.env.FOOTER_TEXT || '';
+
+  const totalRows = Math.ceil(numberToDisplay / perRow);
+  const svgHeight = customSvgHeight || (totalRows * rowHeight + margin + titleHeight);
+  const svgWidth = customSvgWidth || (perRow * (avatarSize + margin) + margin);
+  const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
 
   // Controlled concurrency for image fetching
   const encodedImages = dynamic ? [] : await processWithConcurrency(
@@ -163,11 +171,15 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
     </text>
   ` : '';
 
-  const totalRows = Math.ceil(numberToDisplay / perRow);
-  const svgHeight = totalRows * rowHeight + margin + titleHeight;
-  const svgWidth = perRow * (avatarSize + margin) + margin;
-
-  const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
+  const footerTextSvg = (footerText && footerText !== 'none') ? `
+    <text
+      x="${svgWidth - margin}" y="${svgHeight - 5}"
+      font-family="${fontFamily}" font-size="${fontSize * 0.8}px"
+      fill="${parseColor(textColor, true)}" text-anchor="end"
+    >
+      ${escapeXml(footerText)}
+    </text>
+  ` : '';
 
   return `
     <svg 
@@ -177,9 +189,15 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg" 
       xmlns:xlink="http://www.w3.org/1999/xlink">
-      <rect width="100%" height="100%" fill="${parseColor(backgroundColor)}"/>
+      <rect
+        width="100%" height="100%"
+        fill="${parseColor(backgroundColor)}"
+        stroke="${parseColor(outerBorderColor || textColor)}"
+        stroke-width="${outerBorderWidth}px"
+        rx="${outerBorderRadius}px" />
       ${title ? titleSvg : ''}
       ${svgContent}
+      ${footerTextSvg}
     </svg>
   `;
 };

@@ -14,16 +14,23 @@ export const parseUrlOptions = (query: Record<string, string | undefined>): SvgO
     shape: query.shape as Shape || 'square',
     hideLabel: query.hideLabel === 'true',
     fontSize: Math.max(10, parseInt(query.fontSize || '12')),
-    textColor: query.textColor || '#333333',
-    backgroundColor: query.backgroundColor || 'transparent',
     fontFamily: query.fontFamily || '\'Mona Sans\', \'Open Sans\', Verdana, Arial, sans-serif',
+    textColor: query.textColor || '333333',
+    backgroundColor: query.backgroundColor || 'transparent',
+    limit: parseInt(query.limit || '100'),
+    outerBorderWidth: parseInt(query.outerBorderWidth || '0'),
+    outerBorderColor: query.outerBorderColor || '',
+    outerBorderRadius: parseInt(query.outerBorderRadius || '0'),
     margin: parseInt(query.margin || '20'),
     textOffset: parseInt(query.textOffset || '20'),
-    limit: parseInt(query.limit || '100'),
+    svgWidth: parseInt(query.svgWidth || ''),
+    svgHeight: parseInt(query.svgHeight || ''),
+    footerText: query.footerText || '',
     dynamic: query.dynamic === 'true',
     isResponsive: query.isResponsive === 'true',
   };
 };
+
 
 /**
  * Sets headers and returns an SVG response
