@@ -42,7 +42,7 @@ It's nice to give credit to contributors and supporters who've helped your proje
 
 But using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors or stargazers.
 
-My aim with this project, is to provide an easy way for you to embed your projects contributors, sponsors, stargazers, etc, and to let you configure the look and feel. You can also easily deploy this project to Vercel, so you'll never need to worry about the managed instance becoming unavailable. 
+My aim with this project, is to provide an easy way for you to embed your projects contributors, sponsors, stargazers, etc, and to let you configure the look and feel. You can also easily deploy this project to Vercel, so you'll never need to worry about the managed instance becoming unavailable. [↳ See Examples](#examples)
 
 ---
 
@@ -152,32 +152,32 @@ Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or 
 
 <details><summary>Example 1</summary>
 
-![AdGuardian Forkers](http://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&outerBorderWidth=2&outerBorderRadius=5&footerText=none)
+![Rust Lang Contributors](https://readme-contribs.as93.net/contributors/rust-lang/rust?hideLabel=true&margin=2&textOffset=0&perRow=10&title=Rust%20Lang%20Top%20Contributors&footerText=none)
 </details>
 
 <details><summary>Example 2</summary>
 
-![Lissy93 Sponsors](https://readme-contribs.as93.net/sponsors/lissy93?shape=squircle&margin=16&textOffset=8&perRow=6&title=@Lissy93%27s%20Sponsors&textColor=white&&backgroundColor=black&fontFamily=Courier%20New&fontSize=8&footerText=none)
+![Dashy Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%2FDashy%27s%20Top%20Contributors&textColor=black&backgroundColor=00d1b2&margin=6&hideLabel=true&textOffset=2&footerText=none)
 </details>
 
 <details><summary>Example 3</summary>
 
-![Web Check Stargazers](https://readme-contribs.as93.net/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&title=Web-Checks%20Stargazers&textColor=9fef00&backgroundColor=101215&fontFamily=cursive&fontSize=14&limit=90&footerText=none)
+![AdGuardian Forkers](http://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&outerBorderWidth=2&outerBorderRadius=5&footerText=none)
 </details>
 
 <details><summary>Example 4</summary>
 
-![Dashy Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%2FDashy%27s%20Top%20Contributors&textColor=black&backgroundColor=00d1b2&margin=6&hideLabel=true&textOffset=2&footerText=none)
+![Lissy93 Sponsors](https://readme-contribs.as93.net/sponsors/lissy93?shape=squircle&margin=16&textOffset=8&perRow=6&title=@Lissy93%27s%20Sponsors&textColor=white&&backgroundColor=black&fontFamily=Courier%20New&fontSize=8&footerText=none)
 </details>
 
 <details><summary>Example 5</summary>
 
-![Hot Dog Stand lolz](https://readme-contribs.as93.net/stargazers/steverichey/hot-dog-stand?backgroundColor=red&textColor=yellow&outerBorderWidth=5&outerBorderRadius=8fontFamily=Comic%20Sans&fontSize=12&avatarSize=64&perRow=4&title=SteveRichey/Hot-Dog-Stand&footerText=none&shape=circle)
+![Web Check Stargazers](https://readme-contribs.as93.net/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&title=Web-Checks%20Stargazers&textColor=9fef00&backgroundColor=101215&fontFamily=cursive&fontSize=14&limit=90&footerText=none)
 </details>
 
 <details><summary>Example 6</summary>
 
-![Rust Lang Contributors](https://readme-contribs.as93.net/contributors/rust-lang/rust?hideLabel=true&margin=2&textOffset=0&perRow=10&title=Rust%20Lang%20Top%20Contributors&footerText=none)
+![Hot Dog Stand lolz](https://readme-contribs.as93.net/stargazers/steverichey/hot-dog-stand?backgroundColor=red&textColor=yellow&outerBorderWidth=5&outerBorderRadius=8fontFamily=Comic%20Sans&fontSize=12&avatarSize=64&perRow=4&title=SteveRichey/Hot-Dog-Stand&footerText=none&shape=circle)
 </details>
 
 ---
