@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Docs | Readme-Contrib</title>
+
+  <meta name="description" content="Give credit to your supporters 💗 - Simple embeddable contributor and sponsor widgets for your GitHub README">
+  <meta name="keywords" content="github.readme,embed,sponsors,contributors,stargazers,svg,png,attributions,widget">
+  <meta name="author" content="Alicia Sykes">
+
+  <!-- Page info, viewport, Astro credit -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+
+  <!-- Icons and colors -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Swagger crap -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.3/swagger-ui.css">
+  <link rel="stylesheet" href="https://rawcdn.githack.com/Amoenus/SwaggerDark/2064ccd45b571865a64c731fa6bfddfbf2a01fe1/SwaggerDark.css">
+</head>
+<body>
+
+  <div id="swagger-ui"></div>
+
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.3/swagger-ui-bundle.js"></script>
+  <script is:inline>
+    function initializeSwagger() {
+      SwaggerUIBundle({
+        url: '/api-spec.yml',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+      });
+    }
+    // Initialize Swagger when visiting page directly
+    document.addEventListener('DOMContentLoaded', initializeSwagger);
+    // Initialize Swagger when navigating to page from another page
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initializeSwagger();
+    }
+  </script>
+</body>
+</html>

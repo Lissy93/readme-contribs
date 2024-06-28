@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: Readme-Contribs API
+  description: >
+    Embeddable contributor, sponsor, stargazer, and forker widgets for GitHub READMEs.
+    <hr />
+    <br />
+    **Built By**
+    <br />
+    ![Contributors](https://readme-contribs.as93.net/contributors/lissy93/readme-contribs)
+    <br />
+    **Stargazers**
+    <br />
+    ![Contributors](https://readme-contribs.as93.net/stargazers/lissy93/readme-contribs?hideLabel=true&margin=2&textOffset=0&avatarSize=20)
+  version: "1.0.0"
+  license:
+    name: 'License: MIT'
+    url: https://github.com/Lissy93/readme-contribs/blob/main/LICENSE
+externalDocs:
+  description: 'Source: GitHub'
+  url: https://github.com/Lissy93/readme-contribs
+
+
+servers:
+  - url: https://readme-contribs.as93.net
+    description: Public API Server
+paths:
+  /contributors/{user}/{repo}:
+    get:
+      summary: Embed contributors widget
+      description: Retrieves an SVG image displaying contributors of a specified repository.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+          description: GitHub repository name.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of contributors.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+  
+  /sponsors/{user}:
+    get:
+      summary: Embed sponsors widget
+      description: Retrieves an SVG image displaying sponsors of a specified user.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the user.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of sponsors.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+
+  /stargazers/{user}/{repo}:
+    get:
+      summary: Embed stargazers widget
+      description: Retrieves an SVG image displaying stargazers of a specified repository.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+          description: GitHub repository name.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of stargazers.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+
+  /forkers/{user}/{repo}:
+    get:
+      summary: Embed forkers widget
+      description: Retrieves an SVG image displaying forkers of a specified repository.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+          description: GitHub repository name.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of forkers.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+
+components:
+  parameters:
+    ImageOptions:
+      name: options
+      in: query
+      required: false
+      schema:
+        type: object
+        properties:
+          title:
+            type: string
+          avatarSize:
+            type: integer
+          perRow:
+            type: integer
+          shape:
+            type: string
+            enum: [square, circle, squircle]
+          hideLabel:
+            type: boolean
+          fontSize:
+            type: integer
+          fontFamily:
+            type: string
+          textColor:
+            type: string
+          backgroundColor:
+            type: string
+          limit:
+            type: integer
+          outerBorderWidth:
+            type: integer
+          outerBorderColor:
+            type: string
+          outerBorderRadius:
+            type: integer
+          margin:
+            type: integer
+          textOffset:
+            type: integer
+          svgWidth:
+            type: integer
+          svgHeight:
+            type: integer
+          dynamic:
+            type: boolean
+          isResponsive:
+            type: boolean
+
