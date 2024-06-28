@@ -8,6 +8,44 @@
 </p>
 
 
+<details>
+  <summary>Contents</summary>
+
+- [About](#about)
+   * [Motivation](#motivation)
+- [Usage](#usage)
+   * [Embedding](#embedding)
+   * [Base Domain](#base-domain)
+   * [Embed Contributors](#embed-contributors)
+   * [Embed Sponsors](#embed-sponsors)
+   * [Embed Stargazers](#embed-stargazers)
+   * [Embed Forkers](#embed-forkers)
+   * [Image Options](#image-options)
+- [Deploying your Own](#deploying-your-own)
+- [Developing](#developing)
+- [Examples](#examples)
+- [Web Interface](#web-interface)
+- [Attributions](#attributions)
+   * [Contributors](#contributors)
+   * [Sponsors](#sponsors)
+- [License](#license)
+
+</details>
+
+---
+
+## About
+
+### Motivation
+
+It's nice to give credit to contributors and supporters who've helped your project 💞
+
+But using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors or stargazers.
+
+My aim with this project, is to provide an easy way for you to embed your projects contributors, sponsors, stargazers, etc, and to let you configure the look and feel. You can also easily deploy this project to Vercel, so you'll never need to worry about the managed instance becoming unavailable. 
+
+---
+
 ## Usage
 
 ### Embedding
@@ -15,7 +53,7 @@ To embed the image in your markdown, simply use the endpoint as the image URL.<b
 For example:
 
 ```
-![Contributors](https://readme-contribs.as93.net/sponsors/lissy93)
+![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)
 ```
 
 ### Base Domain
@@ -77,6 +115,7 @@ Specify these as query string parameters, appended to the end of your GET reques
 | `dynamic`          | If true, won't base64 encode images, faster (iframe usage only) | Boolean | `false`              |
 | `isResponsive`     | If true, makes the widget responsive             | Boolean | `false`                             |
 
+View the [Swagger Docs](https://readme-contribs.as93.net/api-docs) for more details.
 
 ---
 
@@ -86,8 +125,8 @@ If you plan to use this at any kind of scale, it is highly reccomended to deploy
 
 Don't worry, it's super quick, easy and free!
 
-1. Fork this repository
-2. Login / Sign up to Vercel
+1. Fork this repository (by clicking [here](https://github.com/Lissy93/readme-contribs/fork))
+2. Login / Sign up to [Vercel](https://vercel.com/login)
 3. Create a new app, and select your newly forked repo
 4. Create a GitHub API token [here](https://github.com/settings/tokens?type=beta)
 5. Add the `GITHUB_TOKEN` environmental variable into Vercel
@@ -106,15 +145,6 @@ You can run readme-contribs locally, to make and preview any changes
 5. Then open the running app at `localhost:3000`
 
 Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or put it in `.env`)
-
----
-
-## Web Interface
-If you're finding constructing the URL, and previewing the different options tricky, you can use our web interface to build your embedable card.
-
-Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get started.
-
-<p align="center"><a href="https://readme-contribs.as93.net"><img width="800" src="https://github.com/Lissy93/readme-contribs/assets/1862727/01dc1664-e78e-449b-bb9d-76a92c4487b6" /></a></p>
 
 ---
 
@@ -152,7 +182,16 @@ Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get start
 
 ---
 
-## Credits
+## Web Interface
+If you're finding constructing the URL, and previewing the different options tricky, you can use our web interface to build your embedable card.
+
+Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get started.
+
+<p align="center"><a href="https://readme-contribs.as93.net"><img width="800" src="https://github.com/Lissy93/readme-contribs/assets/1862727/01dc1664-e78e-449b-bb9d-76a92c4487b6" /></a></p>
+
+---
+
+## Attributions
 
 ### Contributors
 
