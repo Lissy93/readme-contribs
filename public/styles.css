@@ -158,23 +158,11 @@ section {
   iframe, img {
     border-radius: 8px;
     margin-top: 1rem;
+    width: 100%;
+    height: 512px;
   }
-  .example-1 {
-    height: 540px;
-    width: 600px;
-    border: 2px solid #bfbfbf;
-  }
-  .example-2 {
-    height: 496px;
-    width: 600px;
-  }
-  .example-3 {
-    height: 535px;
-    width: 1006px;
-  }
-  .example-4 {
-    height: 622px;
-    width: 566px;
+  .example-4, .example-6 {
+    height: 640px;
   }
 }
 
