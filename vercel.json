@@ -17,6 +17,10 @@
       "destination": "/public/$1/$2"
     },
     {
+      "source": "/api-docs",
+      "destination": "/api.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/api"
     }
