@@ -15,7 +15,7 @@ To embed the image in your markdown, simply use the endpoint as the image URL.<b
 For example:
 
 ```
-![Contributors](https://readme-contribs.as93.net/contributors/lissy93)
+![Contributors](https://readme-contribs.as93.net/sponsors/lissy93)
 ```
 
 ### Base Domain
@@ -55,22 +55,28 @@ If you're hosting your own instance, update this to your domain.<br />
 You can customize the outputed image, it's appearence and functionality with the following options. <br />
 Specify these as query string parameters, appended to the end of your GET request. All values are optional.
 
-| Parameter       | Description                                   | Type    | Default Value                      |
-|-----------------|-----------------------------------------------|---------|------------------------------------|
-| `title`         | The title to be displayed above the widget    | String  | `''` (Empty string = no title)     |
-| `avatarSize`    | Minimum size of avatars                       | Integer | `50`                               |
-| `perRow`        | Maximum number of avatars per row             | Integer | `8`                                |
-| `shape`         | Shape of the avatar images                    | String  | `square`                           |
-| `hideLabel`     | Whether to hide labels                        | Boolean | `false`                            |
-| `fontSize`      | Font size for text                            | Integer | `12`                               |
-| `textColor`     | Color of the text                             | String  | `333333` (exclude the `#`)         |
-| `backgroundColor`| Background color of the widget               | String  | `transparent`                      |
-| `fontFamily`    | Font family for the text                      | String  | `'Mona Sans', Verdana sans-serif`  |
-| `margin`        | Margin around each avatar                     | Integer | `20`                               |
-| `textOffset`    | Offset for text alignment                     | Integer | `20`                               |
-| `limit`         | Maximum number of items to display            | Integer | `100`                              |
-| `dynamic`       | If true, enables dynamic loading              | Boolean | `false`                            |
-| `isResponsive`  | If true, makes the widget responsive          | Boolean | `false`                            |
+| Parameter          | Description                                      | Type    | Default Value                       |
+|--------------------|--------------------------------------------------|---------|-------------------------------------|
+| `title`            | The title to be displayed above the widget       | String  | `''` (Empty string = no title)      |
+| `avatarSize`       | Minimum size of avatars                          | Integer | `50`                                |
+| `perRow`           | Maximum number of avatars per row                | Integer | `8`                                 |
+| `shape`            | Shape of the avatar images (square, circle, squircle) | Enum    | `square`                       |
+| `hideLabel`        | If set to true, name labels will not be displayed | Boolean | `false`                            |
+| `fontSize`         | Font size for label text                         | Integer | `12`                                |
+| `fontFamily`       | Font family for the text                         | String  | `'Mona Sans', Verdana, sans-serif`  |
+| `textColor`        | Color of the text (as hex code excluding # or color name)  | String  | `333333` (exclude the `#`) |
+| `backgroundColor`  | Background color of the widget                   | String  | `transparent`                       |
+| `limit`            | Maximum number of items to display               | Integer | `100`                               |
+| `outerBorderWidth` | Width of the outer border                        | Integer | `0`                                 |
+| `outerBorderColor` | Color of the outer border                        | String  | `''` (Empty string = no border)     |
+| `outerBorderRadius`| Radius of the outer border corners               | Integer | `0`                                 |
+| `margin`           | Margin around each avatar                        | Integer | `20`                                |
+| `textOffset`       | Offset for text alignment below avatars          | Integer | `20`                                |
+| `svgWidth`         | Width of the entire SVG widget                   | Integer | `500`                               |
+| `svgHeight`        | Height of the entire SVG widget                  | Integer | `500`                               |
+| `dynamic`          | If true, won't base64 encode images, faster (iframe usage only) | Boolean | `false`              |
+| `isResponsive`     | If true, makes the widget responsive             | Boolean | `false`                             |
+
 
 ---
 
@@ -114,13 +120,47 @@ Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get start
 
 ## Examples
 
+<details><summary>Example 1</summary>
+
+![AdGuardian Forkers](http://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&outerBorderWidth=2&outerBorderRadius=5&footerText=none)
+</details>
+
+<details><summary>Example 2</summary>
+
+![Lissy93 Sponsors](https://readme-contribs.as93.net/sponsors/lissy93?shape=squircle&margin=16&textOffset=8&perRow=6&title=@Lissy93%27s%20Sponsors&textColor=white&&backgroundColor=black&fontFamily=Courier%20New&fontSize=8&footerText=none)
+</details>
+
+<details><summary>Example 3</summary>
+
+![Web Check Stargazers](https://readme-contribs.as93.net/stargazers/lissy93/web-check?shape=square&margin=16&perRow=15&title=Web-Checks%20Stargazers&textColor=9fef00&backgroundColor=101215&fontFamily=cursive&fontSize=14&limit=90&footerText=none)
+</details>
+
+<details><summary>Example 4</summary>
+
+![Dashy Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy?shape=squircle&perRow=10&title=Lissy93%2FDashy%27s%20Top%20Contributors&textColor=black&backgroundColor=00d1b2&margin=6&hideLabel=true&textOffset=2&footerText=none)
+</details>
+
+<details><summary>Example 5</summary>
+
+![Hot Dog Stand lolz](https://readme-contribs.as93.net/stargazers/steverichey/hot-dog-stand?backgroundColor=red&textColor=yellow&outerBorderWidth=5&outerBorderRadius=8fontFamily=Comic%20Sans&fontSize=12&avatarSize=64&perRow=4&title=SteveRichey/Hot-Dog-Stand&footerText=none&shape=circle)
+</details>
+
+<details><summary>Example 6</summary>
+
+![Rust Lang Contributors](https://readme-contribs.as93.net/contributors/rust-lang/rust?hideLabel=true&margin=2&textOffset=0&perRow=10&title=Rust%20Lang%20Top%20Contributors&footerText=none)
+</details>
+
 ---
 
 ## Credits
 
 ### Contributors
 
+![Contributors](https://readme-contribs.as93.net/contributors/lissy93/readme-contribs)
+
 ### Sponsors
+
+![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)
 
 ---
 
@@ -178,7 +218,3 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               |_____|          |_____|         ~ - . _ _~_-_
 -->
 
-
-
-
-i 
