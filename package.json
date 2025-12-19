@@ -2,12 +2,19 @@
   "name": "readme-contribs",
   "scripts": {
     "start": "vercel dev",
-    "deploy": "vercel"
+    "deploy": "vercel",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "hono": "^4.4.7"
   },
   "devDependencies": {
-    "vercel": "^32.4.1"
-  }
+    "@vitest/coverage-v8": "^4.0.16",
+    "vercel": "^32.4.1",
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
