@@ -28,6 +28,9 @@ lerna-debug.log*
 # test coverage
 coverage/
 
+# code quality
+.biome-cache/
+
 # misc
 .DS_Store
 .vercel
