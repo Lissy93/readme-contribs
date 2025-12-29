@@ -17,7 +17,7 @@ body {
     pre {
       border-radius: 6px;
       font-size: 1.1rem;
-      color: var(--bulma-primary-70) !important;
+      color: var(--bulma-primary-70);
       background: #101215;
     }
     .copy-button {
@@ -32,15 +32,18 @@ body {
   }
   .format-chooser {
     width: 20%;
-    .dropdown, .dropdown-trigger, dropdown-menu, button {
-      width: 100% !important;
+    .dropdown,
+    .dropdown-trigger,
+    dropdown-menu,
+    button {
+      width: 100%;
     }
   }
 }
 
 .output-image {
   border-radius: 6px;
-  color: var(--bulma-primary-70) !important;
+  color: var(--bulma-primary-70);
   background: #101215;
   padding: 1rem;
   p {
@@ -60,7 +63,9 @@ section {
   }
 }
 
-.fa-solid, .fas, .fa-brands {
+.fa-solid,
+.fas,
+.fa-brands {
   margin-right: 0.5rem;
 }
 
@@ -71,12 +76,12 @@ section {
     margin-bottom: 0.5rem;
   }
   .subtitle {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 }
 
 .button.is-primary.is-outlined:hover {
-  background: hsl(var(--bulma-button-h),var(--bulma-button-s),var(--bulma-button-l));
+  background: hsl(var(--bulma-button-h), var(--bulma-button-s), var(--bulma-button-l));
   color: #101215;
 }
 
@@ -104,7 +109,7 @@ section {
       height: 0;
     }
   }
-  
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -113,8 +118,8 @@ section {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
     border-radius: 17px;
     &:before {
       position: absolute;
@@ -124,19 +129,19 @@ section {
       left: 4px;
       bottom: 4px;
       background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
       border-radius: 50%;
     }
   }
   input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #2196f3;
   }
-  
+
   input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #2196f3;
   }
-  
+
   input:checked + .slider:before {
     -webkit-transform: translateX(13px);
     -ms-transform: translateX(13px);
@@ -144,7 +149,9 @@ section {
   }
 }
 
-.tabs ul { justify-content: center; }
+.tabs ul {
+  justify-content: center;
+}
 
 .load-iframe {
   margin: 2rem auto;
@@ -155,13 +162,15 @@ section {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  iframe, img {
+  iframe,
+  img {
     border-radius: 8px;
     margin-top: 1rem;
     width: 100%;
     height: 512px;
   }
-  .example-4, .example-6 {
+  .example-4,
+  .example-6 {
     height: 640px;
   }
 }
@@ -170,4 +179,3 @@ section {
   max-width: 80vw;
   margin: 0 auto;
 }
-

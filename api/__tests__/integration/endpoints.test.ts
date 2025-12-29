@@ -1,31 +1,28 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { Hono } from 'hono'
-import {
-  mockContributorsResponse,
-  mockStargazersResponse,
-  mockForksResponse,
-  mockSponsorsRESTResponse,
-  createMockResponse,
-  createErrorResponse,
-  createMockImageResponse,
-} from '../__mocks__/github-responses'
-
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 // Import and create app directly for testing
-import { fetchContributors, fetchSponsors, fetchStargazers, fetchForkers } from '../../fetch-users'
-import { createUserSVG, createErrorSVG } from '../../svg-output'
+import { fetchContributors, fetchForkers, fetchSponsors, fetchStargazers } from '../../fetch-users'
+import { createErrorSVG, createUserSVG } from '../../svg-output'
 import { parseUrlOptions, returnSvg } from '../../utilities'
+import {
+  createMockImageResponse,
+  createMockResponse,
+  mockContributorsResponse,
+  mockSponsorsRESTResponse,
+  mockStargazersResponse,
+} from '../__mocks__/github-responses'
 
 const app = new Hono().basePath('/')
 
 app.get('/', (c) => {
   return c.text(
-    'Welcome to the readme-contribs API!\n\n'
-    + 'This service will generate an SVG badge with the avatars of GitHub contributors or sponsors.\n'
-    + 'Just make a request to `/contributors/:owner/:repo` or `/sponsors/:author`\n\n'
-    + 'Example usage (paste this in your README.md)\n'
-    + '\t![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)\n'
-    + '\t![Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy)\n\n'
-    + 'For full usage docs, deployment guide, contributing and bug reports, see: https://github.com/lissy93/readme-contribs'
+    'Welcome to the readme-contribs API!\n\n' +
+      'This service will generate an SVG badge with the avatars of GitHub contributors or sponsors.\n' +
+      'Just make a request to `/contributors/:owner/:repo` or `/sponsors/:author`\n\n' +
+      'Example usage (paste this in your README.md)\n' +
+      '\t![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)\n' +
+      '\t![Contributors](https://readme-contribs.as93.net/contributors/lissy93/dashy)\n\n' +
+      'For full usage docs, deployment guide, contributing and bug reports, see: https://github.com/lissy93/readme-contribs'
   )
 })
 
@@ -33,61 +30,68 @@ app.get('/sponsors/:author', async (c) => {
   const author = c.req.param('author')
   const options = parseUrlOptions(c.req.query())
 
-  return fetchSponsors(author).then(async (sponsors) => {
-    const svg = await createUserSVG(sponsors, options)
-    c.res.headers.set('Content-Type', 'image/svg+xml')
-    return c.body(svg)
-  })
-  .catch((error) => {
-    console.log(error);
-    return returnSvg(c, createErrorSVG(error, options), 500)
-  });
+  return fetchSponsors(author)
+    .then(async (sponsors) => {
+      const svg = await createUserSVG(sponsors, options)
+      c.res.headers.set('Content-Type', 'image/svg+xml')
+      return c.body(svg)
+    })
+    .catch((error) => {
+      console.log(error)
+      return returnSvg(c, createErrorSVG(error, options), 500)
+    })
 })
 
 app.get('/contributors/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner');
-  const repo = c.req.param('repo');
-  const options = parseUrlOptions(c.req.query());
+  const owner = c.req.param('owner')
+  const repo = c.req.param('repo')
+  const options = parseUrlOptions(c.req.query())
 
-  return fetchContributors(owner, repo, options.limit).then(async (contributors) => {
-    const svg = await createUserSVG(contributors, options);
-    c.res.headers.set('Content-Type', 'image/svg+xml');
-    return c.body(svg);
-  }).catch((error) => {
-    console.log(error);
-    return returnSvg(c, createErrorSVG(error, options), 500)
-  });
-});
+  return fetchContributors(owner, repo, options.limit)
+    .then(async (contributors) => {
+      const svg = await createUserSVG(contributors, options)
+      c.res.headers.set('Content-Type', 'image/svg+xml')
+      return c.body(svg)
+    })
+    .catch((error) => {
+      console.log(error)
+      return returnSvg(c, createErrorSVG(error, options), 500)
+    })
+})
 
 app.get('/stargazers/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner');
-  const repo = c.req.param('repo');
-  const options = parseUrlOptions(c.req.query());
+  const owner = c.req.param('owner')
+  const repo = c.req.param('repo')
+  const options = parseUrlOptions(c.req.query())
 
-  return fetchStargazers(owner, repo, options.limit).then(async (contributors) => {
-    const svg = await createUserSVG(contributors, options);
-    c.res.headers.set('Content-Type', 'image/svg+xml');
-    return c.body(svg);
-  }).catch((error) => {
-    console.log(error);
-    return returnSvg(c, createErrorSVG(error, options), 500)
-  });
-});
+  return fetchStargazers(owner, repo, options.limit)
+    .then(async (contributors) => {
+      const svg = await createUserSVG(contributors, options)
+      c.res.headers.set('Content-Type', 'image/svg+xml')
+      return c.body(svg)
+    })
+    .catch((error) => {
+      console.log(error)
+      return returnSvg(c, createErrorSVG(error, options), 500)
+    })
+})
 
 app.get('/forkers/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner');
-  const repo = c.req.param('repo');
-  const options = parseUrlOptions(c.req.query());
+  const owner = c.req.param('owner')
+  const repo = c.req.param('repo')
+  const options = parseUrlOptions(c.req.query())
 
-  return fetchForkers(owner, repo, options.limit).then(async (contributors) => {
-    const svg = await createUserSVG(contributors, options);
-    c.res.headers.set('Content-Type', 'image/svg+xml');
-    return c.body(svg);
-  }).catch((error) => {
-    console.log(error);
-    return returnSvg(c, createErrorSVG(error, options), 500)
-  });
-});
+  return fetchForkers(owner, repo, options.limit)
+    .then(async (contributors) => {
+      const svg = await createUserSVG(contributors, options)
+      c.res.headers.set('Content-Type', 'image/svg+xml')
+      return c.body(svg)
+    })
+    .catch((error) => {
+      console.log(error)
+      return returnSvg(c, createErrorSVG(error, options), 500)
+    })
+})
 
 describe('Integration: API Endpoints', () => {
   beforeEach(() => {
@@ -159,10 +163,7 @@ describe('Integration: API Endpoints', () => {
 
       const res = await app.request('/contributors/owner/repo?limit=2')
 
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('per_page=2'),
-        expect.any(Object)
-      )
+      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('per_page=2'), expect.any(Object))
       expect(res.status).toBe(200)
     })
 
@@ -259,9 +260,7 @@ describe('Integration: API Endpoints', () => {
 
       await app.request('/sponsors/testauthor')
 
-      expect(fetch).toHaveBeenCalledWith(
-        'https://github-sponsors.as93.workers.dev/testauthor'
-      )
+      expect(fetch).toHaveBeenCalledWith('https://github-sponsors.as93.workers.dev/testauthor')
     })
 
     it('should handle query parameters', async () => {

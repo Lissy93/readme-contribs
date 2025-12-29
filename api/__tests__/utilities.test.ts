@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
-import { parseUrlOptions, returnSvg } from '../utilities'
 import type { Context } from 'hono'
+import { describe, expect, it, vi } from 'vitest'
+import { parseUrlOptions, returnSvg } from '../utilities'
 
 describe('parseUrlOptions', () => {
   it('should return default options when no query params provided', () => {
@@ -13,7 +13,7 @@ describe('parseUrlOptions', () => {
       shape: 'square',
       hideLabel: false,
       fontSize: 12,
-      fontFamily: '\'Mona Sans\', \'Open Sans\', Verdana, Arial, sans-serif',
+      fontFamily: "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif",
       textColor: '333333',
       backgroundColor: 'transparent',
       limit: 100,

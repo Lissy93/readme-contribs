@@ -9,16 +9,43 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
 })
 
 export const mockUsers: User[] = [
-  createMockUser({ login: 'alice', name: 'Alice Smith', avatarUrl: 'https://avatars.githubusercontent.com/u/1' }),
-  createMockUser({ login: 'bob', name: 'Bob Jones', avatarUrl: 'https://avatars.githubusercontent.com/u/2' }),
-  createMockUser({ login: 'charlie', name: 'Charlie Brown', avatarUrl: 'https://avatars.githubusercontent.com/u/3' }),
+  createMockUser({
+    login: 'alice',
+    name: 'Alice Smith',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+  }),
+  createMockUser({
+    login: 'bob',
+    name: 'Bob Jones',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/2',
+  }),
+  createMockUser({
+    login: 'charlie',
+    name: 'Charlie Brown',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/3',
+  }),
 ]
 
 // Mock GitHub API responses
 export const mockContributorsResponse = [
-  { login: 'alice', name: 'Alice Smith', avatar_url: 'https://avatars.githubusercontent.com/u/1', contributions: 100 },
-  { login: 'bob', name: 'Bob Jones', avatar_url: 'https://avatars.githubusercontent.com/u/2', contributions: 50 },
-  { login: 'charlie', name: 'Charlie Brown', avatar_url: 'https://avatars.githubusercontent.com/u/3', contributions: 25 },
+  {
+    login: 'alice',
+    name: 'Alice Smith',
+    avatar_url: 'https://avatars.githubusercontent.com/u/1',
+    contributions: 100,
+  },
+  {
+    login: 'bob',
+    name: 'Bob Jones',
+    avatar_url: 'https://avatars.githubusercontent.com/u/2',
+    contributions: 50,
+  },
+  {
+    login: 'charlie',
+    name: 'Charlie Brown',
+    avatar_url: 'https://avatars.githubusercontent.com/u/3',
+    contributions: 25,
+  },
 ]
 
 export const mockStargazersResponse = [
@@ -68,8 +95,16 @@ export const mockSponsorsGraphQLResponse = {
 }
 
 export const mockSponsorsRESTResponse = [
-  { login: 'sponsor1', name: 'Sponsor One', avatarUrl: 'https://avatars.githubusercontent.com/u/10' },
-  { login: 'sponsor2', name: 'Sponsor Two', avatarUrl: 'https://avatars.githubusercontent.com/u/11' },
+  {
+    login: 'sponsor1',
+    name: 'Sponsor One',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/10',
+  },
+  {
+    login: 'sponsor2',
+    name: 'Sponsor Two',
+    avatarUrl: 'https://avatars.githubusercontent.com/u/11',
+  },
 ]
 
 // Mock fetch responses

@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createUserSVG, createErrorSVG } from '../svg-output'
-import { mockUsers, createMockImageResponse } from './__mocks__/github-responses'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createErrorSVG, createUserSVG } from '../svg-output'
 import type { SvgOptions } from '../types'
+import { createMockImageResponse, mockUsers } from './__mocks__/github-responses'
 
 const defaultOptions: SvgOptions = {
   title: '',
@@ -120,9 +120,7 @@ describe('createUserSVG', () => {
   })
 
   it('should use login when name is missing', async () => {
-    const users = [
-      { login: 'testuser', name: '', avatarUrl: 'https://example.com/1' },
-    ]
+    const users = [{ login: 'testuser', name: '', avatarUrl: 'https://example.com/1' }]
     const svg = await createUserSVG(users, defaultOptions)
 
     expect(svg).toContain('testuser')
@@ -264,9 +262,7 @@ describe('createUserSVG', () => {
 
     // Should fetch 3 avatar images
     expect(fetchSpy).toHaveBeenCalledTimes(3)
-    expect(fetchSpy).toHaveBeenCalledWith(
-      expect.stringContaining('avatars.githubusercontent.com')
-    )
+    expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('avatars.githubusercontent.com'))
   })
 
   it('should handle empty user array', async () => {
@@ -277,9 +273,7 @@ describe('createUserSVG', () => {
   })
 
   it('should handle users with null name gracefully', async () => {
-    const users = [
-      { login: 'testuser', name: null as any, avatarUrl: 'https://example.com/1' },
-    ]
+    const users = [{ login: 'testuser', name: null as any, avatarUrl: 'https://example.com/1' }]
     const svg = await createUserSVG(users, defaultOptions)
 
     expect(svg).toContain('testuser')
