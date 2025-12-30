@@ -16,7 +16,7 @@ describe('fetchContributors', () => {
   })
 
   it('should fetch contributors successfully', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
 
     const result = await fetchContributors('testowner', 'testrepo')
 
@@ -34,7 +34,7 @@ describe('fetchContributors', () => {
 
   it('should include Authorization header when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_123')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
 
     await fetchContributors('testowner', 'testrepo')
 
@@ -44,7 +44,7 @@ describe('fetchContributors', () => {
   })
 
   it('should respect custom limit parameter', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
 
     await fetchContributors('testowner', 'testrepo', 50)
 
@@ -55,7 +55,7 @@ describe('fetchContributors', () => {
   })
 
   it('should throw error when API returns 404', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found') as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found'))
 
     await expect(fetchContributors('invalid', 'repo')).rejects.toThrow(
       'GitHub API returned a 404 Not Found'
@@ -63,7 +63,7 @@ describe('fetchContributors', () => {
   })
 
   it('should throw error when API returns 403', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(403, 'Forbidden') as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(403, 'Forbidden'))
 
     await expect(fetchContributors('owner', 'repo')).rejects.toThrow(
       'GitHub API returned a 403 Forbidden'
@@ -71,7 +71,7 @@ describe('fetchContributors', () => {
   })
 
   it('should handle empty contributors array', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse([]) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse([]))
 
     const result = await fetchContributors('owner', 'repo')
     expect(result).toEqual([])
@@ -84,7 +84,7 @@ describe('fetchStargazers', () => {
   })
 
   it('should fetch stargazers successfully', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
     const result = await fetchStargazers('testowner', 'testrepo')
 
@@ -101,7 +101,7 @@ describe('fetchStargazers', () => {
   })
 
   it('should handle stargazers with missing name field', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
     const result = await fetchStargazers('owner', 'repo')
 
@@ -111,7 +111,7 @@ describe('fetchStargazers', () => {
 
   it('should include Authorization header when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_456')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
     await fetchStargazers('owner', 'repo')
 
@@ -122,7 +122,7 @@ describe('fetchStargazers', () => {
 
   it('should throw and log error on API failure', async () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(500, 'Internal Server Error') as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(500, 'Internal Server Error'))
 
     await expect(fetchStargazers('owner', 'repo')).rejects.toThrow(
       'GitHub API returned a 500 Internal Server Error'
@@ -133,7 +133,7 @@ describe('fetchStargazers', () => {
   })
 
   it('should respect custom limit parameter', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
     await fetchStargazers('owner', 'repo', 25)
 
@@ -150,7 +150,7 @@ describe('fetchForkers', () => {
   })
 
   it('should fetch forkers successfully', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse))
 
     const result = await fetchForkers('testowner', 'testrepo')
 
@@ -167,7 +167,7 @@ describe('fetchForkers', () => {
   })
 
   it('should map fork owner data correctly', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse))
 
     const result = await fetchForkers('owner', 'repo')
 
@@ -178,7 +178,7 @@ describe('fetchForkers', () => {
 
   it('should include Authorization header when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_789')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse))
 
     await fetchForkers('owner', 'repo')
 
@@ -188,7 +188,7 @@ describe('fetchForkers', () => {
   })
 
   it('should throw error when API returns error status', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found') as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found'))
 
     await expect(fetchForkers('invalid', 'repo')).rejects.toThrow(
       'GitHub API returned a 404 Not Found'
@@ -196,7 +196,7 @@ describe('fetchForkers', () => {
   })
 
   it('should respect custom limit parameter', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse))
 
     await fetchForkers('owner', 'repo', 10)
 
@@ -213,7 +213,7 @@ describe('fetchSponsors', () => {
   })
 
   it('should use fallback API when GITHUB_TOKEN is not set', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse))
 
     const result = await fetchSponsors('testuser')
 
@@ -223,7 +223,7 @@ describe('fetchSponsors', () => {
 
   it('should fetch sponsors via GraphQL when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_graphql')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockSponsorsGraphQLResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockSponsorsGraphQLResponse))
 
     const result = await fetchSponsors('testuser')
 
@@ -250,8 +250,8 @@ describe('fetchSponsors', () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_graphql')
     vi.clearAllMocks()
     vi.mocked(fetch)
-      .mockResolvedValueOnce(createErrorResponse(401, 'Unauthorized') as any)
-      .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse) as any)
+      .mockResolvedValueOnce(createErrorResponse(401, 'Unauthorized'))
+      .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse))
 
     const result = await fetchSponsors('testuser')
 
@@ -263,7 +263,7 @@ describe('fetchSponsors', () => {
 
   it('should throw error when user not found', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse({ data: { user: null } }) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse({ data: { user: null } }))
 
     await expect(fetchSponsors('nonexistent')).rejects.toThrow(
       'User nonexistent not found or has no sponsors'
@@ -274,8 +274,8 @@ describe('fetchSponsors', () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token')
     vi.clearAllMocks()
     vi.mocked(fetch)
-      .mockResolvedValueOnce(createErrorResponse(500, 'Server Error') as any)
-      .mockResolvedValueOnce(createErrorResponse(500, 'Server Error') as any)
+      .mockResolvedValueOnce(createErrorResponse(500, 'Server Error'))
+      .mockResolvedValueOnce(createErrorResponse(500, 'Server Error'))
 
     await expect(fetchSponsors('testuser')).rejects.toThrow(/GitHub API returned a 500/)
   })
@@ -301,7 +301,7 @@ describe('fetchSponsors', () => {
         },
       },
     }
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(orgSponsorResponse) as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(orgSponsorResponse))
 
     const result = await fetchSponsors('testuser')
 
@@ -315,7 +315,7 @@ describe('fetchSponsors', () => {
   })
 
   it('should throw error on fallback API failure when no token', async () => {
-    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found') as any)
+    vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found'))
 
     await expect(fetchSponsors('testuser')).rejects.toThrow('GitHub API returned a 404 Not Found')
   })

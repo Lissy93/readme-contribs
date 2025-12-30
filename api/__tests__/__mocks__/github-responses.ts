@@ -108,15 +108,16 @@ export const mockSponsorsRESTResponse = [
 ]
 
 // Mock fetch responses
-export const createMockResponse = (data: any, status = 200, statusText = 'OK') => ({
-  ok: status >= 200 && status < 300,
-  status,
-  statusText,
-  json: async () => data,
-  headers: new Map([['content-type', 'application/json']]),
-})
+export const createMockResponse = (data: unknown, status = 200, statusText = 'OK') =>
+  ({
+    ok: status >= 200 && status < 300,
+    status,
+    statusText,
+    json: async () => data,
+    headers: new Map([['content-type', 'application/json']]),
+  }) as unknown as Response
 
-export const createMockImageResponse = (): any => {
+export const createMockImageResponse = () => {
   const buffer = new ArrayBuffer(100)
 
   return {
@@ -127,7 +128,7 @@ export const createMockImageResponse = (): any => {
     headers: {
       get: (name: string) => (name.toLowerCase() === 'content-type' ? 'image/png' : null),
     },
-  }
+  } as unknown as Response
 }
 
 // Helper to create error responses

@@ -120,8 +120,8 @@ describe('Integration: API Endpoints', () => {
   describe('GET /contributors/:owner/:repo', () => {
     beforeEach(() => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
+        .mockResolvedValue(createMockImageResponse())
     })
 
     it('should return SVG with contributors', async () => {
@@ -137,8 +137,8 @@ describe('Integration: API Endpoints', () => {
 
     it('should handle query parameters correctly', async () => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
+        .mockResolvedValue(createMockImageResponse())
 
       const res = await app.request(
         '/contributors/owner/repo?title=Contributors&avatarSize=80&perRow=5&hideLabel=true'
@@ -158,8 +158,8 @@ describe('Integration: API Endpoints', () => {
 
     it('should handle limit parameter', async () => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
+        .mockResolvedValue(createMockImageResponse())
 
       const res = await app.request('/contributors/owner/repo?limit=2')
 
@@ -170,8 +170,8 @@ describe('Integration: API Endpoints', () => {
     it('should use GITHUB_TOKEN when available', async () => {
       vi.stubEnv('GITHUB_TOKEN', 'test_token')
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
+        .mockResolvedValue(createMockImageResponse())
 
       await app.request('/contributors/owner/repo')
 
@@ -203,8 +203,8 @@ describe('Integration: API Endpoints', () => {
   describe('GET /stargazers/:owner/:repo', () => {
     beforeEach(() => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
+        .mockResolvedValue(createMockImageResponse())
     })
 
     it('should return SVG with stargazers', async () => {
@@ -234,7 +234,7 @@ describe('Integration: API Endpoints', () => {
 
     it('should handle dynamic mode parameter', async () => {
       const fetchSpy = vi.mocked(fetch)
-      fetchSpy.mockResolvedValueOnce(createMockResponse(mockStargazersResponse) as any)
+      fetchSpy.mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
       const res = await app.request('/stargazers/owner/repo?dynamic=true')
 
@@ -249,14 +249,14 @@ describe('Integration: API Endpoints', () => {
   describe('GET /sponsors/:author', () => {
     beforeEach(() => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse))
+        .mockResolvedValue(createMockImageResponse())
     })
 
     it('should use fallback API when GITHUB_TOKEN not set', async () => {
       vi.mocked(fetch)
-        .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse) as any)
-        .mockResolvedValue(createMockImageResponse() as any)
+        .mockResolvedValueOnce(createMockResponse(mockSponsorsRESTResponse))
+        .mockResolvedValue(createMockImageResponse())
 
       await app.request('/sponsors/testauthor')
 
@@ -317,7 +317,7 @@ describe('Integration: API Endpoints', () => {
         json: async () => {
           throw new Error('Invalid JSON')
         },
-      } as any)
+      })
 
       const res = await app.request('/contributors/owner/repo')
 

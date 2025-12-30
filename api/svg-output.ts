@@ -31,19 +31,22 @@ async function processWithConcurrency<T, U>(
 ): Promise<U[]> {
   const results: U[] = new Array(items.length)
   const executing = new Set<Promise<void>>()
+  const executingPromises = new Map<T, Promise<void>>()
 
   const executeTask = async (item: T, index: number) => {
     try {
       results[index] = await worker(item)
     } catch (error) {
       console.error(`Error processing item at index ${index}: ${error}`)
-      results[index] = null as any
+      results[index] = null as U
     } finally {
-      executing.delete(executingPromises.get(item)!)
+      const task = executingPromises.get(item)
+      if (task) {
+        executing.delete(task)
+      }
     }
   }
 
-  const executingPromises = new Map<T, Promise<void>>()
   for (let i = 0; i < items.length; i++) {
     const task = executeTask(items[i], i)
     executingPromises.set(items[i], task)

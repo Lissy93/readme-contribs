@@ -1,5 +1,38 @@
 import type { User } from './types'
 
+// GitHub API response types
+interface GitHubContributor {
+  login: string
+  name: string
+  avatar_url: string
+  contributions: number
+}
+
+interface GitHubUser {
+  login: string
+  name: string
+  avatar_url: string
+}
+
+interface GitHubFork {
+  owner: {
+    login: string
+    avatar_url: string
+  }
+}
+
+interface SponsorEntity {
+  login: string
+  name: string
+  avatarUrl: string
+}
+
+interface SponsorEdge {
+  node: {
+    sponsorEntity: SponsorEntity
+  }
+}
+
 export const fetchContributors = async (
   owner: string,
   repo: string,
@@ -22,7 +55,8 @@ export const fetchContributors = async (
     )
   }
 
-  return (await response.json()).map((user: any) => ({
+  const contributors = (await response.json()) as GitHubContributor[]
+  return contributors.map((user) => ({
     login: user.login,
     name: user.name,
     avatarUrl: user.avatar_url,
@@ -51,8 +85,8 @@ export const fetchStargazers = async (
       )
     }
 
-    const stargazers = await response.json()
-    return stargazers.map((user: any) => ({
+    const stargazers = (await response.json()) as GitHubUser[]
+    return stargazers.map((user) => ({
       login: user.login,
       name: user.name || '',
       avatarUrl: user.avatar_url,
@@ -93,8 +127,8 @@ export const fetchForkers = async (
     )
   }
 
-  const forks = await response.json()
-  return forks.map((fork: any) => ({
+  const forks = (await response.json()) as GitHubFork[]
+  return forks.map((fork) => ({
     login: fork.owner.login,
     name: fork.owner.login,
     avatarUrl: fork.owner.avatar_url,
@@ -170,16 +204,14 @@ export const fetchSponsors = async (username: string): Promise<User[]> => {
     if (!data.data.user) {
       throw new Error(`User ${username} not found or has no sponsors`)
     }
-    return data.data.user.sponsorshipsAsMaintainer.edges.map(
-      (edge: { node: { sponsorEntity: any } }) => {
-        const entity = edge.node.sponsorEntity
-        return {
-          login: entity.login || null,
-          name: entity.name,
-          avatarUrl: entity.avatarUrl,
-        }
+    return data.data.user.sponsorshipsAsMaintainer.edges.map((edge: SponsorEdge) => {
+      const entity = edge.node.sponsorEntity
+      return {
+        login: entity.login || null,
+        name: entity.name,
+        avatarUrl: entity.avatarUrl,
       }
-    )
+    })
   } catch (error) {
     throw new Error(`Failed to fetch sponsors: ${error};`)
   }

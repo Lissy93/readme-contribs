@@ -60,7 +60,7 @@ describe('createErrorSVG', () => {
 describe('createUserSVG', () => {
   beforeEach(() => {
     vi.unstubAllEnvs()
-    vi.mocked(fetch).mockResolvedValue(createMockImageResponse() as any)
+    vi.mocked(fetch).mockResolvedValue(createMockImageResponse())
   })
 
   it('should create SVG with user avatars', async () => {
@@ -256,7 +256,7 @@ describe('createUserSVG', () => {
 
   it('should fetch and encode images when not in dynamic mode', async () => {
     vi.clearAllMocks() // Clear previous mocks
-    vi.mocked(fetch).mockResolvedValue(createMockImageResponse() as any)
+    vi.mocked(fetch).mockResolvedValue(createMockImageResponse())
     const fetchSpy = vi.mocked(fetch)
     await createUserSVG(mockUsers, defaultOptions)
 
@@ -273,7 +273,9 @@ describe('createUserSVG', () => {
   })
 
   it('should handle users with null name gracefully', async () => {
-    const users = [{ login: 'testuser', name: null as any, avatarUrl: 'https://example.com/1' }]
+    const users = [
+      { login: 'testuser', name: null as unknown as string, avatarUrl: 'https://example.com/1' },
+    ]
     const svg = await createUserSVG(users, defaultOptions)
 
     expect(svg).toContain('testuser')
@@ -337,7 +339,7 @@ describe('createUserSVG', () => {
       maxConcurrent = Math.max(maxConcurrent, concurrentFetches)
       await new Promise((resolve) => setTimeout(resolve, 10))
       concurrentFetches--
-      return createMockImageResponse() as any
+      return createMockImageResponse()
     })
 
     await createUserSVG(manyUsers, defaultOptions)
