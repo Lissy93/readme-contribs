@@ -198,41 +198,103 @@ components:
         properties:
           title:
             type: string
+            default: ''
+            description: Badge title text displayed at the top
           avatarSize:
             type: integer
+            default: 50
+            minimum: 30
+            maximum: 200
+            description: Avatar size in pixels
           perRow:
             type: integer
+            default: 8
+            minimum: 1
+            maximum: 50
+            description: Number of avatars to display per row
           shape:
             type: string
             enum: [square, circle, squircle]
+            default: square
+            description: Shape of the avatar images
           hideLabel:
             type: boolean
+            default: false
+            description: Hide the username labels below avatars
           fontSize:
             type: integer
+            default: 12
+            minimum: 10
+            maximum: 32
+            description: Font size for username labels in pixels
           fontFamily:
             type: string
+            default: "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif"
+            description: Font family for text
           textColor:
             type: string
+            default: '333333'
+            description: Text color as hex code (without #)
           backgroundColor:
             type: string
+            default: 'transparent'
+            description: Background color as hex code or CSS color name
           limit:
             type: integer
+            default: 96
+            minimum: 1
+            maximum: 500
+            description: Maximum number of users to display
           outerBorderWidth:
             type: integer
+            default: 0
+            minimum: 0
+            maximum: 20
+            description: Width of outer border in pixels
           outerBorderColor:
             type: string
+            default: ''
+            description: Outer border color as hex code or CSS color name
           outerBorderRadius:
             type: integer
+            default: 0
+            minimum: 0
+            maximum: 50
+            description: Outer border radius in pixels
           margin:
             type: integer
+            default: 20
+            minimum: 0
+            maximum: 100
+            description: Margin/spacing between avatars in pixels
           textOffset:
             type: integer
+            default: 20
+            minimum: 0
+            maximum: 100
+            description: Vertical offset for username text below avatar
           svgWidth:
             type: integer
+            default: 0
+            minimum: 0
+            maximum: 5000
+            description: Custom SVG width in pixels (0 = auto)
           svgHeight:
             type: integer
+            default: 0
+            minimum: 0
+            maximum: 5000
+            description: Custom SVG height in pixels (0 = auto)
+          footerText:
+            type: string
+            default: ''
+            description: Footer text to display at bottom of badge
           dynamic:
             type: boolean
+            default: false
+            description: Enable dynamic mode (renders in HTML instead of encoding images)
           isResponsive:
             type: boolean
+            default: false
+            description: Make the badge responsive (scales with container)
 

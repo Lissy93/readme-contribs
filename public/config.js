@@ -29,22 +29,39 @@ export const buildFullUrl = (path) => {
 
 /**
  * Advanced configuration options for badge generation
+ * Dynamically loaded from API params config
  */
-export const ADVANCED_OPTIONS = [
-  { name: 'title', value: '', label: 'Title', placeholder: 'Enter title' },
-  { name: 'avatarSize', value: '', label: 'Avatar Size', placeholder: '80' },
-  { name: 'perRow', value: '', label: 'Per Row', placeholder: 'Number per row' },
-  { name: 'shape', value: '', label: 'Shape', placeholder: 'circle, square, or squircle' },
-  { name: 'fontSize', value: '', label: 'Font Size', placeholder: '16' },
-  { name: 'textColor', value: '', label: 'Text Color', placeholder: 'e.g., black, #333' },
-  {
-    name: 'backgroundColor',
-    value: '',
-    label: 'Background Color',
-    placeholder: 'e.g., white, #fff',
-  },
-  { name: 'fontFamily', value: '', label: 'Font Family', placeholder: 'e.g., Arial' },
-  { name: 'margin', value: '', label: 'Margin', placeholder: '35' },
-  { name: 'textOffset', value: '', label: 'Text Offset', placeholder: 'Offset for text' },
-  { name: 'limit', value: '', label: 'Limit', placeholder: 'Limit number displayed' },
-]
+
+/**
+ * Fetches and generates advanced options from API params config
+ * @returns {Promise<Array>} Array of option objects for UI form
+ */
+export async function loadAdvancedOptions() {
+  try {
+    const response = await fetch('/api/params')
+    const paramsConfig = await response.json()
+
+    // Transform API params config to UI format
+    return Object.entries(paramsConfig)
+      .filter(([key]) => {
+        // Exclude options that don't make sense in the UI or are handled separately
+        const excludedKeys = ['dynamic', 'isResponsive', 'hideLabel']
+        return !excludedKeys.includes(key)
+      })
+      .map(([name, config]) => ({
+        name,
+        value: '',
+        label: config.label,
+        placeholder: config.placeholder,
+        type: config.type, // Can be used for rendering different input types
+        min: config.min, // Can be used for client-side validation
+        max: config.max, // Can be used for client-side validation
+        values: config.values, // For enum types (e.g., shape dropdown)
+        default: config.default, // Default value
+      }))
+  } catch (error) {
+    console.error('Failed to load advanced options:', error)
+    // Return empty array as fallback
+    return []
+  }
+}

@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import paramsConfig from './config/params.js'
 import {
   fetchContributors,
   fetchFollowers,
@@ -37,6 +38,12 @@ if (typeof globalThis.Bun !== 'undefined') {
 // Healthcheck endpoint
 app.get('/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// Parameters configuration endpoint
+// Exposes badge parameters config to frontend for dynamic form generation
+app.get('/api/params', (c) => {
+  return c.json(paramsConfig)
 })
 
 app.get('/', async (c) => {

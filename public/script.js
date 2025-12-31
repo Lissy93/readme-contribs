@@ -95,25 +95,9 @@ const EXAMPLES = [
 
 /**
  * Advanced configuration options
+ * NOTE: This file is deprecated and not currently used.
+ * The active implementation uses app.js which loads options from /api/params
  */
-const ADVANCED_OPTIONS = [
-  { name: 'title', value: '', label: 'Title', placeholder: 'Enter title' },
-  { name: 'avatarSize', value: '', label: 'Avatar Size', placeholder: '80' },
-  { name: 'perRow', value: '', label: 'Per Row', placeholder: 'Number per row' },
-  { name: 'shape', value: '', label: 'Shape', placeholder: 'circle, square, or squircle' },
-  { name: 'fontSize', value: '', label: 'Font Size', placeholder: '16' },
-  { name: 'textColor', value: '', label: 'Text Color', placeholder: 'e.g., black, #333' },
-  {
-    name: 'backgroundColor',
-    value: '',
-    label: 'Background Color',
-    placeholder: 'e.g., white, #fff',
-  },
-  { name: 'fontFamily', value: '', label: 'Font Family', placeholder: 'e.g., Arial' },
-  { name: 'margin', value: '', label: 'Margin', placeholder: '35' },
-  { name: 'textOffset', value: '', label: 'Text Offset', placeholder: 'Offset for text' },
-  { name: 'limit', value: '', label: 'Limit', placeholder: 'Limit number displayed' },
-]
 
 /**
  * Main Alpine.js application

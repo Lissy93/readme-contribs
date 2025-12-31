@@ -231,13 +231,45 @@
                 <div class="field">
                   <label class="label" :for="option.name" x-text="option.label"></label>
                   <div class="control">
-                    <input
-                      class="input"
-                      type="text"
-                      :id="option.name"
-                      :placeholder="option.placeholder"
-                      x-model="option.value"
-                      :aria-label="option.label">
+                    <!-- Number input with min/max validation -->
+                    <template x-if="option.type === 'number'">
+                      <input
+                        class="input"
+                        type="number"
+                        :id="option.name"
+                        :placeholder="option.placeholder"
+                        :min="option.min"
+                        :max="option.max"
+                        :step="1"
+                        x-model="option.value"
+                        :aria-label="option.label">
+                    </template>
+
+                    <!-- Enum select dropdown -->
+                    <template x-if="option.type === 'enum'">
+                      <div class="select">
+                        <select
+                          :id="option.name"
+                          x-model="option.value"
+                          :aria-label="option.label">
+                          <option value="">-- Select --</option>
+                          <template x-for="enumValue in option.values" :key="enumValue">
+                            <option :value="enumValue" x-text="enumValue"></option>
+                          </template>
+                        </select>
+                      </div>
+                    </template>
+
+                    <!-- String input (default) -->
+                    <template x-if="option.type === 'string' || !option.type">
+                      <input
+                        class="input"
+                        type="text"
+                        :id="option.name"
+                        :placeholder="option.placeholder"
+                        x-model="option.value"
+                        :aria-label="option.label">
+                    </template>
                   </div>
                 </div>
               </template>

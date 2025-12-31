@@ -3,7 +3,7 @@
  * Alpine.js application for generating embeddable GitHub badges
  */
 
-import { ADVANCED_OPTIONS, buildFullUrl, EXAMPLE_PATHS } from './config.js'
+import { buildFullUrl, EXAMPLE_PATHS, loadAdvancedOptions } from './config.js'
 import { sanitizeForUrl, showToast } from './utils.js'
 
 /**
@@ -22,12 +22,19 @@ function apiForm() {
     repo: '',
     outputMode: false, // false = static, true = dynamic
     showError: false,
-    options: ADVANCED_OPTIONS,
+    options: [], // Will be populated by loadAdvancedOptions()
     exampleIndex: -1,
     examplePaths: EXAMPLE_PATHS,
     exampleLoading: false,
     loadTimeout: null,
     exampleTimeout: null,
+
+    /**
+     * Initialize the form - load advanced options from API
+     */
+    async init() {
+      this.options = await loadAdvancedOptions()
+    },
 
     /**
      * Toggles between different badge types

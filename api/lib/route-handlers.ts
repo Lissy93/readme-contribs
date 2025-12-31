@@ -1,13 +1,14 @@
 /**
  * Route handler factory
- * Creates standardized route handlers with consistent error handling
+ * Creates standardized route handlers with consistent error handling and Zod validation
  */
 
 import type { Context } from 'hono'
+import { ZodError } from 'zod'
 import { createUserSVG } from '../svg-output'
 import type { SvgOptions, User } from '../types'
 import { returnSvg } from '../utilities'
-import { handleRouteError } from './errors'
+import { handleRouteError, ValidationError } from './errors'
 import { validateGitHubName } from './validation'
 
 /**
@@ -50,10 +51,17 @@ export const createUserRouteHandler = (fetcher: UserFetcher) => {
       // Return SVG with proper headers
       return returnSvg(c, svg)
     } catch (error) {
-      // Handle errors consistently (including validation errors)
-      const { parseUrlOptions } = await import('../utilities')
-      const options: SvgOptions = parseUrlOptions(c.req.query())
-      return handleRouteError(c, error, options)
+      // Handle Zod validation errors with helpful messages
+      if (error instanceof ZodError) {
+        const errorMessages = error.errors
+          .map((err) => `${err.path.join('.')}: ${err.message}`)
+          .join(', ')
+        const validationError = new ValidationError(`Invalid parameters - ${errorMessages}`)
+        return handleRouteError(c, validationError)
+      }
+
+      // Handle other errors consistently
+      return handleRouteError(c, error)
     }
   }
 }

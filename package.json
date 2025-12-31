@@ -16,7 +16,9 @@
     "quality:fix": "biome check --write ."
   },
   "dependencies": {
-    "hono": "^4.4.7"
+    "@hono/zod-validator": "^0.7.6",
+    "hono": "^4.4.7",
+    "zod": "^4.3.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
