@@ -216,12 +216,12 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       : ''
 
   return `
-    <svg 
-      width="${isResponsive ? '100%' : `${svgWidth}px`}" 
+    <svg
+      width="${isResponsive ? '100%' : `${svgWidth}px`}"
       height="${isResponsive ? '100%' : `${svgHeight}px`}"
-      viewBox="${isResponsive ? viewBox : ''}"
+      ${isResponsive ? `viewBox="${viewBox}"` : ''}
       preserveAspectRatio="xMidYMid meet"
-      xmlns="http://www.w3.org/2000/svg" 
+      xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
       <rect
         width="100%" height="100%"

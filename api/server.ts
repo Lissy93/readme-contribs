@@ -16,9 +16,12 @@ if (typeof globalThis.Bun !== 'undefined') {
     app.use('/favicon.png', serveStatic({ path: './public/favicon.png' }))
     app.use('/styles.css', serveStatic({ path: './public/styles.css' }))
     app.use('/script.js', serveStatic({ path: './public/script.js' }))
+    app.use('/app.js', serveStatic({ path: './public/app.js' }))
+    app.use('/utils.js', serveStatic({ path: './public/utils.js' }))
+    app.use('/config.js', serveStatic({ path: './public/config.js' }))
+    app.use('/icons.js', serveStatic({ path: './public/icons.js' }))
     app.use('/api.html', serveStatic({ path: './public/api.html' }))
     app.use('/api-docs', serveStatic({ path: './public/api.html' }))
-    app.use('/test.html', serveStatic({ path: './public/test.html' }))
   })
 }
 
