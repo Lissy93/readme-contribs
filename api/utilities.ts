@@ -27,7 +27,7 @@ export const parseUrlOptions = (query: Record<string, string | undefined>): SvgO
     fontFamily: query.fontFamily || "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif",
     textColor: validateHexColor(query.textColor, '333333'),
     backgroundColor: query.backgroundColor || 'transparent',
-    limit: safeParseInt(query.limit, 100, 1),
+    limit: safeParseInt(query.limit, 96, 1),
     outerBorderWidth: safeParseInt(query.outerBorderWidth, 0, 0),
     outerBorderColor: query.outerBorderColor || '',
     outerBorderRadius: safeParseInt(query.outerBorderRadius, 0, 0),

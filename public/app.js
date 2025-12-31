@@ -3,7 +3,7 @@
  * Alpine.js application for generating embeddable GitHub badges
  */
 
-import { ADVANCED_OPTIONS, EXAMPLES } from './config.js'
+import { ADVANCED_OPTIONS, buildFullUrl, EXAMPLE_PATHS } from './config.js'
 import { sanitizeForUrl, showToast } from './utils.js'
 
 /**
@@ -24,14 +24,14 @@ function apiForm() {
     showError: false,
     options: ADVANCED_OPTIONS,
     exampleIndex: -1,
-    examples: EXAMPLES,
+    examplePaths: EXAMPLE_PATHS,
     exampleLoading: false,
     loadTimeout: null,
     exampleTimeout: null,
 
     /**
      * Toggles between different badge types
-     * @param {string} formType - Type of badge (contributors, sponsors, stargazers, forkers)
+     * @param {string} formType - Type of badge (contributors, sponsors, stargazers, watchers, forkers, followers)
      */
     toggleForm(formType) {
       this.currentForm = formType
@@ -45,7 +45,9 @@ function apiForm() {
      */
     submitForm() {
       // Validate required fields
-      const isValid = this.user && (this.currentForm === 'sponsors' || this.repo)
+      const isValid =
+        this.user &&
+        (this.currentForm === 'sponsors' || this.currentForm === 'followers' || this.repo)
 
       if (!isValid) {
         this.showError = true
@@ -185,8 +187,9 @@ function apiForm() {
       this.exampleLoading = true
 
       // Cycle through examples
-      this.exampleIndex = (this.exampleIndex + 1) % this.examples.length
-      const exampleUrl = this.examples[this.exampleIndex]
+      this.exampleIndex = (this.exampleIndex + 1) % this.examplePaths.length
+      const examplePath = this.examplePaths[this.exampleIndex]
+      const exampleUrl = buildFullUrl(examplePath)
 
       // Wait for Alpine to render the iframe (if first time)
       this.$nextTick(() => {
@@ -250,16 +253,16 @@ function apiForm() {
      * @returns {string} Complete badge URL
      */
     get generatedUrl() {
-      // Determine host (use production URL in development)
-      const host =
-        window.location.hostname === 'localhost' ? 'readme-contribs.as93.net' : window.location.host
+      // Use current host and protocol
+      const protocol = window.location.protocol
+      const host = window.location.host
 
       // Build base URL
       const sanitizedUser = this.user ? sanitizeForUrl(this.user) : '[username]'
-      let baseUrl = `https://${host}/${this.currentForm}/${sanitizedUser}`
+      let baseUrl = `${protocol}//${host}/${this.currentForm}/${sanitizedUser}`
 
-      // Add repository for non-sponsor badges
-      if (this.currentForm !== 'sponsors') {
+      // Add repository for badges that require it (not sponsors or followers)
+      if (this.currentForm !== 'sponsors' && this.currentForm !== 'followers') {
         const sanitizedRepo = this.repo ? sanitizeForUrl(this.repo) : '[repo]'
         baseUrl += `/${sanitizedRepo}`
       }

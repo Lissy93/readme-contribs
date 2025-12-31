@@ -16,7 +16,7 @@ describe('parseUrlOptions', () => {
       fontFamily: "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif",
       textColor: '333333',
       backgroundColor: 'transparent',
-      limit: 100,
+      limit: 96,
       outerBorderWidth: 0,
       outerBorderColor: '',
       outerBorderRadius: 0,

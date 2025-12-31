@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Readme-Contribs API
   description: >
-    Embeddable contributor, sponsor, stargazer, and forker widgets for GitHub READMEs.
+    Embeddable contributor, sponsor, stargazer, watcher, forker, and follower widgets for GitHub READMEs.
     <hr />
     <br />
     **Built By**
@@ -106,6 +106,35 @@ paths:
         404:
           description: Resource not found.
 
+  /watchers/{user}/{repo}:
+    get:
+      summary: Embed watchers widget
+      description: Retrieves an SVG image displaying watchers (subscribers) of a specified repository.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the repository owner.
+        - in: path
+          name: repo
+          required: true
+          schema:
+            type: string
+          description: GitHub repository name.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of watchers.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+
   /forkers/{user}/{repo}:
     get:
       summary: Embed forkers widget
@@ -127,6 +156,29 @@ paths:
       responses:
         200:
           description: SVG image of forkers.
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Resource not found.
+
+  /followers/{user}:
+    get:
+      summary: Embed followers widget
+      description: Retrieves an SVG image displaying followers of a specified GitHub user.
+      parameters:
+        - in: path
+          name: user
+          required: true
+          schema:
+            type: string
+          description: GitHub username of the user.
+        - $ref: '#/components/parameters/ImageOptions'
+      responses:
+        200:
+          description: SVG image of followers.
           content:
             image/svg+xml:
               schema:

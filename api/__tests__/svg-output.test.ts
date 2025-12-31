@@ -13,7 +13,7 @@ const defaultOptions: SvgOptions = {
   fontFamily: 'Arial',
   textColor: '333333',
   backgroundColor: 'transparent',
-  limit: 100,
+  limit: 96,
   outerBorderWidth: 0,
   outerBorderColor: '',
   outerBorderRadius: 0,

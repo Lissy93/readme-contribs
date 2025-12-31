@@ -5,7 +5,9 @@
 
 export {
   fetchContributors,
+  fetchFollowers,
   fetchForkers,
   fetchSponsors,
   fetchStargazers,
+  fetchWatchers,
 } from './lib/github-client'

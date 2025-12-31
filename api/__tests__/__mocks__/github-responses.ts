@@ -65,6 +65,22 @@ export const mockForksResponse = [
   },
 ]
 
+export const mockWatchersResponse = [
+  { login: 'alice', name: 'Alice Smith', avatar_url: 'https://avatars.githubusercontent.com/u/1' },
+  { login: 'bob', name: 'Bob Jones', avatar_url: 'https://avatars.githubusercontent.com/u/2' },
+  { login: 'charlie', name: '', avatar_url: 'https://avatars.githubusercontent.com/u/3' },
+]
+
+export const mockFollowersResponse = [
+  { login: 'alice', name: 'Alice Smith', avatar_url: 'https://avatars.githubusercontent.com/u/1' },
+  { login: 'bob', name: 'Bob Jones', avatar_url: 'https://avatars.githubusercontent.com/u/2' },
+  {
+    login: 'charlie',
+    name: 'Charlie Brown',
+    avatar_url: 'https://avatars.githubusercontent.com/u/3',
+  },
+]
+
 export const mockSponsorsGraphQLResponse = {
   data: {
     user: {

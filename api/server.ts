@@ -1,5 +1,12 @@
 import { Hono } from 'hono'
-import { fetchContributors, fetchForkers, fetchSponsors, fetchStargazers } from './fetch-users'
+import {
+  fetchContributors,
+  fetchFollowers,
+  fetchForkers,
+  fetchSponsors,
+  fetchStargazers,
+  fetchWatchers,
+} from './fetch-users'
 import { createUserRouteHandler } from './lib/route-handlers'
 
 // Platform-agnostic Hono app
@@ -59,6 +66,10 @@ app.get('/contributors/:owner/:repo', createUserRouteHandler(fetchContributors))
 
 app.get('/stargazers/:owner/:repo', createUserRouteHandler(fetchStargazers))
 
+app.get('/watchers/:owner/:repo', createUserRouteHandler(fetchWatchers))
+
 app.get('/forkers/:owner/:repo', createUserRouteHandler(fetchForkers))
+
+app.get('/followers/:author', createUserRouteHandler(fetchFollowers))
 
 export default app

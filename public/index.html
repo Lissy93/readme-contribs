@@ -144,6 +144,18 @@
           <li role="presentation">
             <button
               role="tab"
+              @click="toggleForm('watchers')"
+              :class="{'is-active': currentForm === 'watchers'}"
+              :aria-selected="currentForm === 'watchers'"
+              :tabindex="currentForm === 'watchers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              <span>Watchers</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
               @click="toggleForm('forkers')"
               :class="{'is-active': currentForm === 'forkers'}"
               :aria-selected="currentForm === 'forkers'"
@@ -151,6 +163,18 @@
               aria-controls="form-panel">
               <i class="fa-solid fa-code-fork" aria-hidden="true"></i>
               <span>Forkers</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('followers')"
+              :class="{'is-active': currentForm === 'followers'}"
+              :aria-selected="currentForm === 'followers'"
+              :tabindex="currentForm === 'followers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+              <span>Followers</span>
             </button>
           </li>
         </ul>
@@ -177,7 +201,7 @@
           </p>
         </div>
 
-        <div x-show="currentForm !== 'sponsors'" class="field">
+        <div x-show="currentForm !== 'sponsors' && currentForm !== 'followers'" class="field">
           <label class="label" for="repo">Repository <span class="required" aria-label="required">*</span></label>
           <div class="control">
             <input
@@ -186,12 +210,12 @@
               id="repo"
               x-model="repo"
               autocomplete="off"
-              :required="currentForm !== 'sponsors'"
-              :aria-required="currentForm !== 'sponsors'"
-              :aria-invalid="showError && currentForm !== 'sponsors' && !repo"
+              :required="currentForm !== 'sponsors' && currentForm !== 'followers'"
+              :aria-required="currentForm !== 'sponsors' && currentForm !== 'followers'"
+              :aria-invalid="showError && currentForm !== 'sponsors' && currentForm !== 'followers' && !repo"
               aria-describedby="repo-error">
           </div>
-          <p id="repo-error" class="help is-danger" x-show="showError && currentForm !== 'sponsors' && !repo">
+          <p id="repo-error" class="help is-danger" x-show="showError && currentForm !== 'sponsors' && currentForm !== 'followers' && !repo">
             Please enter a repository name
           </p>
         </div>

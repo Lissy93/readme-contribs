@@ -77,7 +77,7 @@ const fetchGraphQL = async <T>(query: string, variables?: Record<string, unknown
 export const fetchContributors = async (
   owner: string,
   repo: string,
-  limit = 100
+  limit = 96
 ): Promise<User[]> => {
   interface GitHubContributor {
     login: string
@@ -99,11 +99,7 @@ export const fetchContributors = async (
 /**
  * Fetches stargazers for a repository
  */
-export const fetchStargazers = async (
-  owner: string,
-  repo: string,
-  limit = 100
-): Promise<User[]> => {
+export const fetchStargazers = async (owner: string, repo: string, limit = 96): Promise<User[]> => {
   interface GitHubUser {
     login: string
     name: string
@@ -128,7 +124,7 @@ export const fetchStargazers = async (
 /**
  * Fetches forkers of a repository
  */
-export const fetchForkers = async (owner: string, repo: string, limit = 100): Promise<User[]> => {
+export const fetchForkers = async (owner: string, repo: string, limit = 96): Promise<User[]> => {
   interface GitHubFork {
     owner: {
       login: string
@@ -168,16 +164,16 @@ const fallbackFetchSponsors = async (author: string): Promise<User[]> => {
 /**
  * Fetches sponsors for a user using GraphQL API
  */
-export const fetchSponsors = async (username: string): Promise<User[]> => {
+export const fetchSponsors = async (username: string, limit = 96): Promise<User[]> => {
   // Use fallback if no token is available
   if (!process.env.GITHUB_TOKEN) {
     return fallbackFetchSponsors(username)
   }
 
   const query = `
-    query($username: String!) {
+    query($username: String!, $limit: Int!) {
       user(login: $username) {
-        sponsorshipsAsMaintainer(first: 100) {
+        sponsorshipsAsMaintainer(first: $limit) {
           edges {
             node {
               sponsorEntity {
@@ -222,7 +218,7 @@ export const fetchSponsors = async (username: string): Promise<User[]> => {
   }
 
   try {
-    const response = await fetchGraphQL<GraphQLResponse>(query, { username })
+    const response = await fetchGraphQL<GraphQLResponse>(query, { username, limit })
 
     if (!response.data.user) {
       throw new Error(`User ${username} not found or has no sponsors`)
@@ -247,6 +243,56 @@ export const fetchSponsors = async (username: string): Promise<User[]> => {
         throw error
       }
     }
+    throw error
+  }
+}
+
+/**
+ * Fetches watchers (subscribers) for a repository
+ */
+export const fetchWatchers = async (owner: string, repo: string, limit = 96): Promise<User[]> => {
+  interface GitHubUser {
+    login: string
+    name: string
+    avatar_url: string
+  }
+
+  try {
+    const endpoint = `/repos/${owner}/${repo}/subscribers?per_page=${limit}`
+    const watchers = await fetchFromGitHub<GitHubUser[]>(endpoint)
+
+    return watchers.map((user) => ({
+      login: user.login,
+      name: user.name || '',
+      avatarUrl: user.avatar_url,
+    }))
+  } catch (error) {
+    console.error(`Error fetching watchers: ${error}`)
+    throw error
+  }
+}
+
+/**
+ * Fetches followers for a user
+ */
+export const fetchFollowers = async (username: string, limit = 96): Promise<User[]> => {
+  interface GitHubUser {
+    login: string
+    name: string
+    avatar_url: string
+  }
+
+  try {
+    const endpoint = `/users/${username}/followers?per_page=${limit}`
+    const followers = await fetchFromGitHub<GitHubUser[]>(endpoint)
+
+    return followers.map((user) => ({
+      login: user.login,
+      name: user.name || '',
+      avatarUrl: user.avatar_url,
+    }))
+  } catch (error) {
+    console.error(`Error fetching followers: ${error}`)
     throw error
   }
 }

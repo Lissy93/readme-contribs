@@ -5,8 +5,10 @@ import {
   createMockImageResponse,
   createMockResponse,
   mockContributorsResponse,
+  mockFollowersResponse,
   mockSponsorsRESTResponse,
   mockStargazersResponse,
+  mockWatchersResponse,
 } from '../__mocks__/github-responses'
 
 describe('Integration: API Endpoints', () => {
@@ -161,6 +163,112 @@ describe('Integration: API Endpoints', () => {
   })
 
   // Note: Forkers endpoint is fully tested at unit level in fetch-users.test.ts
+
+  describe('GET /watchers/:owner/:repo', () => {
+    beforeEach(() => {
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
+        .mockResolvedValue(createMockImageResponse())
+    })
+
+    it('should return SVG with watchers', async () => {
+      const res = await app.request('/watchers/testowner/testrepo')
+
+      expect(res.status).toBe(200)
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      const svg = await res.text()
+      expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
+      expect(svg).toContain('alice')
+      expect(svg).toContain('bob')
+    })
+
+    it('should handle query parameters correctly', async () => {
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
+        .mockResolvedValue(createMockImageResponse())
+
+      const res = await app.request('/watchers/owner/repo?title=Watchers&shape=circle')
+
+      expect(res.status).toBe(200)
+      const svg = await res.text()
+      expect(svg).toContain('Watchers')
+      expect(svg).toContain('clip-path="inset(0% round 50%)"')
+    })
+
+    it('should use GITHUB_TOKEN when available', async () => {
+      vi.stubEnv('GITHUB_TOKEN', 'test_token')
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
+        .mockResolvedValue(createMockImageResponse())
+
+      await app.request('/watchers/owner/repo')
+
+      expect(fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          headers: { Authorization: 'token test_token' },
+        })
+      )
+    })
+  })
+
+  describe('GET /followers/:author', () => {
+    beforeEach(() => {
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
+        .mockResolvedValue(createMockImageResponse())
+    })
+
+    it('should return SVG with followers', async () => {
+      const res = await app.request('/followers/testuser')
+
+      expect(res.status).toBe(200)
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      const svg = await res.text()
+      expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
+      expect(svg).toContain('alice')
+      expect(svg).toContain('bob')
+    })
+
+    it('should handle query parameters correctly', async () => {
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
+        .mockResolvedValue(createMockImageResponse())
+
+      const res = await app.request('/followers/user?title=Followers&perRow=4')
+
+      expect(res.status).toBe(200)
+      const svg = await res.text()
+      expect(svg).toContain('Followers')
+    })
+
+    it('should use GITHUB_TOKEN when available', async () => {
+      vi.stubEnv('GITHUB_TOKEN', 'test_token')
+      vi.mocked(fetch)
+        .mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
+        .mockResolvedValue(createMockImageResponse())
+
+      await app.request('/followers/testuser')
+
+      expect(fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          headers: { Authorization: 'token test_token' },
+        })
+      )
+    })
+
+    it('should handle dynamic mode parameter', async () => {
+      const fetchSpy = vi.mocked(fetch)
+      fetchSpy.mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
+
+      const res = await app.request('/followers/user?dynamic=true')
+
+      expect(res.status).toBe(200)
+      // In dynamic mode, only GitHub API is called, not image fetches
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+    })
+  })
 
   describe('GET /sponsors/:author', () => {
     beforeEach(() => {

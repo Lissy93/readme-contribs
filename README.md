@@ -12,7 +12,6 @@
   <summary>Contents</summary>
 
 - [About](#about)
-   * [Motivation](#motivation)
 - [Usage](#usage)
    * [Embedding](#embedding)
    * [Base Domain](#base-domain)
@@ -36,13 +35,13 @@
 
 ## About
 
-### Motivation
-
 It's nice to give credit to contributors and supporters who've helped your project 💞
 
-But using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors or stargazers.
+This project gives you an easy way for you to embed your projects contributors, sponsors, stargazers, watchers, forkers, followers, etc, and to let you configure the look and feel. [↳ See Examples](#examples)
 
-My aim with this project, is to provide an easy way for you to embed your projects contributors, sponsors, stargazers, etc, and to let you configure the look and feel. You can also easily deploy this project to Vercel, so you'll never need to worry about the managed instance becoming unavailable. [↳ See Examples](#examples)
+I use this in all my projects, because using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors, stargazers etc.
+
+This app is also very easily self-hostable for free, either with 1-click deploy to Vercel or via Docker on any platform.
 
 ---
 
