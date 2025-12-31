@@ -21,6 +21,7 @@ if (typeof globalThis.Bun !== 'undefined') {
     app.use('/config.js', serveStatic({ path: './public/config.js' }))
     app.use('/icons.js', serveStatic({ path: './public/icons.js' }))
     app.use('/api.html', serveStatic({ path: './public/api.html' }))
+    app.use('/api-spec.yml', serveStatic({ path: './public/api-spec.yml' }))
     app.use('/api-docs', serveStatic({ path: './public/api.html' }))
   })
 }
