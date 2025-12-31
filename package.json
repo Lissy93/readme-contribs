@@ -1,7 +1,9 @@
 {
   "name": "readme-contribs",
   "scripts": {
-    "start": "vercel dev",
+    "dev": "bun run server.ts",
+    "dev:vercel": "vercel dev",
+    "start": "bun run server.ts",
     "deploy": "vercel",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -10,8 +12,8 @@
     "lint:fix": "biome lint --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "check": "biome check .",
-    "check:fix": "biome check --write ."
+    "quality": "biome check .",
+    "quality:fix": "biome check --write ."
   },
   "dependencies": {
     "hono": "^4.4.7"

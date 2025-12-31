@@ -1,4 +1,4 @@
-function _apiForm() {
+function apiForm() {
   return {
     currentForm: 'contributors',
     showAdvancedOptions: false,
