@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+.yarn
+
+# Development
+.vercel
+.vscode
+.idea
+
+# Environment
+.env
+.env.production
+
+# Testing & Coverage
+coverage
+*.test.ts
+**/__tests__
+
+# Build artifacts
+dist
+.cache
+
+# Logs
+logs
+*.log
+
+# OS
+.DS_Store
+.git
+.gitignore
+
+# Documentation
+README.md
+.github
+
+# Config files not needed in container
+.prettierrc
+.eslintrc*
+biome.json
+vitest.config.ts
+tsconfig.json

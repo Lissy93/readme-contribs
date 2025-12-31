@@ -24,6 +24,11 @@ if (typeof globalThis.Bun !== 'undefined') {
 }
 
 // API routes
+// Healthcheck endpoint
+app.get('/health', (c) => {
+  return c.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
 app.get('/', async (c) => {
   // In Bun, serve the index.html file
   // @ts-expect-error - Bun global is only available in Bun runtime

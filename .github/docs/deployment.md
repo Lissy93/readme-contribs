@@ -4,32 +4,19 @@ Getting this thing running locally or in production.
 
 ## Local Development
 
-### Bun (recommended)
+The dev server uses Bun, and it will serve the Hono API along with static files from `/public`.
+You can also use the Vercel CLI, with `yarn dev:vercel`, to test the edge function behaviour locally.
 
 ```bash
 yarn install
 yarn dev
 ```
 
-Opens on `http://localhost:8080` and serves the full web interface from `/public`.
+---
 
-### Vercel CLI
+## Production - Vercel
 
-If you want to test the edge function behaviour locally:
-
-```bash
-yarn dev:vercel
-```
-
-## Production
-
-### Vercel
-
-This is where we're currently deployed. Push to `main` and it auto-deploys, or:
-
-```bash
-yarn deploy
-```
+This is where we're currently deployed. Push to `main` and it auto-deploys, or run `yarn deploy`
 
 > [!TIP]
 > First time? `npm install -g vercel && vercel login`
@@ -49,27 +36,44 @@ graph LR
 
 The [`vercel.json`](https://github.com/Lissy93/readme-contribs/blob/main/vercel.json) config handles routing requests to the edge function and serving static files from `/public`.
 
-### Docker
+---
 
-For self-hosting or if you just want full control:
+## Production - Docker
 
-```dockerfile
-FROM oven/bun:1
-WORKDIR /app
-COPY package.json yarn.lock ./
-RUN bun install --frozen-lockfile
-COPY . .
-EXPOSE 8080
-CMD ["bun", "run", "start"]
-```
+#### Pre-built Image
 
 ```bash
-docker build -t readme-contribs .
-docker run -p 8080:8080 -e GITHUB_TOKEN=your_token readme-contribs
+docker run -p 8080:8080 -e GITHUB_TOKEN=your_token ghcr.io/lissy93/readme-contribs:latest
 ```
 
-> [!NOTE]
-> The Docker setup uses [`server.ts`](https://github.com/Lissy93/readme-contribs/blob/main/server.ts) which is a tiny Bun wrapper around the core app. Same code as Vercel, different runtime.
+Or, download the [`docker-compose.yml`](https://github.com/Lissy93/readme-contribs/blob/main/docker-compose.yml) and run `docker-compose up`
+
+#### Manual Docker
+
+You can build manually with:
+
+```bash
+# Build the image
+docker build -t readme-contribs .
+
+# Run the container
+docker run -d \
+  -p 8080:8080 \
+  -e GITHUB_TOKEN=your_token \
+  --name readme-contribs \
+  readme-contribs
+
+# Check logs
+docker logs -f readme-contribs
+```
+
+Commands:
+- Build - `docker build -t readme-contribs .`
+- Run - `docker run -d -p 8080:8080 --name readme-contribs readme-contribs`
+- Stop - `docker stop readme-contribs && docker rm readme-contribs`
+- Logs - `docker logs -f readme-contribs`
+- Start - `docker-compose up -d`
+- Stop - `docker-compose down`
 
 ## Environment Variables
 
@@ -108,9 +112,14 @@ This means we write the routes once and they work everywhere. Lovely.
 See [`package.json`](https://github.com/Lissy93/readme-contribs/blob/main/package.json) for the full list, but the important ones:
 
 ```bash
+# Development
 yarn dev              # Bun dev server
 yarn dev:vercel       # Vercel dev server
+
+# Deployment
 yarn deploy           # Ship it to Vercel
+
+# Testing & Quality
 yarn test             # Run the test suite
 yarn quality          # Lint + format checks
 yarn quality:fix      # Fix all the things
