@@ -170,7 +170,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
     `
 
       return `
-      <a xlink:href="${profileUrl}" target="_blank">
+      <a class="avatar-link" xlink:href="${profileUrl}" target="_blank">
         <image
           ${dynamic ? `href="${escapedAvatarUrl}"` : ''}
           xlink:href="${imageSrc}"
@@ -223,6 +223,17 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
+      <style>
+        .avatar-link {
+          transition: transform 0.25s ease-in-out;
+          transform-origin: center center;
+          transform-box: fill-box;
+          cursor: pointer;
+        }
+        .avatar-link:hover {
+          transform: scale(1.05);
+        }
+      </style>
       <rect
         width="100%" height="100%"
         fill="${parseColor(backgroundColor)}"
