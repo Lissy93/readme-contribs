@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
 import { fetchContributors, fetchForkers, fetchSponsors, fetchStargazers } from './fetch-users'
-import { createErrorSVG, createUserSVG } from './svg-output'
-import { parseUrlOptions, returnSvg } from './utilities'
+import { createUserRouteHandler } from './lib/route-handlers'
 
 // Platform-agnostic Hono app
 // Works with: Vercel Edge, Bun, Docker
@@ -50,71 +49,12 @@ app.get('/', async (c) => {
   )
 })
 
-app.get('/sponsors/:author', async (c) => {
-  const author = c.req.param('author')
-  const options = parseUrlOptions(c.req.query())
+app.get('/sponsors/:author', createUserRouteHandler(fetchSponsors))
 
-  return fetchSponsors(author)
-    .then(async (sponsors) => {
-      const svg = await createUserSVG(sponsors, options)
-      c.res.headers.set('Content-Type', 'image/svg+xml')
-      return c.body(svg)
-    })
-    .catch((error) => {
-      console.log(error)
-      return returnSvg(c, createErrorSVG(error, options), 500)
-    })
-})
+app.get('/contributors/:owner/:repo', createUserRouteHandler(fetchContributors))
 
-app.get('/contributors/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner')
-  const repo = c.req.param('repo')
-  const options = parseUrlOptions(c.req.query())
+app.get('/stargazers/:owner/:repo', createUserRouteHandler(fetchStargazers))
 
-  return fetchContributors(owner, repo, options.limit)
-    .then(async (contributors) => {
-      const svg = await createUserSVG(contributors, options)
-      c.res.headers.set('Content-Type', 'image/svg+xml')
-      return c.body(svg)
-    })
-    .catch((error) => {
-      console.log(error)
-      return returnSvg(c, createErrorSVG(error, options), 500)
-    })
-})
-
-app.get('/stargazers/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner')
-  const repo = c.req.param('repo')
-  const options = parseUrlOptions(c.req.query())
-
-  return fetchStargazers(owner, repo, options.limit)
-    .then(async (contributors) => {
-      const svg = await createUserSVG(contributors, options)
-      c.res.headers.set('Content-Type', 'image/svg+xml')
-      return c.body(svg)
-    })
-    .catch((error) => {
-      console.log(error)
-      return returnSvg(c, createErrorSVG(error, options), 500)
-    })
-})
-
-app.get('/forkers/:owner/:repo', async (c) => {
-  const owner = c.req.param('owner')
-  const repo = c.req.param('repo')
-  const options = parseUrlOptions(c.req.query())
-
-  return fetchForkers(owner, repo, options.limit)
-    .then(async (contributors) => {
-      const svg = await createUserSVG(contributors, options)
-      c.res.headers.set('Content-Type', 'image/svg+xml')
-      return c.body(svg)
-    })
-    .catch((error) => {
-      console.log(error)
-      return returnSvg(c, createErrorSVG(error, options), 500)
-    })
-})
+app.get('/forkers/:owner/:repo', createUserRouteHandler(fetchForkers))
 
 export default app

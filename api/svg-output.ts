@@ -1,7 +1,7 @@
 import type { SvgOptions, User } from './types'
 
 /**
- * Returns an SVG to display an error message
+ * Returns an SVG to display an error message with custom styling from options
  */
 export const createErrorSVG = (message: string, options: SvgOptions) => {
   const { fontSize, backgroundColor, fontFamily } = options

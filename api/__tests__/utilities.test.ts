@@ -22,8 +22,8 @@ describe('parseUrlOptions', () => {
       outerBorderRadius: 0,
       margin: 20,
       textOffset: 20,
-      svgWidth: NaN,
-      svgHeight: NaN,
+      svgWidth: 0,
+      svgHeight: 0,
       footerText: '',
       dynamic: false,
       isResponsive: false,
@@ -123,19 +123,17 @@ describe('parseUrlOptions', () => {
     expect(parseUrlOptions({ fontSize: '20' }).fontSize).toBe(20)
   })
 
-  it('should handle invalid number strings', () => {
+  it('should handle invalid number strings by returning defaults', () => {
     const result = parseUrlOptions({
       avatarSize: 'invalid',
       perRow: 'abc',
       fontSize: 'xyz',
     })
 
-    // parseInt('invalid') returns NaN, Math.max(30, NaN) returns NaN
-    expect(result.avatarSize).toBeNaN()
-    // Math.max(1, NaN) returns NaN
-    expect(result.perRow).toBeNaN()
-    // Math.max(10, NaN) returns NaN
-    expect(result.fontSize).toBeNaN()
+    // Invalid strings now return defaults instead of NaN
+    expect(result.avatarSize).toBe(50) // default
+    expect(result.perRow).toBe(8) // default
+    expect(result.fontSize).toBe(12) // default
   })
 
   it('should handle empty string values', () => {
@@ -175,7 +173,7 @@ describe('parseUrlOptions', () => {
 
     expect(result.title).toBe('Valid Title')
     expect(result.avatarSize).toBe(100)
-    expect(result.perRow).toBeNaN() // invalid → NaN
+    expect(result.perRow).toBe(8) // invalid → default
     expect(result.fontSize).toBe(20)
     expect(result.hideLabel).toBe(true)
     expect(result.shape).toBe('circle')
@@ -240,5 +238,35 @@ describe('returnSvg', () => {
 
     expect(result.content).toBe('')
     expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+  })
+
+  it('should add cache headers for successful responses', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg = '<svg>test</svg>'
+    returnSvg(mockContext, svg, 200)
+
+    expect(mockContext.res.headers.get('Cache-Control')).toBe(
+      'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400'
+    )
+  })
+
+  it('should not add cache headers for error responses', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg = '<svg>error</svg>'
+    returnSvg(mockContext, svg, 500)
+
+    expect(mockContext.res.headers.get('Cache-Control')).toBeUndefined()
   })
 })
