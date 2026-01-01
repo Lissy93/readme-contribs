@@ -297,4 +297,9 @@ components:
             type: boolean
             default: false
             description: Make the badge responsive (scales with container)
+          format:
+            type: string
+            enum: [svg, png]
+            default: svg
+            description: Output image format (SVG or PNG)
 

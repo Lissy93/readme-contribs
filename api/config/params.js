@@ -165,4 +165,12 @@ export default {
     label: 'Responsive',
     placeholder: 'true or false',
   },
+  format: {
+    type: 'enum',
+    values: ['svg', 'png'],
+    default: 'svg',
+    description: 'Output image format (SVG or PNG)',
+    label: 'Format',
+    placeholder: 'svg or png',
+  },
 }

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.6",
+    "@resvg/resvg-js": "^2.6.2",
     "hono": "^4.4.7",
     "zod": "^4.3.3"
   },

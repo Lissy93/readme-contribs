@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
 import { describe, expect, it, vi } from 'vitest'
-import { parseUrlOptions, returnSvg } from '../utilities'
+import { convertSvgToPng, parseUrlOptions, returnImage, returnSvg } from '../utilities'
 
 describe('parseUrlOptions', () => {
   it('should return default options when no query params provided', () => {
@@ -27,6 +27,7 @@ describe('parseUrlOptions', () => {
       footerText: '',
       dynamic: false,
       isResponsive: false,
+      format: 'svg',
     })
   })
 
@@ -100,6 +101,16 @@ describe('parseUrlOptions', () => {
     expect(parseUrlOptions({ shape: 'circle' }).shape).toBe('circle')
     expect(parseUrlOptions({ shape: 'square' }).shape).toBe('square')
     expect(parseUrlOptions({ shape: 'squircle' }).shape).toBe('squircle')
+  })
+
+  it('should parse format enum values', () => {
+    expect(parseUrlOptions({ format: 'svg' }).format).toBe('svg')
+    expect(parseUrlOptions({ format: 'png' }).format).toBe('png')
+  })
+
+  it('should default format to svg for invalid values', () => {
+    expect(parseUrlOptions({ format: 'invalid' }).format).toBe('svg')
+    expect(parseUrlOptions({ format: 'jpg' }).format).toBe('svg')
   })
 
   it('should enforce minimum avatarSize of 30', () => {
@@ -266,6 +277,109 @@ describe('returnSvg', () => {
 
     const svg = '<svg>error</svg>'
     returnSvg(mockContext, svg, 500)
+
+    expect(mockContext.res.headers.get('Cache-Control')).toBeUndefined()
+  })
+})
+
+describe('convertSvgToPng', () => {
+  it('should convert SVG to PNG buffer', () => {
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="red"/></svg>'
+    const pngBuffer = convertSvgToPng(svg)
+
+    expect(Buffer.isBuffer(pngBuffer)).toBe(true)
+    expect(pngBuffer.length).toBeGreaterThan(0)
+    // PNG files start with specific magic bytes
+    expect(pngBuffer[0]).toBe(0x89)
+    expect(pngBuffer[1]).toBe(0x50) // 'P'
+    expect(pngBuffer[2]).toBe(0x4e) // 'N'
+    expect(pngBuffer[3]).toBe(0x47) // 'G'
+  })
+
+  it('should handle simple SVG shapes', () => {
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><rect width="50" height="50" fill="blue"/></svg>'
+    const pngBuffer = convertSvgToPng(svg)
+
+    expect(Buffer.isBuffer(pngBuffer)).toBe(true)
+    expect(pngBuffer.length).toBeGreaterThan(0)
+  })
+})
+
+describe('returnImage', () => {
+  it('should return SVG when format is svg', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg = '<svg>test</svg>'
+    const result = returnImage(mockContext, svg, 'svg')
+
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(result).toEqual({ content: svg, status: 200 })
+  })
+
+  it('should return PNG when format is png', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="red"/></svg>'
+    const result = returnImage(mockContext, svg, 'png')
+
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/png')
+    expect(Buffer.isBuffer(result.content)).toBe(true)
+  })
+
+  it('should default to SVG when format is not specified', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg = '<svg>test</svg>'
+    const _result = returnImage(mockContext, svg)
+
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+  })
+
+  it('should add cache headers for PNG responses', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><rect width="50" height="50"/></svg>'
+    returnImage(mockContext, svg, 'png', 200)
+
+    expect(mockContext.res.headers.get('Cache-Control')).toBe(
+      'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400'
+    )
+  })
+
+  it('should not add cache headers for PNG error responses', () => {
+    const mockContext = {
+      res: {
+        headers: new Map(),
+      },
+      body: vi.fn((content, status) => ({ content, status })),
+    } as unknown as Context
+
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg">error</svg>'
+    returnImage(mockContext, svg, 'png', 500)
 
     expect(mockContext.res.headers.get('Cache-Control')).toBeUndefined()
   })

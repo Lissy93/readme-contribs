@@ -7,7 +7,7 @@ import type { Context } from 'hono'
 import { ZodError } from 'zod'
 import { createUserSVG } from '../svg-output'
 import type { SvgOptions, User } from '../types'
-import { returnSvg } from '../utilities'
+import { returnImage } from '../utilities'
 import { handleRouteError, ValidationError } from './errors'
 import { validateGitHubName } from './validation'
 
@@ -48,8 +48,8 @@ export const createUserRouteHandler = (fetcher: UserFetcher) => {
       // Generate SVG
       const svg = await createUserSVG(users, options)
 
-      // Return SVG with proper headers
-      return returnSvg(c, svg)
+      // Return image (SVG or PNG) with proper headers
+      return returnImage(c, svg, options.format)
     } catch (error) {
       // Handle Zod validation errors with helpful messages
       if (error instanceof ZodError) {
