@@ -7,8 +7,8 @@
 /* ===== CSS Custom Properties (Design Tokens) ===== */
 :root {
   /* Colors - Light mode */
-  --color-primary: hsl(217, 71%, 53%);
-  --color-primary-dark: hsl(217, 71%, 45%);
+  --color-primary: hsl(321.41deg 71.79% 55.8%);
+  --color-primary-dark: hsl(324.42deg 77.33% 62.73%);
   --color-link: hsl(229, 53%, 53%);
   --color-link-dark: hsl(229, 53%, 45%);
   --color-text: hsl(0, 0%, 20%);
@@ -16,7 +16,7 @@
   --color-text-muted: hsl(0, 0%, 60%);
   --color-bg: hsl(0, 0%, 100%);
   --color-bg-secondary: hsl(0, 0%, 96%);
-  --color-bg-dark: hsl(220, 13%, 7%);
+  --color-bg-dark: hsl(0deg 0% 89.62%);
   --color-border: hsl(0, 0%, 86%);
   --color-border-hover: hsl(0, 0%, 71%);
   --color-error: hsl(348, 100%, 61%);
@@ -267,6 +267,14 @@ hr {
   margin-top: var(--spacing-md);
   display: flex;
   justify-content: center;
+
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 6px;
+  max-width: 650px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .built-by-iframe {
@@ -1358,7 +1366,7 @@ input:checked + .slider::before {
   font-weight: 400;
   line-height: 1.4;
   margin: 0 0 var(--spacing-md) 0;
-  color: var(--color-text-light);
+  /* color: var(--color-text-light); */
   display: flex;
   justify-content: center;
   align-items: center;

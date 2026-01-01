@@ -1,5 +1,6 @@
 {
   "name": "readme-contribs",
+  "version": "1.0.0",
   "scripts": {
     "dev": "bun run server.ts",
     "dev:vercel": "vercel dev",
