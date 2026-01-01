@@ -287,42 +287,85 @@
       </form>
 
       <!-- Quick Guide Section -->
-      <details class="quick-guide">
-        <summary class="quick-guide-summary" aria-label="Toggle quick guide">
+      <details
+        class="quick-guide"
+        x-data="{
+          isOpen: false,
+          params: [],
+          async init() {
+            const response = await fetch('/api/params');
+            const config = await response.json();
+            this.params = Object.entries(config)
+              .filter(([key]) => !['dynamic', 'isResponsive', 'hideLabel'].includes(key))
+              .map(([_, p]) => ({ label: p.label, description: p.description || p.placeholder }));
+          }
+        }"
+        @toggle="isOpen = $el.open">
+        <summary class="quick-guide-summary" :class="{ 'is-open': isOpen }" aria-label="Toggle quick guide">
           <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
           <span>Quick Guide</span>
           <i class="fa-solid fa-angle-down quick-guide-arrow" aria-hidden="true"></i>
         </summary>
         <div class="quick-guide-content">
           <div class="quick-guide-grid">
-            <!-- What to Enter Section -->
-            <div class="guide-section">
-              <h3 class="guide-heading">What to Enter</h3>
-              <dl class="guide-list">
-                <dt>User</dt>
-                <dd>Your GitHub username (e.g., <code>octocat</code>)</dd>
-                <dt>Repo</dt>
-                <dd>Repository name (e.g., <code>hello-world</code>)</dd>
-              </dl>
+            <!-- Left Column -->
+            <div class="guide-column">
+              <!-- What to Enter Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">What to Enter</h3>
+                <dl class="guide-list">
+                  <dt>User</dt>
+                  <dd>Your GitHub username (e.g., <code>octocat</code>)</dd>
+                  <dt>Repo</dt>
+                  <dd>Repository name (e.g., <code>hello-world</code>)</dd>
+                </dl>
+              </div>
+
+              <!-- Badge Types Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Badge Types</h3>
+                <dl class="guide-list">
+                  <dt>Contributors</dt>
+                  <dd>People who have contributed code to the repository</dd>
+                  <dt>Sponsors</dt>
+                  <dd>Users or organizations financially supporting the author</dd>
+                  <dt>Stargazers</dt>
+                  <dd>Users who starred the repository</dd>
+                  <dt>Watchers</dt>
+                  <dd>Users subscribed to repository updates</dd>
+                  <dt>Forkers</dt>
+                  <dd>Users who forked the repository</dd>
+                  <dt>Followers</dt>
+                  <dd>Users following this GitHub account</dd>
+                </dl>
+              </div>
+
+              <!-- Advanced Options Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Advanced Options</h3>
+                <dl class="guide-list">
+                  <dt>Dynamic</dt>
+                  <dd>Load avatars directly from URLs (faster, for iframe use)</dd>
+                  <dt>Format</dt>
+                  <dd>Output as SVG (default) or PNG image</dd>
+                </dl>
+              </div>
             </div>
 
-            <!-- Badge Types Section -->
-            <div class="guide-section">
-              <h3 class="guide-heading">Badge Types</h3>
-              <dl class="guide-list">
-                <dt>Contributors</dt>
-                <dd>People who have contributed code to the repository</dd>
-                <dt>Sponsors</dt>
-                <dd>Users or organizations financially supporting the author</dd>
-                <dt>Stargazers</dt>
-                <dd>Users who starred the repository</dd>
-                <dt>Watchers</dt>
-                <dd>Users subscribed to repository updates</dd>
-                <dt>Forkers</dt>
-                <dd>Users who forked the repository</dd>
-                <dt>Followers</dt>
-                <dd>Users following this GitHub account</dd>
-              </dl>
+            <!-- Right Column -->
+            <div class="guide-column">
+              <!-- Parameters Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Parameters</h3>
+                <dl class="guide-list">
+                  <template x-for="param in params" :key="param.label">
+                    <div>
+                      <dt x-text="param.label"></dt>
+                      <dd x-text="param.description"></dd>
+                    </div>
+                  </template>
+                </dl>
+              </div>
             </div>
           </div>
         </div>

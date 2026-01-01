@@ -1,6 +1,23 @@
 {
   "name": "readme-contribs",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "GitHub README embed badges for contributors and sponsors",
+  "author": "Alicia Sykes <alicia@omg.com> (https://aliciasykes.com)",
+  "license": "MIT",
+  "homepage": "https://readme-contribs.as93.net/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lissy93/readme-contribs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lissy93/readme-contribs/issues"
+  },
+  "main": "./api/server.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": false,
   "scripts": {
     "dev": "bun run server.ts",
     "dev:vercel": "vercel dev",
