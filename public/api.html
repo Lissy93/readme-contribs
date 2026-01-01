@@ -16,34 +16,34 @@
 
   <!-- Icons and colors -->
   <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-  <link rel="stylesheet" href="styles.css">
 
-  <!-- Swagger crap -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.3/swagger-ui.css">
-  <link rel="stylesheet" href="https://rawcdn.githack.com/Amoenus/SwaggerDark/2064ccd45b571865a64c731fa6bfddfbf2a01fe1/SwaggerDark.css">
+  <!-- Analytics -->
+  <script defer data-domain="readme-contribs.as93.net" src="https://no-track.as93.net/js/script.js"></script>
+
 </head>
 <body>
 
-  <div id="swagger-ui"></div>
+  <div id="rc-api-reference"></div>
 
-  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.3/swagger-ui-bundle.js"></script>
-  <script is:inline>
-    function initializeSwagger() {
-      SwaggerUIBundle({
-        url: '/api-spec.yml',
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIBundle.SwaggerUIStandalonePreset
-        ],
-      });
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  <script>
+    function initializeScalar() {
+      Scalar.createApiReference('#rc-api-reference', {
+        url: 'api-spec.yml',
+        proxyUrl: 'https://proxy.scalar.com',
+        darkMode: true,
+        layout: 'modern',
+        showSidebar: true,
+        theme: 'kepler',
+        customCss: '',
+      })
     }
-    // Initialize Swagger when visiting page directly
-    document.addEventListener('DOMContentLoaded', initializeSwagger);
-    // Initialize Swagger when navigating to page from another page
+    
+    // Initialize Scalar when visiting page directly
+    document.addEventListener('DOMContentLoaded', initializeScalar);
+    // Initialize Scalar when navigating to page from another page
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      initializeSwagger();
+      initializeScalar();
     }
   </script>
 </body>

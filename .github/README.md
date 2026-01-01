@@ -12,7 +12,6 @@
   <summary>Contents</summary>
 
 - [About](#about)
-   * [Motivation](#motivation)
 - [Usage](#usage)
    * [Embedding](#embedding)
    * [Base Domain](#base-domain)
@@ -20,6 +19,8 @@
    * [Embed Sponsors](#embed-sponsors)
    * [Embed Stargazers](#embed-stargazers)
    * [Embed Forkers](#embed-forkers)
+   * [Embed Watchers](#embed-watchers)
+   * [Embed Followers](#embed-followers)
    * [Image Options](#image-options)
 - [Deploying your Own](#deploying-your-own)
 - [Developing](#developing)
@@ -36,13 +37,13 @@
 
 ## About
 
-### Motivation
-
 It's nice to give credit to contributors and supporters who've helped your project 💞
 
-But using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors or stargazers.
+This project gives you an easy way for you to embed your projects contributors, sponsors, stargazers, watchers, forkers, followers, etc, and to let you configure the look and feel. [↳ See Examples](#examples)
 
-My aim with this project, is to provide an easy way for you to embed your projects contributors, sponsors, stargazers, etc, and to let you configure the look and feel. You can also easily deploy this project to Vercel, so you'll never need to worry about the managed instance becoming unavailable. [↳ See Examples](#examples)
+I use this in all my projects, because using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors, stargazers etc.
+
+This app is also very easily self-hostable for free, either with 1-click deploy to Vercel or via Docker on any platform.
 
 ---
 
@@ -85,7 +86,21 @@ If you're hosting your own instance, update this to your domain.<br />
 ### Embed Forkers
 
 ```
-/sponsors/[user]/[repo]
+/forkers/[user]/[repo]
+```
+
+
+### Embed Watchers
+
+```
+/watchers/[user]/[repo]
+```
+
+
+### Embed Followers
+
+```
+/followers/[user]
 ```
 
 ### Image Options
@@ -131,6 +146,16 @@ Don't worry, it's super quick, easy and free!
 4. Create a GitHub API token [here](https://github.com/settings/tokens?type=beta)
 5. Add the `GITHUB_TOKEN` environmental variable into Vercel
 6. Hit deploy!
+
+### One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FLissy93%2Freadme-contribs&project-name=readme-contribs&repository-name=readme-contribs&env=GITHUB_TOKEN&demo-title=Readme%20Contribs&demo-description=Simple%20embeddable%20contributor%20and%20sponsor%20widgets%20for%20your%20GitHub%20README&demo-url=https%3A%2F%2Freadme-contribs.as93.net&demo-image=https%3A%2F%2Fgithub.com%2FLissy93%2Freadme-contribs%2Fblob%2Fmain%2Fpublic%2Ffavicon.png%3Fraw%3Dtrue)
+
+### Deploy with Docker
+
+```bash
+docker run -p 8080:8080 -e GITHUB_TOKEN=your_token ghcr.io/lissy93/readme-contribs:latest
+```
 
 ---
 
@@ -205,7 +230,7 @@ Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get start
 
 ## License
 
-> _**[Lissy93/README-Contribs](https://github.com/Lissy93/readme-contribs)** is licensed under [MIT](https://github.com/Lissy93/readme-contribs/blob/HEAD/LICENSE) © [Alicia Sykes](https://aliciasykes.com) 2024._<br>
+> _**[Lissy93/README-Contribs](https://github.com/Lissy93/readme-contribs)** is licensed under [MIT](https://github.com/Lissy93/readme-contribs/blob/HEAD/LICENSE) © [Alicia Sykes](https://aliciasykes.com) 2026._<br>
 > <sup align="right">For information, see <a href="https://tldrlegal.com/license/mit-license">TLDR Legal > MIT</a></sup>
 
 <details>
@@ -237,7 +262,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <!-- License + Copyright -->
 <p  align="center">
-  <i>© <a href="https://aliciasykes.com">Alicia Sykes</a> 2024</i><br>
+  <i>© <a href="https://aliciasykes.com">Alicia Sykes</a> 2026</i><br>
   <i>Licensed under <a href="https://gist.github.com/Lissy93/143d2ee01ccc5c052a17">MIT</a></i><br>
   <a href="https://github.com/lissy93"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" /></a><br>
   <sup>Thanks for visiting :)</sup>

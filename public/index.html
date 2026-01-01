@@ -3,215 +3,621 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Readme-Contrib</title>
+  <title>Readme Contribs - Credit Your Supporters</title>
 
+  <!-- SEO Meta Tags -->
   <meta name="description" content="Give credit to your supporters 💗 - Simple embeddable contributor and sponsor widgets for your GitHub README">
-  <meta name="keywords" content="github.readme,embed,sponsors,contributors,stargazers,svg,png,attributions,widget">
+  <meta name="keywords" content="github,readme,embed,sponsors,contributors,stargazers,svg,widget,badge">
   <meta name="author" content="Alicia Sykes">
-
-  <!-- Page info, viewport, Astro credit -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://readme-contribs.as93.net">
 
-  <!-- Icons and colors -->
-  <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="/favicon.png">
 
-  <!-- Social media meta tags (Open Graphh + Twitter) -->
+  <!-- Open Graph Meta Tags -->
   <meta property="og:site_name" content="Readme Contribs">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://readme-contribs.as93.net">
-  <meta property="og:title" content="Readme Contribs - Credit your supporters">
+  <meta property="og:title" content="Readme Contribs - Credit Your Supporters">
   <meta property="og:description" content="Give credit to your supporters 💗 - Simple embeddable contributor and sponsor widgets for your GitHub README">
-  <meta property="og:image" content="/screenshot.png">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://readme-contribs.as93.net/screenshot.png">
+
+  <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://readme-contribs.as93.net">
-  <meta name="twitter:title" content="Readme Contrib - Credit your supporters">
+  <meta name="twitter:title" content="Readme Contribs - Credit Your Supporters">
   <meta name="twitter:description" content="Give credit to your supporters 💗 - Simple embeddable contributor and sponsor widgets for your GitHub README">
-  <meta name="twitter:image" content="/screenshot.png">
-  <link rel="twitter:image" sizes="180x180" href="/favicon.png">
-  <meta name="twitter:creator" content="Lissy_Sykes">
+  <meta name="twitter:image" content="https://readme-contribs.as93.net/screenshot.png">
+  <meta name="twitter:creator" content="@Lissy_Sykes">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <script src="//unpkg.com/alpinejs" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Readme Contribs",
+    "description": "Simple embeddable contributor and sponsor widgets for your GitHub README",
+    "url": "https://readme-contribs.as93.net",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Alicia Sykes",
+      "url": "https://aliciasykes.com"
+    }
+  }
+  </script>
+
+  <!-- Resource hints for performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Analytics -->
+  <script defer data-domain="readme-contribs.as93.net" src="https://no-track.as93.net/js/script.js"></script>
+
 </head>
 <body x-data="apiForm()">
+  <!-- Skip to main content link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <div class="hero is-primary">
+  <!-- Hero Header -->
+  <header role="banner" class="hero is-primary">
+    <a href="https://github.com/lissy93/readme-contribs"
+       class="hero-github-link"
+       aria-label="View source code on GitHub">
+      <i class="fa-brands fa-github" aria-hidden="true"></i>
+      <span>GitHub</span>
+    </a>
     <div class="hero-body">
-      <p class="title">Readme Contribs</p>
-      <p class="subtitle">Give credit to your supporters <i class="fas fa-heart"></i></p>
-      <i>Simple embeddable contributor and sponsor widgets for your GitHub README</i>
-      <br />
-      <a href="https://github.com/lissy93/readme-contribs">
-        <button class="button is-large is-responsive is-link is-outline mt-4">
-          <i class="fa-brands fa-github-alt"></i>
-          GitHub
-        </button>
-      </a>
-      <br />
-      <iframe class="built-by-iframe"
-      scrolling="no"
-      src="https://readme-contribs.as93.net/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true"></iframe>
-    </div>
-  </div>
-
-  <section class="input-section">
-    <div class="tabs is-toggle is-toggle-rounded">
-      <ul>
-        <li @click="toggleForm('contributors')" :class="{'is-active': currentForm === 'contributors'}">
-          <a>
-            <span><i class="fa-solid fa-users"></i> Contributors</span>
-          </a>
-        </li>
-        <li @click="toggleForm('sponsors')" :class="{'is-active': currentForm === 'sponsors'}">
-          <a>
-            <span><i class="fa-solid fa-hand-holding-dollar"></i> Sponsors</span>
-          </a>
-        </li>
-        <li @click="toggleForm('stargazers')" :class="{'is-active': currentForm === 'stargazers'}">
-          <a>
-            <span><i class="fa-solid fa-star"></i> Stargazers</span>
-          </a>
-        </li>
-        <li @click="toggleForm('forkers')" :class="{'is-active': currentForm === 'forkers'}">
-          <a>
-            <span><i class="fa-solid fa-code-fork"></i> Forkers</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <form @submit.prevent="submitForm">
-      <div class="field">
-        <label class="label" for="user">GitHub User:</label>
-        <div class="control">
-          <input class="input" type="text" id="user" x-model="user" autocomplete="off" required>
-        </div>
+      <h1 class="title">Readme Contribs</h1>
+      <p class="subtitle">
+        Give credit to your supporters
+        <i class="fas fa-heart" aria-hidden="true"></i>
+      </p>
+      <p class="hero-description">
+        Simple embeddable contributor and sponsor widgets for your GitHub README
+      </p>
+      <div class="built-by-container">
+        <iframe
+          class="built-by-iframe"
+          title="Project sponsors"
+          scrolling="no"
+          loading="lazy"
+          src="https://readme-contribs.as93.net/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true">
+        </iframe>
       </div>
+    </div>
+  </header>
 
-      <div x-show="currentForm != 'sponsors'" class="field">
-        <label class="label" for="repo">Repository:</label>
-        <div class="control">
-          <input class="input" type="text" id="repo" x-model="repo" autocomplete="off" required>
+  <!-- Main Content -->
+  <main id="main-content" role="main">
+
+    <!-- Badge Generator Section -->
+    <section class="input-section card" aria-labelledby="generator-heading">
+      <h2 id="generator-heading" class="is-sr-only">Badge Generator</h2>
+
+      <!-- Type Selection Tabs -->
+      <nav role="tablist" class="tabs is-toggle is-toggle-rounded" aria-label="Badge type selection">
+        <ul>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('contributors')"
+              :class="{'is-active': currentForm === 'contributors'}"
+              :aria-selected="currentForm === 'contributors'"
+              :tabindex="currentForm === 'contributors' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              <span>Contributors</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('sponsors')"
+              :class="{'is-active': currentForm === 'sponsors'}"
+              :aria-selected="currentForm === 'sponsors'"
+              :tabindex="currentForm === 'sponsors' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>
+              <span>Sponsors</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('stargazers')"
+              :class="{'is-active': currentForm === 'stargazers'}"
+              :aria-selected="currentForm === 'stargazers'"
+              :tabindex="currentForm === 'stargazers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <span>Stargazers</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('watchers')"
+              :class="{'is-active': currentForm === 'watchers'}"
+              :aria-selected="currentForm === 'watchers'"
+              :tabindex="currentForm === 'watchers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              <span>Watchers</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('forkers')"
+              :class="{'is-active': currentForm === 'forkers'}"
+              :aria-selected="currentForm === 'forkers'"
+              :tabindex="currentForm === 'forkers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-code-fork" aria-hidden="true"></i>
+              <span>Forkers</span>
+            </button>
+          </li>
+          <li role="presentation">
+            <button
+              role="tab"
+              @click="toggleForm('followers')"
+              :class="{'is-active': currentForm === 'followers'}"
+              :aria-selected="currentForm === 'followers'"
+              :tabindex="currentForm === 'followers' ? 0 : -1"
+              aria-controls="form-panel">
+              <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+              <span>Followers</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Form Panel -->
+      <form @submit.prevent="submitForm" id="form-panel" role="tabpanel" aria-live="polite">
+        <div class="field">
+          <label class="label" for="user">GitHub User <span class="required" aria-label="required">*</span></label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              id="user"
+              x-model="user"
+              autocomplete="off"
+              required
+              aria-required="true"
+              :aria-invalid="showError && !user"
+              aria-describedby="user-error">
+          </div>
+          <p id="user-error" class="help is-danger" x-show="showError && !user">
+            Please enter a GitHub username
+          </p>
         </div>
-      </div>
 
-      <div x-show="showAdvancedOptions" x-transition>
-        <template x-for="(option, index) in options" :key="index">
-          <div class="field">
-            <label class="label" x-text="option.label + ':'"></label>
-            <div class="control">
-              <input class="input" type="text" :id="option.name" :placeholder="option.placeholder" x-model="option.value">
+        <div x-show="currentForm !== 'sponsors' && currentForm !== 'followers'" class="field">
+          <label class="label" for="repo">Repository <span class="required" aria-label="required">*</span></label>
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              id="repo"
+              x-model="repo"
+              autocomplete="off"
+              :required="currentForm !== 'sponsors' && currentForm !== 'followers'"
+              :aria-required="currentForm !== 'sponsors' && currentForm !== 'followers'"
+              :aria-invalid="showError && currentForm !== 'sponsors' && currentForm !== 'followers' && !repo"
+              aria-describedby="repo-error">
+          </div>
+          <p id="repo-error" class="help is-danger" x-show="showError && currentForm !== 'sponsors' && currentForm !== 'followers' && !repo">
+            Please enter a repository name
+          </p>
+        </div>
+
+        <div class="form-actions">
+          <details x-bind:open="showAdvancedOptions" @toggle="showAdvancedOptions = $event.target.open">
+            <summary class="button is-primary is-outlined">
+              <i class="fas fa-gear" aria-hidden="true"></i>
+              <span>Advanced Configuration</span>
+            </summary>
+            <div class="advanced-options">
+              <template x-for="(option, index) in options" :key="index">
+                <div class="field">
+                  <label class="label" :for="option.name" x-text="option.label"></label>
+                  <div class="control">
+                    <!-- Number input with min/max validation -->
+                    <template x-if="option.type === 'number'">
+                      <input
+                        class="input"
+                        type="number"
+                        :id="option.name"
+                        :placeholder="option.placeholder"
+                        :min="option.min"
+                        :max="option.max"
+                        :step="1"
+                        x-model="option.value"
+                        :aria-label="option.label">
+                    </template>
+
+                    <!-- Enum select dropdown -->
+                    <template x-if="option.type === 'enum'">
+                      <div class="select">
+                        <select
+                          :id="option.name"
+                          x-model="option.value"
+                          :aria-label="option.label">
+                          <option value="">-- Select --</option>
+                          <template x-for="enumValue in option.values" :key="enumValue">
+                            <option :value="enumValue" x-text="enumValue"></option>
+                          </template>
+                        </select>
+                      </div>
+                    </template>
+
+                    <!-- String input (default) -->
+                    <template x-if="option.type === 'string' || !option.type">
+                      <input
+                        class="input"
+                        type="text"
+                        :id="option.name"
+                        :placeholder="option.placeholder"
+                        x-model="option.value"
+                        :aria-label="option.label">
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </details>
+
+          <button class="button is-primary" type="submit" :disabled="loading" aria-live="polite">
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+            <span x-text="loading ? 'Generating...' : 'Show Results'"></span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Quick Guide Section -->
+      <details
+        class="quick-guide"
+        x-data="{
+          isOpen: false,
+          params: [],
+          async init() {
+            const response = await fetch('/api/params');
+            const config = await response.json();
+            this.params = Object.entries(config)
+              .filter(([key]) => !['dynamic', 'isResponsive', 'hideLabel'].includes(key))
+              .map(([_, p]) => ({ label: p.label, description: p.description || p.placeholder }));
+          }
+        }"
+        @toggle="isOpen = $el.open">
+        <summary class="quick-guide-summary" :class="{ 'is-open': isOpen }" aria-label="Toggle quick guide">
+          <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+          <span>Quick Guide</span>
+          <i class="fa-solid fa-angle-down quick-guide-arrow" aria-hidden="true"></i>
+        </summary>
+        <div class="quick-guide-content">
+          <div class="quick-guide-grid">
+            <!-- Left Column -->
+            <div class="guide-column">
+              <!-- What to Enter Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">What to Enter</h3>
+                <dl class="guide-list">
+                  <dt>User</dt>
+                  <dd>Your GitHub username (e.g., <code>octocat</code>)</dd>
+                  <dt>Repo</dt>
+                  <dd>Repository name (e.g., <code>hello-world</code>)</dd>
+                </dl>
+              </div>
+
+              <!-- Badge Types Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Badge Types</h3>
+                <dl class="guide-list">
+                  <dt>Contributors</dt>
+                  <dd>People who have contributed code to the repository</dd>
+                  <dt>Sponsors</dt>
+                  <dd>Users or organizations financially supporting the author</dd>
+                  <dt>Stargazers</dt>
+                  <dd>Users who starred the repository</dd>
+                  <dt>Watchers</dt>
+                  <dd>Users subscribed to repository updates</dd>
+                  <dt>Forkers</dt>
+                  <dd>Users who forked the repository</dd>
+                  <dt>Followers</dt>
+                  <dd>Users following this GitHub account</dd>
+                </dl>
+              </div>
+
+              <!-- Advanced Options Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Advanced Options</h3>
+                <dl class="guide-list">
+                  <dt>Dynamic</dt>
+                  <dd>Load avatars directly from URLs (faster, for iframe use)</dd>
+                  <dt>Format</dt>
+                  <dd>Output as SVG (default) or PNG image</dd>
+                </dl>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="guide-column">
+              <!-- Parameters Section -->
+              <div class="guide-section">
+                <h3 class="guide-heading">Parameters</h3>
+                <dl class="guide-list">
+                  <template x-for="param in params" :key="param.label">
+                    <div>
+                      <dt x-text="param.label"></dt>
+                      <dd x-text="param.description"></dd>
+                    </div>
+                  </template>
+                </dl>
+              </div>
             </div>
           </div>
-        </template>
-      </div>
-
-      <p x-show="showError" class="has-text-danger has-text-centered">Don't forget to complete the required fields!</p>
-
-      <div class="columns is-flex mt-4" style="justify-content: space-between; align-items: center;">
-        <div class="column is-narrow">
-          <button class="button is-primary" type="submit" @click="submitForm()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            Show Results
-          </button>
         </div>
-        <div class="column is-narrow">
-          <button class="button is-primary is-outlined" type="button" @click="showAdvancedOptions = !showAdvancedOptions">
-            <i class="fas fa-gear"></i>
-            Advanced Configuration
-          </button>
-        </div>
-      </div>
-    </form>
-  </section>
+      </details>
+    </section>
 
-  <section>
-    <div x-data="{ open: false, format: 'Markdown' }" class="url-container">
-      <!-- Show URL to image -->
-      <div class="snippet">
-        <pre x-text="generateSnippet(format)"></pre>
-        <span class="tag is-link is-normal copy-button" @click="copyToClipboard(generateSnippet(format))">
-          <i class="fa-solid fa-copy"></i>
-          Copy
-        </span>
-      </div>
-
-      <!-- Choose URL format -->
-      <div class="format-chooser">
-        <span>Format</span>
-        <div @click.away="open = false" class="dropdown" :class="{'is-active': open}">
-          <div class="dropdown-trigger">
-            <button class="button" @click="open = !open" aria-haspopup="true" aria-controls="dropdown-menu">
-              <span x-text="format"></span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
+    <!-- Code Snippet Section -->
+    <section aria-labelledby="snippet-heading">
+      <h2 id="snippet-heading" class="is-sr-only">Code Snippet</h2>
+      <div x-data="{ open: false, format: 'Markdown' }" class="snippet-card">
+        <!-- Controls Header -->
+        <div class="snippet-controls">
+          <span class="snippet-label">Code Snippet</span>
+          <div class="snippet-actions">
+            <!-- Format Dropdown -->
+            <div @click.away="open = false" class="dropdown dropdown-compact" :class="{'is-active': open}">
+              <div class="dropdown-trigger">
+                <button
+                  type="button"
+                  class="button is-small"
+                  @click="open = !open"
+                  aria-haspopup="true"
+                  aria-controls="dropdown-menu"
+                  :aria-expanded="open"
+                  id="format-dropdown">
+                  <span x-text="format"></span>
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                <div class="dropdown-content">
+                  <button type="button" @click="format = 'Markdown'; open = false" class="dropdown-item" role="menuitem">Markdown</button>
+                  <button type="button" @click="format = 'HTML Image'; open = false" class="dropdown-item" role="menuitem">HTML Image</button>
+                  <button type="button" @click="format = 'HTML Embed'; open = false" class="dropdown-item" role="menuitem">HTML Embed</button>
+                  <button type="button" @click="format = 'BB Code'; open = false" class="dropdown-item" role="menuitem">BB Code</button>
+                  <hr class="dropdown-divider" role="separator">
+                  <button type="button" @click="format = 'Direct Link'; open = false" class="dropdown-item" role="menuitem">Direct Link</button>
+                </div>
+              </div>
+            </div>
+            <!-- Copy Button -->
+            <button
+              type="button"
+              class="button is-small is-primary"
+              @click="copyToClipboard(generateSnippet(format))"
+              aria-label="Copy code snippet to clipboard">
+              <i class="fa-solid fa-copy" aria-hidden="true"></i>
+              <span>Copy</span>
             </button>
           </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <a @click="format = 'Markdown'; open = false" class="dropdown-item">Markdown</a>
-              <a @click="format = 'HTML Image'; open = false" class="dropdown-item">HTML Image</a>
-              <a @click="format = 'HTML Embed'; open = false" class="dropdown-item">HTML Embed</a>
-              <a @click="format = 'BB Code'; open = false" class="dropdown-item">BB Code</a>
-              <hr class="dropdown-divider" />
-              <a @click="format = 'Direct Link'; open = false" class="dropdown-item">Direct Link</a>
+        </div>
+        <!-- Code Display -->
+        <div class="snippet-content">
+          <pre x-text="generateSnippet(format)" aria-label="Generated code snippet"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section x-show="showResults" x-transition class="output-image card" aria-labelledby="preview-heading">
+      <h2 id="preview-heading" class="title is-3">Preview</h2>
+      <div x-show="loading" class="loading-container" role="status" aria-live="polite">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="loading-text">
+          <span class="loading-dots">Building your badge</span>
+        </p>
+      </div>
+      <div class="switch-container">
+        <span :class="{'is-link': !outputMode}" @click="outputMode = false">Static</span>
+        <label class="switch">
+          <input type="checkbox" x-model="outputMode" aria-label="Toggle between static and dynamic mode">
+          <span class="slider round" aria-hidden="true"></span>
+        </label>
+        <span :class="{'is-link': outputMode}" @click="outputMode = true">Dynamic</span>
+      </div>
+      <img
+        :src="!outputMode ? imageUrl : ''"
+        :alt="`${currentForm} badge preview`"
+        @load="handleLoadSuccess"
+        @error="handleLoadError"
+        x-show="!loading && !outputMode">
+      <iframe
+        :src="outputMode ? imageUrl : ''"
+        :title="`${currentForm} badge preview (dynamic)`"
+        style="width: 100%; height: 300px; border: none;"
+        @load="handleLoadSuccess"
+        @error="handleLoadError"
+        x-show="!loading && outputMode">
+      </iframe>
+    </section>
+
+    <hr>
+
+    <!-- Examples Section -->
+    <section aria-labelledby="examples-heading">
+      <div class="card">
+        <h2 id="examples-heading" class="title is-3">Examples</h2>
+        <p class="subtitle">Want to get an idea of what readme-contribs can do? Generate some examples!</p>
+        <div class="has-text-centered">
+          <button
+            type="button"
+            @click="showExample"
+            class="button is-link"
+            aria-label="Generate a random example badge">
+            <i class="fa-solid fa-dice" aria-hidden="true"></i>
+            <span>Generate an Example</span>
+          </button>
+        </div>
+        <div x-show="exampleLoading" class="example-loading active" role="status" aria-live="polite">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p class="loading-text">
+            <span class="loading-dots">Loading example</span>
+          </p>
+        </div>
+        <div x-show="exampleIndex >= 0" class="example-grid">
+          <iframe title="Example badge" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Deployment Section -->
+    <section aria-labelledby="deploy-heading">
+      <div class="card">
+        <h2 id="deploy-heading" class="title is-3">Self-Hosting</h2>
+        <p class="deploy-intro">
+          You can use our managed instance here for free, forever. But if you plan to use at any scale,
+          it's highly recommended to deploy your own version of readme-contribs for ultimate control,
+          flexibility and uptime.
+          Don't worry, it's quick, free and easy :)
+        </p>
+
+        <div class="deploy-options">
+          <!-- Option 1: Vercel -->
+          <div class="deploy-option">
+            <h3 class="deploy-option-title">
+              <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+              Option 1: Deploy to Vercel
+            </h3>
+            <a
+              href="https://vercel.com/new/clone?repository-url=https://github.com/lissy93/readme-contribs"
+              class="button is-primary is-medium"
+              rel="noopener noreferrer"
+              target="_blank"
+              aria-label="Deploy readme-contribs to Vercel with one click">
+              <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+              <span>1-Click Deploy</span>
+            </a>
+            <p class="deploy-option-hint">
+              Or, <a href="https://github.com/lissy93/readme-contribs/fork" rel="noopener noreferrer" target="_blank">fork our repo</a>,
+              then login to Vercel and import it.
+            </p>
+            <p class="deploy-option-hint overline">
+              <strong>Tip</strong>: Set the Environment Variable <code>GITHUB_TOKEN</code> in Vercel to avoid rate limits!
+              Generate this in your <a href="https://github.com/settings/personal-access-tokens/new" rel="noopener noreferrer" target="_blank">GitHub Developer Settings</a>.
+            </p>
+          </div>
+
+          <!-- Option 2: Docker -->
+          <div class="deploy-option">
+            <h3 class="deploy-option-title">
+              <i class="fa-brands fa-docker" aria-hidden="true"></i>
+              Option 2: Deploy with Docker
+            </h3>
+            <div x-data="{ dockerCopied: false }" class="code-block">
+              <pre><code>docker run -d \
+  -p 8080:8080 \
+  -e GITHUB_TOKEN=your_token \
+  ghcr.io/lissy93/readme-contribs:latest</code></pre>
+              <button
+                type="button"
+                class="code-copy-btn"
+                @click="navigator.clipboard.writeText('docker run -p 8080:8080 -e GITHUB_TOKEN=your_token ghcr.io/lissy93/readme-contribs:latest'); dockerCopied = true; setTimeout(() => dockerCopied = false, 2000)"
+                :aria-label="dockerCopied ? 'Copied!' : 'Copy Docker command'"
+                x-text="dockerCopied ? 'Copied!' : 'Copy'">
+                Copy
+              </button>
             </div>
+            <p class="deploy-option-hint">
+              Or use our
+              <a href="https://github.com/Lissy93/readme-contribs/blob/main/docker-compose.yml" rel="noopener noreferrer" target="_blank">
+                <code>docker-compose.yml</code>
+              </a>
+              as a template
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section x-show="showResults" x-transition class="output-image">
-    <h2 class="title is-3">Preview</h2>
-    <div x-show="loading">
-      <p class="has-text-centered">Building your Badge <i class="fa-solid fa-gears"></i></p>
-      <progress class="progress is-small is-primary" max="100">15%</progress>
-    </div>
-    <div class="switch-container">
-      <span :class="{'is-link': !outputMode}" @click="outputMode = false">Static</span>
-      <label class="switch">
-        <input type="checkbox" x-model="outputMode">
-        <span class="slider round"></span>
-      </label>
-      <span :class="{'is-link': outputMode}" @click="outputMode = true">Dynamic</span>
-    </div>
-    <template x-if="!outputMode">
-      <img :src="imageUrl" :alt="currentForm" @load="loading = false" @error="loading = false" x-show="!loading">
-    </template>
-    <template x-if="outputMode">
-      <iframe :src="imageUrl" :title="currentForm" style="width: 100%; height: 300px;" @load="loading = false" x-show="!loading"></iframe>
-    </template>
-  </section>
+  </main>
 
-  <section>
-    <h2 class="title is-3">Examples</h2>
-    <p class="subtitle">Want to get an idea of what readme-contribs can do? Generate some examples!</p>
-    <button @click="showExample" class="button is-link">
-      <i class="fa-solid fa-dice"></i>
-      Generate an Example
-    </button>
-    <progress id="load-frame" class="load-iframe progress is-link mt-8" max="100"></progress>
-    <div class="example-grid">
-      <iframe></iframe>
-    </div>
-  </section>
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-content">
+      <!-- Left: Logo and Info -->
+      <div class="footer-brand">
+        <img src="/favicon.png" alt="Readme Contribs Logo" class="footer-logo" width="48" height="48">
+        <div class="footer-info">
+          <h3 class="footer-title">Readme Contribs - Give credit to your supporters</h3>
+          <p class="footer-description">GitHub README embed badges for contributors and sponsors</p>
+          <p class="footer-copyright">
+            Licensed under <a href="https://github.com/lissy93/readme-contribs/blob/main/LICENSE" rel="license">MIT</a>
+            © <a href="https://aliciasykes.com" rel="author">Alicia Sykes</a> 2026
+          </p>
+        </div>
+      </div>
 
-  <footer class="footer has-text-centered pb-4 pt-4">
-    <p>
-      <strong><a href="/">readme-contribs</a></strong> is licensed under <a>MIT</a> (C) <a href="https://aliciasykes.com">Alicia Sykes</a> 2024.
-      View source on GitHub at
-      <a href="https://github.com/lissy93/readme-contribs">lissy93/readme-contribs</a>
-    </p>
+      <!-- Right: Links -->
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="https://github.com/lissy93/readme-contribs" rel="noopener noreferrer" target="_blank">
+          GitHub
+        </a>
+        <a href="https://github.com/Lissy93/readme-contribs/tree/main/.github/docs" rel="noopener noreferrer" target="_blank">
+          Docs
+        </a>
+        <a href="/api.html" rel="noopener noreferrer" target="_blank">
+          API
+        </a>
+        <a href="https://github.com/lissy93/readme-contribs/blob/main/LICENSE" rel="license noopener noreferrer" target="_blank">
+          License
+        </a>
+        <a href="https://github.com/sponsors/lissy93" rel="author noopener noreferrer" target="_blank">
+          Sponsor
+        </a>
+        <a href="https://as93.net" rel="author noopener noreferrer" target="_blank">
+          More Apps...
+        </a>
+      </nav>
+    </div>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- App Scripts -->
+  <script type="module">
+    // Import Alpine.js first, but don't start it yet
+    import Alpine from 'https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/module.esm.js'
+
+    // Import our modules
+    import { replaceIcons } from '/icons.js'
+    import '/utils.js'
+    import '/app.js'
+
+    // Make Alpine available globally
+    window.Alpine = Alpine
+
+    // Start Alpine
+    Alpine.start()
+
+    // Replace icons after DOM is ready
+    document.addEventListener('DOMContentLoaded', replaceIcons)
+  </script>
 
 </body>
 </html>

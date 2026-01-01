@@ -1,0 +1,57 @@
+name: 🏷️ Tag New Versions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+
+jobs:
+  tag-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name "liss-bot"
+          git config user.email "gh-alicia-bot@d0h.co"
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version // empty' package.json)
+
+          # Check if version is valid (not null, not empty, and follows semver pattern)
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "No valid version found in package.json, skipping tag creation"
+            echo "valid=false" >> $GITHUB_OUTPUT
+          elif ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "Invalid version format: $VERSION (expected semver like 1.0.0)"
+            echo "valid=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found valid version: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "valid=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Git tag (skip if exists)
+        if: steps.get_version.outputs.valid == 'true'
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          TAG="v${VERSION}"
+
+          # Check if the tag already exists remotely
+          if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+            echo "Tag ${TAG} already exists remotely. Skipping."
+          else
+            echo "Tag ${TAG} does not exist. Creating now..."
+            git tag "${TAG}"
+            git push origin "${TAG}"
+            echo "Successfully created and pushed tag: ${TAG}"
+          fi

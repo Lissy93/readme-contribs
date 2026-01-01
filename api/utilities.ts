@@ -1,41 +1,70 @@
+import { Resvg } from '@resvg/resvg-js'
 import type { Context } from 'hono'
-import type { StatusCode } from 'hono/utils/http-status';
-
-import type { Shape, SvgOptions } from './types'
+import type { StatusCode } from 'hono/utils/http-status'
+import { badgeParamsSchema } from './lib/params-schema'
+import type { SvgOptions } from './types'
 
 /**
  * Get options for the output SVG, from the user's query parameters, or use defaults.
+ * Now powered by Zod schema validation from params.json
  */
 export const parseUrlOptions = (query: Record<string, string | undefined>): SvgOptions => {
-  return {
-    title: query.title || '',
-    avatarSize: Math.max(30, parseInt(query.avatarSize || '50')),
-    perRow: Math.max(1, parseInt(query.perRow || '8')),
-    shape: query.shape as Shape || 'square',
-    hideLabel: query.hideLabel === 'true',
-    fontSize: Math.max(10, parseInt(query.fontSize || '12')),
-    fontFamily: query.fontFamily || '\'Mona Sans\', \'Open Sans\', Verdana, Arial, sans-serif',
-    textColor: query.textColor || '333333',
-    backgroundColor: query.backgroundColor || 'transparent',
-    limit: parseInt(query.limit || '100'),
-    outerBorderWidth: parseInt(query.outerBorderWidth || '0'),
-    outerBorderColor: query.outerBorderColor || '',
-    outerBorderRadius: parseInt(query.outerBorderRadius || '0'),
-    margin: parseInt(query.margin || '20'),
-    textOffset: parseInt(query.textOffset || '20'),
-    svgWidth: parseInt(query.svgWidth || ''),
-    svgHeight: parseInt(query.svgHeight || ''),
-    footerText: query.footerText || '',
-    dynamic: query.dynamic === 'true',
-    isResponsive: query.isResponsive === 'true',
-  };
-};
-
+  // Zod automatically validates, coerces types, and applies defaults
+  return badgeParamsSchema.parse(query)
+}
 
 /**
- * Sets headers and returns an SVG response
+ * Converts SVG string to PNG buffer using resvg
+ */
+export const convertSvgToPng = (svg: string): Buffer => {
+  const resvg = new Resvg(svg)
+  const pngData = resvg.render()
+  return pngData.asPng()
+}
+
+/**
+ * Sets headers and returns an image response (SVG or PNG) with appropriate caching
+ */
+export const returnImage = (
+  c: Context,
+  svg: string,
+  format: 'svg' | 'png' = 'svg',
+  statusCode: StatusCode = 200
+) => {
+  // Convert to PNG if requested
+  if (format === 'png') {
+    const pngBuffer = convertSvgToPng(svg)
+    c.res.headers.set('Content-Type', 'image/png')
+
+    // Add caching headers for successful responses
+    if (statusCode === 200) {
+      c.res.headers.set(
+        'Cache-Control',
+        'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400'
+      )
+    }
+
+    return c.body(pngBuffer, statusCode)
+  }
+
+  // Return SVG (default)
+  c.res.headers.set('Content-Type', 'image/svg+xml')
+
+  // Add caching headers for successful responses
+  if (statusCode === 200) {
+    c.res.headers.set(
+      'Cache-Control',
+      'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400'
+    )
+  }
+
+  return c.body(svg, statusCode)
+}
+
+/**
+ * Backward compatibility alias for returnImage
+ * @deprecated Use returnImage instead
  */
 export const returnSvg = (c: Context, svg: string, statusCode: StatusCode = 200) => {
-  c.res.headers.set('Content-Type', 'image/svg+xml');
-  return c.body(svg, statusCode);
-};
+  return returnImage(c, svg, 'svg', statusCode)
+}
