@@ -43,13 +43,30 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata
+      - name: Extract metadata (GHCR only)
+        if: env.DOCKERHUB_ENABLED != 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
             ${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME }}
-            ${{ env.DOCKERHUB_ENABLED == 'true' && format('{0}/{1}', env.REGISTRY_DOCKERHUB, secrets.DOCKERHUB_USERNAME) || '' }}/readme-contribs
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+          flavor: |
+            latest=false
+
+      - name: Extract metadata (GHCR + DockerHub)
+        if: env.DOCKERHUB_ENABLED == 'true'
+        id: meta-with-dockerhub
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME }}
+            ${{ env.REGISTRY_DOCKERHUB }}/${{ secrets.DOCKERHUB_USERNAME }}/readme-contribs
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -65,11 +82,11 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags || steps.meta-with-dockerhub.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels || steps.meta-with-dockerhub.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Image digest
         if: github.event_name != 'pull_request'
-        run: echo "${{ steps.meta.outputs.tags }}"
+        run: echo "${{ steps.meta.outputs.tags || steps.meta-with-dockerhub.outputs.tags }}"
