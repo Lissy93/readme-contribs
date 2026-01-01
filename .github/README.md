@@ -19,6 +19,8 @@
    * [Embed Sponsors](#embed-sponsors)
    * [Embed Stargazers](#embed-stargazers)
    * [Embed Forkers](#embed-forkers)
+   * [Embed Watchers](#embed-watchers)
+   * [Embed Followers](#embed-followers)
    * [Image Options](#image-options)
 - [Deploying your Own](#deploying-your-own)
 - [Developing](#developing)
@@ -84,7 +86,21 @@ If you're hosting your own instance, update this to your domain.<br />
 ### Embed Forkers
 
 ```
-/sponsors/[user]/[repo]
+/forkers/[user]/[repo]
+```
+
+
+### Embed Watchers
+
+```
+/watchers/[user]/[repo]
+```
+
+
+### Embed Followers
+
+```
+/followers/[user]
 ```
 
 ### Image Options
@@ -130,6 +146,16 @@ Don't worry, it's super quick, easy and free!
 4. Create a GitHub API token [here](https://github.com/settings/tokens?type=beta)
 5. Add the `GITHUB_TOKEN` environmental variable into Vercel
 6. Hit deploy!
+
+### One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FLissy93%2Freadme-contribs&project-name=readme-contribs&repository-name=readme-contribs&env=GITHUB_TOKEN&demo-title=Readme%20Contribs&demo-description=Simple%20embeddable%20contributor%20and%20sponsor%20widgets%20for%20your%20GitHub%20README&demo-url=https%3A%2F%2Freadme-contribs.as93.net&demo-image=https%3A%2F%2Fgithub.com%2FLissy93%2Freadme-contribs%2Fblob%2Fmain%2Fpublic%2Ffavicon.png%3Fraw%3Dtrue)
+
+### Deploy with Docker
+
+```bash
+docker run -p 8080:8080 -e GITHUB_TOKEN=your_token ghcr.io/lissy93/readme-contribs:latest
+```
 
 ---
 
