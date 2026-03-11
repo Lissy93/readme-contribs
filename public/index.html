@@ -12,8 +12,9 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://readme-contribs.as93.net">
 
-  <!-- Icons -->
+  <!-- Icons & Theme -->
   <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="theme-color" content="#1b1d23">
 
   <!-- Open Graph Meta Tags -->
   <meta property="og:site_name" content="Readme Contribs">
@@ -92,6 +93,7 @@
           title="Project sponsors"
           scrolling="no"
           loading="lazy"
+          @load="$el.parentElement.classList.add('loaded')"
           src="https://readme-contribs.as93.net/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true">
         </iframe>
       </div>
@@ -224,7 +226,7 @@
         </div>
 
         <div class="form-actions">
-          <details x-bind:open="showAdvancedOptions" @toggle="showAdvancedOptions = $event.target.open">
+          <details x-bind:open="showAdvancedOptions" @toggle="showAdvancedOptions = $event.target.open" @click.outside="showAdvancedOptions = false">
             <summary class="button is-primary is-outlined">
               <i class="fas fa-gear" aria-hidden="true"></i>
               <span>Advanced Configuration</span>

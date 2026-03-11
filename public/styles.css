@@ -105,6 +105,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
 /* ===== Accessibility ===== */
 
 /* Skip to main content link */
@@ -270,12 +275,23 @@ hr {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border-radius: 6px;
+  min-height: 80px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
   max-width: 650px;
   margin: 0 auto;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.built-by-container.loaded {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .built-by-iframe {
@@ -342,6 +358,11 @@ details summary {
 
 details summary::-webkit-details-marker {
   display: none;
+}
+
+details::details-content {
+  overflow: hidden;
+  transition: content-visibility var(--transition-normal) allow-discrete;
 }
 
 .advanced-options {
@@ -972,6 +993,7 @@ input:checked + .slider::before {
     overflow-x: auto;
     font-size: 0.875rem;
     line-height: 1.5;
+    max-width: calc(100vw - 10rem);
 
     code {
       font-family: "Courier New", monospace;

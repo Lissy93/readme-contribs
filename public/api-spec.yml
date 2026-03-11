@@ -53,7 +53,7 @@ paths:
                 format: binary
         404:
           description: Resource not found.
-  
+
   /sponsors/{user}:
     get:
       summary: Embed sponsors widget
@@ -233,7 +233,7 @@ components:
             description: Font family for text
           textColor:
             type: string
-            default: '333333'
+            default: '808080'
             description: Text color as hex code (without #)
           backgroundColor:
             type: string
