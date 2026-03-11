@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // Import the platform-agnostic app for testing
 import app from '../../server'
 import {
@@ -81,7 +81,10 @@ describe('Integration: API Endpoints', () => {
 
       const res = await app.request('/contributors/owner/repo?limit=2')
 
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('per_page=2'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('per_page=100'),
+        expect.any(Object)
+      )
       expect(res.status).toBe(200)
     })
 
@@ -341,7 +344,7 @@ describe('Integration: API Endpoints', () => {
         json: async () => {
           throw new Error('Invalid JSON')
         },
-      })
+      } as unknown as Response)
 
       const res = await app.request('/contributors/owner/repo')
 

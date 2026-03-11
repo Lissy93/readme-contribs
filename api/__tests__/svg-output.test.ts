@@ -11,7 +11,7 @@ const defaultOptions: SvgOptions = {
   hideLabel: false,
   fontSize: 12,
   fontFamily: 'Arial',
-  textColor: '333333',
+  textColor: '808080',
   backgroundColor: 'transparent',
   limit: 96,
   outerBorderWidth: 0,

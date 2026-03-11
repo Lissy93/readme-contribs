@@ -14,7 +14,7 @@ describe('parseUrlOptions', () => {
       hideLabel: false,
       fontSize: 12,
       fontFamily: "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif",
-      textColor: '333333',
+      textColor: '808080',
       backgroundColor: 'transparent',
       limit: 96,
       outerBorderWidth: 0,
@@ -234,7 +234,7 @@ describe('returnSvg', () => {
       body: vi.fn((content, status) => ({ content, status })),
     } as unknown as Context
 
-    const result = returnSvg(mockContext, '', 200)
+    const result = returnSvg(mockContext, '', 200) as unknown as { content: string }
 
     expect(result.content).toBe('')
     expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')

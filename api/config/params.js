@@ -62,7 +62,7 @@ export default {
   },
   textColor: {
     type: 'string',
-    default: '333333',
+    default: '808080',
     description: 'Text color as hex code (without #)',
     label: 'Text Color',
     placeholder: 'e.g., black, #333',

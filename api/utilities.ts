@@ -9,7 +9,7 @@ import type { SvgOptions } from './types'
  */
 export const parseUrlOptions = (query: Record<string, string | undefined>): SvgOptions => {
   // Zod automatically validates, coerces types, and applies defaults
-  return badgeParamsSchema.parse(query)
+  return badgeParamsSchema.parse(query) as unknown as SvgOptions
 }
 
 /**
@@ -27,5 +27,5 @@ export const returnSvg = (c: Context, svg: string, statusCode: StatusCode = 200)
     )
   }
 
-  return c.body(svg, statusCode)
+  return c.body(svg as unknown as null, statusCode)
 }

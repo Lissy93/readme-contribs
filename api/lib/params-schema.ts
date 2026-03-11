@@ -74,12 +74,6 @@ function buildZodSchema(config: Record<string, ParamConfig>) {
 export const badgeParamsSchema = buildZodSchema(paramsConfig as Record<string, ParamConfig>)
 
 /**
- * TypeScript type for badge parameters
- * Auto-inferred from Zod schema
- */
-export type BadgeParams = z.infer<typeof badgeParamsSchema>
-
-/**
  * Export params config for frontend use
  */
 export { paramsConfig }

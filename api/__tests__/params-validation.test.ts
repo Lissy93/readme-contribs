@@ -194,7 +194,7 @@ describe('Badge Parameters Validation', () => {
       expect(result.hideLabel).toBe(false)
       expect(result.fontSize).toBe(12)
       expect(result.fontFamily).toBe("'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif")
-      expect(result.textColor).toBe('333333')
+      expect(result.textColor).toBe('808080')
       expect(result.backgroundColor).toBe('transparent')
       expect(result.limit).toBe(96)
       expect(result.outerBorderWidth).toBe(0)

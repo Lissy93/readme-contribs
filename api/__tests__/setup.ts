@@ -8,7 +8,7 @@ beforeEach(() => {
 })
 
 // Mock global fetch for all tests
-global.fetch = vi.fn()
+globalThis.fetch = vi.fn() as unknown as typeof fetch
 
 // Mock btoa (base64 encoding) for Node.js environment
-global.btoa = (str: string) => Buffer.from(str, 'binary').toString('base64')
+globalThis.btoa = (str: string) => Buffer.from(str, 'binary').toString('base64')
