@@ -1,0 +1,64 @@
+name: 🚦 CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: 🧼 Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6
+      with: { node-version: 24, cache: 'yarn'}
+    - run: yarn install --frozen-lockfile
+    - run: yarn lint
+
+  format:
+    name: 💄 Format
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6
+      with: { node-version: 24, cache: 'yarn'}
+    - run: yarn install --frozen-lockfile
+    - run: yarn format
+
+  typecheck:
+    name: ⛓️‍💥 Typecheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6
+      with: { node-version: 24, cache: 'yarn'}
+    - run: yarn install --frozen-lockfile
+    - run: yarn type-check
+
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6
+      with: { node-version: 24, cache: 'yarn'}
+    - run: yarn install --frozen-lockfile
+    - run: yarn test
+
+  audit:
+    name: 🔒 Audit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v6
+      with: { node-version: 24, cache: 'yarn'}
+    - run: yarn install --frozen-lockfile
+    - run: yarn audit --level moderate
+
