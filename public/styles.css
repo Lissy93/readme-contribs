@@ -952,19 +952,120 @@ input:checked + .slider::before {
   height: 640px;
 }
 
+.example-grid.stargazers-show {
+  min-height: auto;
+  aspect-ratio: 3 / 1;
+}
+
+.example-grid.stargazers-show iframe {
+  height: 100%;
+}
+
+/* ===== Demo Section ===== */
+
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+}
+
+.tabs-sm {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.examples-subtitle {
+  justify-content: flex-start;
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--color-text-light);
+}
+
+/* biome-ignore lint/style/noDescendingSpecificity: .tabs-sm is an independent component, not related to .dropdown-compact button */
+.tabs-sm button {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 0.375rem 0.75rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-light);
+  background: var(--color-bg);
+  transition: all var(--transition-fast);
+}
+
+.tabs-sm button:hover:not(.is-active) {
+  border-color: var(--color-border-hover);
+  color: var(--color-text);
+}
+
+.tabs-sm button.is-active {
+  background: var(--color-link);
+  color: var(--color-white);
+  border-color: var(--color-link);
+}
+
+.demo-header ~ div .button svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.wild-list {
+  list-style: none;
+  margin: var(--spacing-sm) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wild-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  color: var(--color-link);
+  transition: color var(--transition-fast);
+}
+
+.wild-list a:hover {
+  color: var(--color-primary);
+}
+
+.wild-list img {
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.wild-desc {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .demo-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .tabs-sm {
+    justify-content: center;
+  }
+}
+
 /* ===== Deployment Section ===== */
 .deploy-intro {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--color-text);
   margin-bottom: var(--spacing-sm);
-}
-
-.deploy-tagline {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-lg);
 }
 
 .deploy-options {
@@ -1213,14 +1314,6 @@ input:checked + .slider::before {
   section {
     width: 95vw;
     padding: var(--spacing-md);
-  }
-
-  .snippet {
-    width: 100%;
-  }
-
-  .format-chooser {
-    width: 100%;
   }
 
   .switch-container {

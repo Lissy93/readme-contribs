@@ -3,7 +3,14 @@
  * Alpine.js application for generating embeddable GitHub badges
  */
 
-import { buildFullUrl, EXAMPLE_PATHS, loadAdvancedOptions } from './config.js'
+import {
+  buildFullUrl,
+  DEMO_STARGAZERS_PATH,
+  EXAMPLE_PATHS,
+  IN_THE_WILD,
+  loadAdvancedOptions,
+  SUBMIT_REPO_URL,
+} from './config.js'
 import { sanitizeForUrl, showToast } from './utils.js'
 
 /**
@@ -28,12 +35,88 @@ function apiForm() {
     exampleLoading: false,
     loadTimeout: null,
     exampleTimeout: null,
+    demoTab: 0,
+    demoLoading: false,
+    demoLoaded: false,
+    demoTimeout: null,
+    inTheWild: IN_THE_WILD,
+    submitRepoUrl: SUBMIT_REPO_URL,
 
     /**
      * Initialize the form - load advanced options from API
      */
     async init() {
       this.options = await loadAdvancedOptions()
+    },
+
+    setDemoTab(i) {
+      this.demoTab = i
+      if (i === 1 && !this.demoLoaded && !this.demoLoading) {
+        this.loadStargazersDemo()
+      }
+    },
+
+    loadStargazersDemo() {
+      if (this.demoTimeout) {
+        clearTimeout(this.demoTimeout)
+      }
+      this.demoLoading = true
+
+      const demoUrl = buildFullUrl(DEMO_STARGAZERS_PATH)
+
+      this.$nextTick(() => {
+        const iframe = this.$refs.demoIframe
+        if (!iframe) {
+          this.demoLoading = false
+          return
+        }
+
+        iframe.classList.remove('loaded')
+
+        this.demoTimeout = setTimeout(() => {
+          if (this.demoLoading) {
+            this.demoLoading = false
+            iframe.classList.add('loaded')
+            showToast('Demo loading timeout - please try again', 'error')
+          }
+        }, 15000)
+
+        iframe.onload = () => {
+          if (this.demoTimeout) {
+            clearTimeout(this.demoTimeout)
+            this.demoTimeout = null
+          }
+          this.demoLoading = false
+          this.demoLoaded = true
+          try {
+            const h = iframe.contentDocument.documentElement.scrollHeight
+            if (h) iframe.style.height = `${h}px`
+          } catch {
+            /* cross-origin, keep aspect-ratio fallback */
+          }
+          setTimeout(() => {
+            iframe.classList.add('loaded')
+          }, 50)
+        }
+
+        iframe.onerror = () => {
+          if (this.demoTimeout) {
+            clearTimeout(this.demoTimeout)
+            this.demoTimeout = null
+          }
+          this.demoLoading = false
+          iframe.classList.add('loaded')
+          showToast('Failed to load demo', 'error')
+        }
+
+        const cacheBuster = `${demoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`
+        iframe.src = demoUrl + cacheBuster
+      })
+    },
+
+    refreshDemo() {
+      this.demoLoaded = false
+      this.loadStargazersDemo()
     },
 
     /**
@@ -203,7 +286,7 @@ function apiForm() {
 
       // Wait for Alpine to render the iframe (if first time)
       this.$nextTick(() => {
-        const iframe = document.querySelector('.example-grid iframe')
+        const iframe = this.$refs.exampleIframe
 
         if (!iframe) {
           console.error('Example iframe not found')

@@ -94,7 +94,7 @@
           title="Project sponsors"
           scrolling="no"
           loading="lazy"
-          @load="$el.parentElement.classList.add('loaded')"
+          onload="this.parentElement.classList.add('loaded')"
           src="https://readme-contribs.as93.net/sponsors/lissy93?shape=circle&hideLabel=true&dynamic=true&margin=6&textOffset=4&perRow=12&limit=24&title=Kindly%20Sponsored%20By&textColor=4258ff&isResponsive=true">
         </iframe>
       </div>
@@ -454,16 +454,16 @@
         </label>
         <span :class="{'is-link': outputMode}" @click="outputMode = true">Dynamic</span>
       </div>
+      <!-- biome-ignore lint/a11y/useAltText: alt is dynamically set via Alpine.js :alt -->
       <img
         :src="!outputMode ? imageUrl : ''"
-        alt="Badge preview"
         :alt="`${currentForm} badge preview`"
         @load="handleLoadSuccess"
         @error="handleLoadError"
         x-show="!loading && !outputMode">
+      <!-- biome-ignore lint/a11y/useIframeTitle: title is dynamically set via Alpine.js :title -->
       <iframe
         :src="outputMode ? imageUrl : ''"
-        title="Badge preview (dynamic)"
         :title="`${currentForm} badge preview (dynamic)`"
         style="width: 100%; height: 300px; border: none;"
         @load="handleLoadSuccess"
@@ -474,29 +474,126 @@
 
     <hr>
 
-    <!-- Examples Section -->
-    <section aria-labelledby="examples-heading">
+    <!-- Demo Section -->
+    <section aria-labelledby="demo-heading">
       <div class="card">
-        <h2 id="examples-heading" class="title is-3">Examples</h2>
-        <p class="subtitle">Want to get an idea of what readme-contribs can do? Generate some examples!</p>
-        <div class="has-text-centered">
-          <button
-            type="button"
-            @click="showExample"
-            class="button is-link"
-            aria-label="Generate a random example badge">
-            <i class="fa-solid fa-dice" aria-hidden="true"></i>
-            <span>Generate an Example</span>
-          </button>
+        <div class="demo-header">
+          <div>
+            <h2 id="demo-heading" class="title is-3"
+              x-text="['Examples', 'See it in Action', 'In the Wild'][demoTab]">Examples</h2>
+          </div>
+          <nav role="tablist" class="tabs-sm" aria-label="Demo section tabs">
+            <button type="button" role="tab" id="tab-examples"
+              @click="setDemoTab(0)"
+              :class="{'is-active': demoTab === 0}"
+              :aria-selected="demoTab === 0"
+              :tabindex="demoTab === 0 ? 0 : -1"
+              aria-controls="panel-examples">
+              <span>Examples</span>
+            </button>
+            <button type="button" role="tab" id="tab-live"
+              @click="setDemoTab(1)"
+              :class="{'is-active': demoTab === 1}"
+              :aria-selected="demoTab === 1"
+              :tabindex="demoTab === 1 ? 0 : -1"
+              aria-controls="panel-live">
+              <i class="fa-solid fa-play" aria-hidden="true"></i>
+              <span>Live</span>
+            </button>
+            <button type="button" role="tab" id="tab-wild"
+              @click="setDemoTab(2)"
+              :class="{'is-active': demoTab === 2}"
+              :aria-selected="demoTab === 2"
+              :tabindex="demoTab === 2 ? 0 : -1"
+              aria-controls="panel-wild">
+              <i class="fa-solid fa-globe" aria-hidden="true"></i>
+              <span>In the Wild</span>
+            </button>
+          </nav>
         </div>
-        <div x-show="exampleLoading" class="example-loading active" role="status" aria-live="polite">
-          <div class="loading-spinner" aria-hidden="true"></div>
-          <p class="loading-text">
-            <span class="loading-dots">Loading example</span>
-          </p>
+        <p class="examples-subtitle"
+          x-text="[
+          'Want to get an idea of what readme-contribs can do? Generate some examples!',
+          'Try starring our repo, and a link to your GitHub profile will be included here!',
+          'Projects already using readme-contribs'
+          ][demoTab]"></p>
+
+        <!-- Tab 0: Examples -->
+        <div id="panel-examples" role="tabpanel" aria-labelledby="tab-examples" x-show="demoTab === 0" x-transition>
+          <div x-show="exampleLoading" class="example-loading active" role="status" aria-live="polite">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p class="loading-text">
+              <span class="loading-dots">Loading example</span>
+            </p>
+          </div>
+          <div x-show="exampleIndex >= 0" class="example-grid">
+            <iframe x-ref="exampleIframe" title="Example badge" loading="lazy"></iframe>
+          </div>
+          <div class="has-text-centered mt-4">
+            <button
+              type="button"
+              @click="showExample"
+              class="button is-link"
+              aria-label="Generate a random example badge">
+              <i class="fa-solid fa-dice" aria-hidden="true"></i>
+              <span>Generate an Example</span>
+            </button>
+          </div>
         </div>
-        <div x-show="exampleIndex >= 0" class="example-grid">
-          <iframe title="Example badge" loading="lazy"></iframe>
+
+        <!-- Tab 1: See it in action -->
+        <div id="panel-live" role="tabpanel" aria-labelledby="tab-live" x-show="demoTab === 1" x-transition>
+          <div x-show="demoLoading" class="example-loading active" role="status" aria-live="polite">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p class="loading-text">
+              <span class="loading-dots">Loading demo</span>
+            </p>
+          </div>
+          <div class="example-grid stargazers-show">
+            <iframe x-ref="demoIframe" class="stars-demo" title="Live stargazers demo" loading="lazy"></iframe>
+          </div>
+          <div class="has-text-centered mt-4">
+            <button
+              type="button"
+              @click="refreshDemo"
+              class="button is-link"
+              aria-label="Refresh live demo">
+              <i class="fa-solid fa-refresh" aria-hidden="true"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 2: In the wild -->
+        <div id="panel-wild" role="tabpanel" aria-labelledby="tab-wild" x-show="demoTab === 2" x-transition>
+          <ul class="wild-list">
+            <template x-for="project in inTheWild" :key="project.name">
+              <li>
+                <!-- biome-ignore lint/a11y/useAnchorContent: content is dynamically set via Alpine.js x-text -->
+                <a :href="project.url" target="_blank" rel="noopener noreferrer">
+                  <img
+                    :src="project.icon"
+                    :alt="project.name"
+                    width="16" height="16"
+                    loading="lazy"
+                    aria-hidden="true">
+                  <span x-text="project.name"></span>
+                  <span class="wild-desc" x-text="'— ' + project.description"></span>
+                </a>
+              </li>
+            </template>
+          </ul>
+          <div class="has-text-centered mt-4">
+            <a
+              :href="submitRepoUrl"
+              class="button is-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Submit your repo to be featured">
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              <span>Submit your Repo</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
