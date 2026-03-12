@@ -1,6 +1,6 @@
 {
   "name": "readme-contribs",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "GitHub README embed badges for contributors and sponsors",
   "author": "Alicia Sykes <alicia@omg.com> (https://aliciasykes.com)",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "lint": "biome lint .",
     "format": "biome format .",
     "type-check": "npx tsc --noEmit",
-    "fix": "biome format . && biome check --write . && biome lint --write .",
+    "fix": "biome format . --write && biome check --write . && biome lint --write .",
     "hold-my-beer": "yarn test && yarn lint && yarn format && yarn type-check"
   },
   "dependencies": {
