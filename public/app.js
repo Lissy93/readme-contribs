@@ -41,12 +41,26 @@ function apiForm() {
     demoTimeout: null,
     inTheWild: IN_THE_WILD,
     submitRepoUrl: SUBMIT_REPO_URL,
+    systemStatus: '',
 
     /**
      * Initialize the form - load advanced options from API
      */
     async init() {
       this.options = await loadAdvancedOptions()
+      this.checkSystemStatus()
+    },
+
+    async checkSystemStatus() {
+      try {
+        const res = await fetch('/health')
+        const data = await res.json()
+        if (!data.hasToken) this.systemStatus = 'Missing token'
+        else if (!data.authenticated) this.systemStatus = 'Expired/invalid token'
+        else this.systemStatus = 'Healthy'
+      } catch {
+        this.systemStatus = 'Unreachable'
+      }
     },
 
     setDemoTab(i) {

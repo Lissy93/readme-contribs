@@ -8,6 +8,7 @@ import {
   fetchStargazers,
   fetchWatchers,
 } from './fetch-users'
+import { checkTokenAuth } from './lib/github-client'
 import { createUserRouteHandler } from './lib/route-handlers'
 
 // Platform-agnostic Hono app
@@ -16,11 +17,13 @@ const app = new Hono()
 
 // API routes
 // Healthcheck endpoint
-app.get('/health', (c) => {
+app.get('/health', async (c) => {
+  const hasToken = !!process.env.GITHUB_TOKEN
   return c.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    hasToken: !!process.env.GITHUB_TOKEN,
+    hasToken,
+    authenticated: hasToken ? await checkTokenAuth() : false,
     // @ts-expect-error - Bun global is only available in Bun runtime
     runtime: typeof globalThis.Bun !== 'undefined' ? 'bun' : 'edge',
   })

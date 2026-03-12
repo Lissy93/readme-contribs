@@ -84,6 +84,10 @@
   }
 }
 
+[x-cloak] {
+  display: none;
+}
+
 /* ===== CSS Reset & Base Styles ===== */
 *,
 *::before,
@@ -1252,6 +1256,26 @@ input:checked + .slider::before {
       text-decoration-color: var(--color-primary);
     }
   }
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.footer-status {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.status-ok {
+  color: var(--color-success);
+}
+.status-warn {
+  color: var(--color-error);
 }
 
 .footer-links {

@@ -364,3 +364,16 @@ export const fetchFollowers = async (username: string, limit = 96): Promise<User
     .slice(0, limit)
     .map((u) => ({ login: u.login, name: u.name || '', avatarUrl: u.avatar_url }))
 }
+
+/**
+ * Checks if the configured GitHub token is valid and authenticated
+ */
+export const checkTokenAuth = async (): Promise<boolean> => {
+  if (!process.env.GITHUB_TOKEN) return false
+  try {
+    const res = await fetch(`${GITHUB_API_BASE}/user`, { headers: getAuthHeaders() })
+    return res.ok
+  } catch {
+    return false
+  }
+}

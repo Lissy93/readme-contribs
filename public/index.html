@@ -687,27 +687,35 @@
         </div>
       </div>
 
-      <!-- Right: Links -->
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="https://github.com/lissy93/readme-contribs" rel="noopener noreferrer" target="_blank">
-          GitHub
-        </a>
-        <a href="https://github.com/Lissy93/readme-contribs/tree/main/.github/docs" rel="noopener noreferrer" target="_blank">
-          Docs
-        </a>
-        <a href="/api.html" rel="noopener noreferrer" target="_blank">
-          API
-        </a>
-        <a href="https://github.com/lissy93/readme-contribs/blob/main/LICENSE" rel="license noopener noreferrer" target="_blank">
-          License
-        </a>
-        <a href="https://github.com/sponsors/lissy93" rel="author noopener noreferrer" target="_blank">
-          Sponsor
-        </a>
-        <a href="https://as93.net" rel="author noopener noreferrer" target="_blank">
-          More Apps...
-        </a>
-      </nav>
+      <!-- Right: Links & Status -->
+      <div class="footer-right">
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="https://github.com/lissy93/readme-contribs" rel="noopener noreferrer" target="_blank">
+            GitHub
+          </a>
+          <a href="https://github.com/Lissy93/readme-contribs/tree/main/.github/docs" rel="noopener noreferrer" target="_blank">
+            Docs
+          </a>
+          <a href="/api.html" rel="noopener noreferrer" target="_blank">
+            API
+          </a>
+          <a href="https://github.com/lissy93/readme-contribs/blob/main/LICENSE" rel="license noopener noreferrer" target="_blank">
+            License
+          </a>
+          <a href="https://github.com/sponsors/lissy93" rel="author noopener noreferrer" target="_blank">
+            Sponsor
+          </a>
+          <a href="https://as93.net" rel="author noopener noreferrer" target="_blank">
+            More Apps...
+          </a>
+        </nav>
+        <p x-show="systemStatus" x-cloak class="footer-status">
+          System Status:
+          <span
+            :class="systemStatus === 'Healthy' ? 'status-ok' : 'status-warn'"
+            x-text="systemStatus"></span>
+        </p>
+      </div>
     </div>
   </footer>
 
