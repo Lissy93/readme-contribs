@@ -33,10 +33,10 @@ const getAuthHeaders = (isGraphQL = false): HeadersInit => {
 /**
  * Makes a REST API request to GitHub
  */
-const fetchFromGitHub = async <T>(endpoint: string): Promise<T> => {
+const fetchFromGitHub = async <T>(endpoint: string, label?: string): Promise<T> => {
   const url = endpoint.startsWith('http') ? endpoint : `${GITHUB_API_BASE}${endpoint}`
 
-  logger.debug('GitHub API request', { endpoint: url })
+  logger.debug(`GitHub API request for ${label || endpoint}`)
 
   let response = await fetch(url, { headers: getAuthHeaders() })
 
@@ -59,8 +59,12 @@ const fetchFromGitHub = async <T>(endpoint: string): Promise<T> => {
 /**
  * Makes a GraphQL request to GitHub
  */
-const fetchGraphQL = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
-  logger.debug('GitHub GraphQL request')
+const fetchGraphQL = async <T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  label?: string
+): Promise<T> => {
+  logger.debug(`GitHub GraphQL request for ${label || 'unknown'}`)
 
   const response = await fetch(GITHUB_GRAPHQL_ENDPOINT, {
     method: 'POST',
@@ -106,7 +110,10 @@ export const fetchContributors = async (
   }
 
   const endpoint = `/repos/${owner}/${repo}/contributors?per_page=100`
-  const contributors = await fetchFromGitHub<GitHubContributor[]>(endpoint)
+  const contributors = await fetchFromGitHub<GitHubContributor[]>(
+    endpoint,
+    `Contributors of ${owner}/${repo}`
+  )
 
   return contributors.slice(0, limit).map((user) => ({
     login: user.login,
@@ -133,7 +140,11 @@ export const fetchStargazers = async (owner: string, repo: string, limit = 96): 
       interface Res {
         data: { repository: { stargazers: { nodes: GraphQLUserNode[] } } }
       }
-      const res = await fetchGraphQL<Res>(query, { owner, repo, limit })
+      const res = await fetchGraphQL<Res>(
+        query,
+        { owner, repo, limit },
+        `Stargazers of ${owner}/${repo}`
+      )
       return mapGraphQLNodes(res.data.repository?.stargazers.nodes ?? [])
     } catch {
       logger.warn('GraphQL stargazers request failed, falling back to REST', { owner, repo })
@@ -141,7 +152,8 @@ export const fetchStargazers = async (owner: string, repo: string, limit = 96): 
   }
 
   const data = await fetchFromGitHub<{ login: string; name: string; avatar_url: string }[]>(
-    `/repos/${owner}/${repo}/stargazers?per_page=100`
+    `/repos/${owner}/${repo}/stargazers?per_page=100`,
+    `Stargazers of ${owner}/${repo}`
   )
   return [...data]
     .reverse()
@@ -161,7 +173,7 @@ export const fetchForkers = async (owner: string, repo: string, limit = 96): Pro
   }
 
   const endpoint = `/repos/${owner}/${repo}/forks?sort=newest&per_page=100`
-  const forks = await fetchFromGitHub<GitHubFork[]>(endpoint)
+  const forks = await fetchFromGitHub<GitHubFork[]>(endpoint, `Forkers of ${owner}/${repo}`)
 
   return forks.slice(0, limit).map((fork) => ({
     login: fork.owner.login,
@@ -186,7 +198,7 @@ const fallbackFetchSponsors = async (author: string): Promise<User[]> => {
     )
   }
 
-  return response.json()
+  return response.json() as Promise<User[]>
 }
 
 /**
@@ -246,7 +258,11 @@ export const fetchSponsors = async (username: string, limit = 96): Promise<User[
   }
 
   try {
-    const response = await fetchGraphQL<GraphQLResponse>(query, { username, limit })
+    const response = await fetchGraphQL<GraphQLResponse>(
+      query,
+      { username, limit },
+      `Sponsors of ${username}`
+    )
 
     if (!response.data.user) {
       throw new Error(`User ${username} not found or has no sponsors`)
@@ -293,7 +309,11 @@ export const fetchWatchers = async (owner: string, repo: string, limit = 96): Pr
       interface Res {
         data: { repository: { watchers: { nodes: GraphQLUserNode[] } } }
       }
-      const res = await fetchGraphQL<Res>(query, { owner, repo, limit })
+      const res = await fetchGraphQL<Res>(
+        query,
+        { owner, repo, limit },
+        `Watchers of ${owner}/${repo}`
+      )
       return mapGraphQLNodes(res.data.repository?.watchers.nodes ?? []).reverse()
     } catch {
       logger.warn('GraphQL watchers request failed, falling back to REST', { owner, repo })
@@ -301,7 +321,8 @@ export const fetchWatchers = async (owner: string, repo: string, limit = 96): Pr
   }
 
   const data = await fetchFromGitHub<{ login: string; name: string; avatar_url: string }[]>(
-    `/repos/${owner}/${repo}/subscribers?per_page=100`
+    `/repos/${owner}/${repo}/subscribers?per_page=100`,
+    `Watchers of ${owner}/${repo}`
   )
   return [...data]
     .reverse()
@@ -327,7 +348,7 @@ export const fetchFollowers = async (username: string, limit = 96): Promise<User
       interface Res {
         data: { user: { followers: { nodes: GraphQLUserNode[] } } }
       }
-      const res = await fetchGraphQL<Res>(query, { username, limit })
+      const res = await fetchGraphQL<Res>(query, { username, limit }, `Followers of ${username}`)
       return mapGraphQLNodes(res.data.user?.followers.nodes ?? []).reverse()
     } catch {
       logger.warn('GraphQL followers request failed, falling back to REST', { username })
@@ -335,7 +356,8 @@ export const fetchFollowers = async (username: string, limit = 96): Promise<User
   }
 
   const data = await fetchFromGitHub<{ login: string; name: string; avatar_url: string }[]>(
-    `/users/${username}/followers?per_page=100`
+    `/users/${username}/followers?per_page=100`,
+    `Followers of ${username}`
   )
   return [...data]
     .reverse()
