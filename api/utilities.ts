@@ -16,7 +16,7 @@ export const parseUrlOptions = (query: Record<string, string | undefined>): SvgO
  * Sets headers and returns an SVG response with appropriate caching
  */
 export const returnSvg = (c: Context, svg: string, statusCode: StatusCode = 200) => {
-  c.res.headers.set('Content-Type', 'image/svg+xml')
+  c.res.headers.set('Content-Type', 'image/svg+xml; charset=utf-8')
 
   // Add caching headers for successful responses
   // Cache for 1 hour in browser, 2 hours in CDN/edge cache

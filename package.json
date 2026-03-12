@@ -21,7 +21,8 @@
     "lint": "biome lint .",
     "format": "biome format .",
     "type-check": "npx tsc --noEmit",
-    "fix": "biome format . && biome check --write . && biome lint --write ."
+    "fix": "biome format . && biome check --write . && biome lint --write .",
+    "hold-my-beer": "yarn test && yarn lint && yarn format && yarn type-check"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.6",

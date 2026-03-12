@@ -39,11 +39,14 @@
 
 It's nice to give credit to contributors and supporters who've helped your project 💞
 
-This project gives you an easy way for you to embed your projects contributors, sponsors, stargazers, watchers, forkers, followers, etc, and to let you configure the look and feel. [↳ See Examples](#examples)
+This project gives you an easy way for you to embed your projects contributors, sponsors, stargazers, watchers, forkers, followers, etc, into your readme or website. And it's highly configurable, so you can customize the look and feel. [↳ See Examples](#examples)
 
-I use this in all my projects, because using GitHub Actions to generate these causes your commit history to become unnecessarily cluttered. And existing services to embed contributor widgets aren't very customizable and don't support sponsors, stargazers etc.
+It can be used for free at [here](https://readme-contribs.as93.net). But is also very quick, easy and free to deploy your own instance (either with 1-click deploy to Vercel or self-host anywhere with Docker).
 
-This app is also very easily self-hostable for free, either with 1-click deploy to Vercel or via Docker on any platform.
+I use this in all my projects, because:
+- Using GitHub Actions to generate this info clutters up the commit log
+- Existing services don't let you configure the look and feel
+- I couldn't find anywhere else which also supported sponsors, stargazers etc.
 
 ---
 
@@ -53,7 +56,7 @@ This app is also very easily self-hostable for free, either with 1-click deploy 
 To embed the image in your markdown, simply use the endpoint as the image URL.<br />
 For example:
 
-```
+```md
 ![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)
 ```
 
@@ -116,17 +119,17 @@ Specify these as query string parameters, appended to the end of your GET reques
 | `shape`            | Shape of the avatar images (square, circle, squircle) | Enum    | `square`                       |
 | `hideLabel`        | If set to true, name labels will not be displayed | Boolean | `false`                            |
 | `fontSize`         | Font size for label text                         | Integer | `12`                                |
-| `fontFamily`       | Font family for the text                         | String  | `'Mona Sans', Verdana, sans-serif`  |
-| `textColor`        | Color of the text (as hex code excluding # or color name)  | String  | `333333` (exclude the `#`) |
+| `fontFamily`       | Font family for the text                         | String  | `'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif` |
+| `textColor`        | Color of the text (as hex code excluding # or color name)  | String  | `808080` (exclude the `#`) |
 | `backgroundColor`  | Background color of the widget                   | String  | `transparent`                       |
-| `limit`            | Maximum number of items to display               | Integer | `100`                               |
+| `limit`            | Maximum number of items to display               | Integer | `96`                                |
 | `outerBorderWidth` | Width of the outer border                        | Integer | `0`                                 |
 | `outerBorderColor` | Color of the outer border                        | String  | `''` (Empty string = no border)     |
 | `outerBorderRadius`| Radius of the outer border corners               | Integer | `0`                                 |
 | `margin`           | Margin around each avatar                        | Integer | `20`                                |
 | `textOffset`       | Offset for text alignment below avatars          | Integer | `20`                                |
-| `svgWidth`         | Width of the entire SVG widget                   | Integer | `500`                               |
-| `svgHeight`        | Height of the entire SVG widget                  | Integer | `500`                               |
+| `svgWidth`         | Width of the entire SVG widget (0 = auto)        | Integer | `0`                                 |
+| `svgHeight`        | Height of the entire SVG widget (0 = auto)       | Integer | `0`                                 |
 | `dynamic`          | If true, won't base64 encode images, faster (iframe usage only) | Boolean | `false`              |
 | `isResponsive`     | If true, makes the widget responsive             | Boolean | `false`                             |
 
@@ -140,12 +143,7 @@ If you plan to use this at any kind of scale, it is highly reccomended to deploy
 
 Don't worry, it's super quick, easy and free!
 
-1. Fork this repository (by clicking [here](https://github.com/Lissy93/readme-contribs/fork))
-2. Login / Sign up to [Vercel](https://vercel.com/login)
-3. Create a new app, and select your newly forked repo
-4. Create a GitHub API token [here](https://github.com/settings/tokens?type=beta)
-5. Add the `GITHUB_TOKEN` environmental variable into Vercel
-6. Hit deploy!
+Just [fork the repo](https://github.com/Lissy93/readme-contribs/fork), then [login](https://vercel.com/login) to Vercel and import your fork. Don't forget to [create a github token](https://github.com/settings/tokens) and set it to `GITHUB_TOKEN`. Then hit deploy!
 
 ### One-Click Deploy
 
@@ -161,15 +159,37 @@ docker run -p 8080:8080 -e GITHUB_TOKEN=your_token ghcr.io/lissy93/readme-contri
 
 ## Developing
 
-You can run readme-contribs locally, to make and preview any changes
+The app is built with with Hono with Zod. The frontend client is a simple Alpine app. It's designed to run either on serverless environments, or via Bun.
+Running locally is easy, and all fairly standard. Just ensure you've got Node 24+, Bun and Git installed.
 
-1. Get the code: `git clone git@github.com:Lissy93/readme-contribs.git`
-2. Navigate into the directory: `cd readme-contribs`
-3. Install dependencies: `yarn` (or `npn install`)
-4. Start the development server: `yarn start`
-5. Then open the running app at `localhost:3000`
+```bash
+git clone git@github.com:Lissy93/readme-contribs.git    # Get the code
+cd readme-contribs                                      # Navigate into directory
+yarn                                                    # Install dependencies
+yarn start                                              # Start the Bun server
+open http://localhost:8080                              # Visit the running server
+```
 
-Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or put it in `.env`)
+> [!IMPORTANT]
+> Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or put it in `.env`)
+
+---
+
+## Contributing
+
+To contribute, fork the repo, make your changes, and then open a pull request.
+In the PR body, please briefly explain your changes and reasoning.
+
+Before committing, run the following commands to ensure that all checks pass:
+
+- `yarn test` - Verify all checks pass
+- `yarn lint` - Ensure no lint errors or warnings
+- `yarn format` - Check code is consistantly formatted
+- `yarn type-check` - Validate all TS types and interfaces
+
+> [!TIP]
+> Run `yarn fix` to auto-fix all auto-fixable issues.<br>
+> The [CI](https://github.com/Lissy93/readme-contribs/actions/workflows/ci.yml) workflow will also flag any failures and explain how to fix.
 
 ---
 
@@ -187,7 +207,7 @@ Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or 
 
 <details><summary>Example 3</summary>
 
-![AdGuardian Forkers](http://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&outerBorderWidth=2&outerBorderRadius=5&footerText=none)
+![AdGuardian Forkers](https://readme-contribs.as93.net/forkers/Lissy93/AdGuardian-Term?title=AdGuardian%20Forkers&textColor=bfbfbf&outerBorderWidth=2&outerBorderRadius=5&footerText=none)
 </details>
 
 <details><summary>Example 4</summary>
@@ -202,7 +222,7 @@ Don't forget to add your token in the `GITHUB_TOKEN` environmental variable (or 
 
 <details><summary>Example 6</summary>
 
-![Hot Dog Stand lolz](https://readme-contribs.as93.net/stargazers/steverichey/hot-dog-stand?backgroundColor=red&textColor=yellow&outerBorderWidth=5&outerBorderRadius=8fontFamily=Comic%20Sans&fontSize=12&avatarSize=64&perRow=4&title=SteveRichey/Hot-Dog-Stand&footerText=none&shape=circle)
+![Hot Dog Stand lolz](https://readme-contribs.as93.net/stargazers/steverichey/hot-dog-stand?backgroundColor=red&textColor=yellow&outerBorderWidth=5&outerBorderRadius=8&fontFamily=Comic%20Sans&fontSize=12&avatarSize=64&perRow=4&title=SteveRichey/Hot-Dog-Stand&footerText=none&shape=circle)
 </details>
 
 ---
@@ -220,11 +240,15 @@ Visit [readme-contribs.as93.net](https://readme-contribs.as93.net/) to get start
 
 ### Contributors
 
-![Contributors](https://readme-contribs.as93.net/contributors/lissy93/readme-contribs)
+![Contributors](https://readme-contribs.as93.net/contributors/lissy93/readme-contribs?perRow=12&shape=squircle)
 
 ### Sponsors
 
-![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93)
+![Sponsors](https://readme-contribs.as93.net/sponsors/lissy93?perRow=12&shape=squircle)
+
+### Stargazers
+
+![Stargazers](https://readme-contribs.as93.net/stargazers/lissy93/readme-contribs?perRow=12&shape=squircle)
 
 ---
 
@@ -247,7 +271,7 @@ to use, copy, modify, merge, publish, distribute, sub-license, and/or sell
 copies of the Software, and to permit persons to whom the Software is furnished 
 to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included install 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -264,7 +288,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <p  align="center">
   <i>© <a href="https://aliciasykes.com">Alicia Sykes</a> 2026</i><br>
   <i>Licensed under <a href="https://gist.github.com/Lissy93/143d2ee01ccc5c052a17">MIT</a></i><br>
-  <a href="https://github.com/lissy93"><img src="https://i.ibb.co/4KtpYxb/octocat-clean-mini.png" /></a><br>
+  <a href="https://github.com/lissy93"><img src="https://pixelflare.cc/alicia/images/octoface.png?w=56" /></a><br>
   <sup>Thanks for visiting :)</sup>
 </p>
 

@@ -193,7 +193,7 @@ describe('returnSvg', () => {
     const svg = '<svg>test</svg>'
     const result = returnSvg(mockContext, svg)
 
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
     expect(result).toEqual({ content: svg, status: 200 })
   })
 
@@ -208,7 +208,7 @@ describe('returnSvg', () => {
     const svg = '<svg>error</svg>'
     const result = returnSvg(mockContext, svg, 500)
 
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
     expect(result).toEqual({ content: svg, status: 500 })
   })
 
@@ -237,7 +237,7 @@ describe('returnSvg', () => {
     const result = returnSvg(mockContext, '', 200) as unknown as { content: string }
 
     expect(result.content).toBe('')
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
   })
 
   it('should add cache headers for successful responses', () => {

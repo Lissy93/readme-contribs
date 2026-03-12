@@ -1,5 +1,5 @@
 /**
- * Readme Contribs - Modern, Accessible Stylesheet
+ * Readme Contribs - All styles
  * Optimized for performance, accessibility, and maintainability
  * Lightweight custom CSS replacing Bulma (~5KB vs 225KB)
  */
@@ -206,6 +206,29 @@ hr {
   flex-grow: 1;
 }
 
+/* Typography */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.title.is-3 {
+  font-size: 1.75rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-md) 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* ===== Hero Section ===== */
 .hero {
   position: relative;
@@ -386,6 +409,10 @@ details::details-content {
   opacity: 0;
   transform: translateY(-8px);
   padding-top: var(--spacing-sm);
+
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  width: calc(90vw - 4rem);
+  max-width: calc(var(--max-width-content) - 4rem);
 }
 
 details[open] .advanced-options {
@@ -408,6 +435,7 @@ details[open] .advanced-options {
   .advanced-options {
     position: static;
     margin-top: var(--spacing-md);
+    width: auto;
   }
 }
 
@@ -550,7 +578,6 @@ details[open] .advanced-options {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
-  overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-base);
   overflow: visible;
@@ -583,6 +610,31 @@ details[open] .advanced-options {
   align-items: center;
 }
 
+.snippet-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-text-muted);
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    color: var(--color-text);
+    background: var(--color-bg);
+  }
+
+  input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}
+
 .snippet-content {
   padding: 0;
 }
@@ -601,6 +653,15 @@ details[open] .advanced-options {
 }
 
 /* Dropdown */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: var(--z-dropdown);
+  width: 140px;
+  display: none;
+}
+
 .dropdown {
   position: relative;
 
@@ -611,15 +672,6 @@ details[open] .advanced-options {
 
 .dropdown-compact .dropdown-trigger button {
   min-width: 140px;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  z-index: var(--z-dropdown);
-  width: 140px;
-  display: none;
 }
 
 .dropdown-content {
@@ -1238,6 +1290,7 @@ input:checked + .slider::before {
     box-shadow: var(--shadow-md);
   }
 
+  /* biome-ignore lint/style/noDescendingSpecificity: targets different elements than .code-copy-btn:active */
   &:active {
     transform: translateY(0);
   }
@@ -1377,30 +1430,6 @@ input:checked + .slider::before {
   border-color: var(--color-primary);
   outline: none;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
-}
-
-/* Typography */
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 var(--spacing-md) 0;
-}
-
-.title.is-3 {
-  font-size: 1.75rem;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  font-weight: 400;
-  line-height: 1.4;
-  margin: 0 0 var(--spacing-md) 0;
-  /* color: var(--color-text-light); */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-sm);
 }
 
 /* Tabs */

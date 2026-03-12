@@ -74,6 +74,7 @@
   <header role="banner" class="hero is-primary">
     <a href="https://github.com/lissy93/readme-contribs"
        class="hero-github-link"
+       target="_blank"
        aria-label="View source code on GitHub">
       <i class="fa-brands fa-github" aria-hidden="true"></i>
       <span>GitHub</span>
@@ -112,6 +113,7 @@
         <ul>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('contributors')"
               :class="{'is-active': currentForm === 'contributors'}"
@@ -124,6 +126,7 @@
           </li>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('sponsors')"
               :class="{'is-active': currentForm === 'sponsors'}"
@@ -136,6 +139,7 @@
           </li>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('stargazers')"
               :class="{'is-active': currentForm === 'stargazers'}"
@@ -148,6 +152,7 @@
           </li>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('watchers')"
               :class="{'is-active': currentForm === 'watchers'}"
@@ -160,6 +165,7 @@
           </li>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('forkers')"
               :class="{'is-active': currentForm === 'forkers'}"
@@ -172,6 +178,7 @@
           </li>
           <li role="presentation">
             <button
+              type="button"
               role="tab"
               @click="toggleForm('followers')"
               :class="{'is-active': currentForm === 'followers'}"
@@ -377,11 +384,15 @@
     <!-- Code Snippet Section -->
     <section aria-labelledby="snippet-heading">
       <h2 id="snippet-heading" class="is-sr-only">Code Snippet</h2>
-      <div x-data="{ open: false, format: 'Markdown' }" class="snippet-card">
+      <div x-data="{ open: false, format: 'Markdown', asLink: false }" class="snippet-card">
         <!-- Controls Header -->
         <div class="snippet-controls">
           <span class="snippet-label">Code Snippet</span>
           <div class="snippet-actions">
+            <label class="snippet-checkbox">
+              <input type="checkbox" x-model="asLink">
+              <span>As Link</span>
+            </label>
             <!-- Format Dropdown -->
             <div @click.away="open = false" class="dropdown dropdown-compact" :class="{'is-active': open}">
               <div class="dropdown-trigger">
@@ -403,7 +414,7 @@
                   <button type="button" @click="format = 'HTML Image'; open = false" class="dropdown-item" role="menuitem">HTML Image</button>
                   <button type="button" @click="format = 'HTML Embed'; open = false" class="dropdown-item" role="menuitem">HTML Embed</button>
                   <button type="button" @click="format = 'BB Code'; open = false" class="dropdown-item" role="menuitem">BB Code</button>
-                  <hr class="dropdown-divider" role="separator">
+                  <hr class="dropdown-divider">
                   <button type="button" @click="format = 'Direct Link'; open = false" class="dropdown-item" role="menuitem">Direct Link</button>
                 </div>
               </div>
@@ -412,7 +423,7 @@
             <button
               type="button"
               class="button is-small is-primary"
-              @click="copyToClipboard(generateSnippet(format))"
+              @click="copyToClipboard(generateSnippet(format, asLink))"
               aria-label="Copy code snippet to clipboard">
               <i class="fa-solid fa-copy" aria-hidden="true"></i>
               <span>Copy</span>
@@ -421,7 +432,7 @@
         </div>
         <!-- Code Display -->
         <div class="snippet-content">
-          <pre x-text="generateSnippet(format)" aria-label="Generated code snippet"></pre>
+          <pre x-text="generateSnippet(format, asLink)" aria-label="Generated code snippet"></pre>
         </div>
       </div>
     </section>
@@ -445,12 +456,14 @@
       </div>
       <img
         :src="!outputMode ? imageUrl : ''"
+        alt="Badge preview"
         :alt="`${currentForm} badge preview`"
         @load="handleLoadSuccess"
         @error="handleLoadError"
         x-show="!loading && !outputMode">
       <iframe
         :src="outputMode ? imageUrl : ''"
+        title="Badge preview (dynamic)"
         :title="`${currentForm} badge preview (dynamic)`"
         style="width: 100%; height: 300px; border: none;"
         @load="handleLoadSuccess"

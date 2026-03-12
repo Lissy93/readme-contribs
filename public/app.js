@@ -161,19 +161,22 @@ function apiForm() {
      * @param {string} format - Format type (Markdown, HTML Image, etc.)
      * @returns {string} Formatted code snippet
      */
-    generateSnippet(format) {
+    generateSnippet(format, asLink = false) {
       const url = this.generatedUrl
       const alt = `${this.currentForm} badge`
+      const link = asLink ? this.linkUrl : ''
 
       switch (format) {
         case 'Markdown':
-          return `![${alt}](${url})`
+          return link ? `[![${alt}](${url})](${link})` : `![${alt}](${url})`
         case 'HTML Image':
-          return `<img src="${url}" alt="${alt}">`
+          return link
+            ? `<a href="${link}"><img src="${url}" alt="${alt}"></a>`
+            : `<img src="${url}" alt="${alt}">`
         case 'HTML Embed':
           return `<iframe src="${url}" title="${this.currentForm}"></iframe>`
         case 'BB Code':
-          return `[img]${url}[/img]`
+          return link ? `[url=${link}][img]${url}[/img][/url]` : `[img]${url}[/img]`
         case 'Direct Link':
           return url
         default:
@@ -284,6 +287,20 @@ function apiForm() {
         .join('&')
 
       return queryParams ? `${baseUrl}?${queryParams}` : baseUrl
+    },
+
+    get linkUrl() {
+      const u = this.user ? sanitizeForUrl(this.user) : '[username]'
+      const r = this.repo ? sanitizeForUrl(this.repo) : '[repo]'
+      const paths = {
+        sponsors: `sponsors/${u}`,
+        contributors: `${u}/${r}/graphs/contributors`,
+        stargazers: `${u}/${r}/stargazers`,
+        watchers: `${u}/${r}/watchers`,
+        forkers: `${u}/${r}/forks`,
+        followers: `${u}?tab=followers`,
+      }
+      return `https://github.com/${paths[this.currentForm]}`
     },
   }
 }

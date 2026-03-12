@@ -7,17 +7,17 @@ export const createErrorSVG = (message: string, options: SvgOptions) => {
   const { fontSize, backgroundColor, fontFamily } = options
   return `
     <svg xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="${backgroundColor}"/>
+      <rect width="100%" height="100%" fill="${escapeXml(backgroundColor)}"/>
       <text
         x="50%"
         y="50%"
-        font-family="${fontFamily}"
+        font-family="${escapeXml(fontFamily)}"
         font-size="${fontSize}"
         fill="#ff4d4f"
         text-anchor="middle"
         dominant-baseline="middle"
       >
-        <tspan>${message}</tspan>
+        <tspan>${escapeXml(message)}</tspan>
       </text>
     </svg>
   `
@@ -62,7 +62,7 @@ async function processWithConcurrency<T, U>(
 }
 
 const escapeXml = (str: string): string => {
-  if (!str) return 'Unknown'
+  if (!str) return ''
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -73,8 +73,19 @@ const escapeXml = (str: string): string => {
 
 const parseColor = (color: string, hasTransparency: boolean = false): string => {
   if (!color) return 'transparent'
+  // Strip leading # for uniform processing
+  const raw = color.startsWith('#') ? color.slice(1) : color
   const alpha = hasTransparency ? '80' : ''
-  return color.match(/^#?[0-9A-Fa-f]{6}$/) ? `#${color}${alpha}` : color
+  // Expand 3-digit hex to 6-digit (e.g. "f0a" → "ff00aa")
+  if (raw.match(/^[0-9A-Fa-f]{3}$/)) {
+    const expanded = raw[0] + raw[0] + raw[1] + raw[1] + raw[2] + raw[2]
+    return `#${expanded}${alpha}`
+  }
+  if (raw.match(/^[0-9A-Fa-f]{6}$/)) {
+    return `#${raw}${alpha}`
+  }
+  // CSS named colors or other values — pass through as-is
+  return color
 }
 
 async function fetchAndEncodeImage(url: string): Promise<string> {
@@ -84,7 +95,12 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
     if (!response.ok)
       throw new Error(`Failed to fetch the image from ${url}: ${response.statusText}`)
     const arrayBuffer = await response.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+    const bytes = new Uint8Array(arrayBuffer)
+    let binary = ''
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i])
+    }
+    const base64 = btoa(binary)
     const mimeType = response.headers.get('content-type') || 'image/png'
     return `data:${mimeType};base64,${base64}`
   } catch (error) {
@@ -117,6 +133,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
     svgHeight: customSvgHeight,
   } = options
 
+  const safeFontFamily = escapeXml(fontFamily)
   const maxTextWidth = avatarSize
   const rowHeight = avatarSize + textOffset + margin
   const pathRounding = shape === 'circle' ? '50%' : shape === 'squircle' ? '25%' : '0%'
@@ -144,9 +161,9 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       if (index >= numberToDisplay) return ''
       const x = margin + (index % perRow) * (avatarSize + margin)
       const y = margin + Math.floor(index / perRow) * rowHeight + titleHeight
-      const profileUrl = `https://github.com/${user.login}`
-      const imageSrc = encodedImages[index]
-      let displayName = escapeXml(user.name || user.login || 'Unknown')
+      const profileUrl = `https://github.com/${encodeURIComponent(user.login)}`
+      const imageSrc = encodedImages[index] || ''
+      let displayName = user.name || user.login || 'Unknown'
       const escapedAvatarUrl = escapeXml(user.avatarUrl)
 
       const characterWidthEstimate = fontSize * 0.4
@@ -154,6 +171,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       if (displayName.length > maxCharacters) {
         displayName = `${displayName.substring(0, maxCharacters - 2)}…`
       }
+      displayName = escapeXml(displayName)
 
       const text = hideLabel
         ? ''
@@ -161,7 +179,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       <text
         x="${x}"
         y="${y + avatarSize + textOffset}"
-        font-family="${fontFamily}"
+        font-family="${safeFontFamily}"
         font-size="${fontSize}px"
         fill="${parseColor(textColor)}"
       >
@@ -191,7 +209,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
     <text
       x="50%"
       y="${margin + fontSize * 1.5}"
-      font-family="${fontFamily}"
+      font-family="${safeFontFamily}"
       font-size="${titleFontSize}px"
       fill="${parseColor(textColor)}"
       text-anchor="middle"
@@ -207,7 +225,7 @@ export const createUserSVG = async (users: User[], options: SvgOptions): Promise
       ? `
     <text
       x="${svgWidth - margin}" y="${svgHeight - 5}"
-      font-family="${fontFamily}" font-size="${fontSize * 0.8}px"
+      font-family="${safeFontFamily}" font-size="${fontSize * 0.8}px"
       fill="${parseColor(textColor, true)}" text-anchor="end"
     >
       ${escapeXml(footerText)}
