@@ -13,8 +13,10 @@ import { validateGitHubName } from './validation'
 
 /**
  * Type for user data fetcher functions
+ * Uses broad signature to support varied arity (1-arg sponsors/followers, 2-arg repo-based, + optional limit)
  */
-type UserFetcher = (...args: string[]) => Promise<User[]>
+// biome-ignore lint/suspicious/noExplicitAny: dynamic arity - fetchers accept (string, string?, number?)
+type UserFetcher = (...args: any[]) => Promise<User[]>
 
 /**
  * Creates a route handler for user-based endpoints (sponsors, contributors, etc.)
@@ -53,7 +55,7 @@ export const createUserRouteHandler = (fetcher: UserFetcher) => {
     } catch (error) {
       // Handle Zod validation errors with helpful messages
       if (error instanceof ZodError) {
-        const errorMessages = error.errors
+        const errorMessages = error.issues
           .map((err) => `${err.path.join('.')}: ${err.message}`)
           .join(', ')
         const validationError = new ValidationError(`Invalid parameters - ${errorMessages}`)

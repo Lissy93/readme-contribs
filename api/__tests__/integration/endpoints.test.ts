@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // Import the platform-agnostic app for testing
 import app from '../../server'
 import {
@@ -46,7 +46,7 @@ describe('Integration: API Endpoints', () => {
       const res = await app.request('/contributors/testowner/testrepo')
 
       expect(res.status).toBe(200)
-      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
       const svg = await res.text()
       expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
       expect(svg).toContain('alice')
@@ -81,7 +81,10 @@ describe('Integration: API Endpoints', () => {
 
       const res = await app.request('/contributors/owner/repo?limit=2')
 
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('per_page=2'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('per_page=100'),
+        expect.any(Object)
+      )
       expect(res.status).toBe(200)
     })
 
@@ -129,7 +132,7 @@ describe('Integration: API Endpoints', () => {
       const res = await app.request('/stargazers/testowner/testrepo')
 
       expect(res.status).toBe(200)
-      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
       const svg = await res.text()
       expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
       expect(svg).toContain('alice')
@@ -175,7 +178,7 @@ describe('Integration: API Endpoints', () => {
       const res = await app.request('/watchers/testowner/testrepo')
 
       expect(res.status).toBe(200)
-      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
       const svg = await res.text()
       expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
       expect(svg).toContain('alice')
@@ -223,7 +226,7 @@ describe('Integration: API Endpoints', () => {
       const res = await app.request('/followers/testuser')
 
       expect(res.status).toBe(200)
-      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
       const svg = await res.text()
       expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
       expect(svg).toContain('alice')
@@ -328,7 +331,7 @@ describe('Integration: API Endpoints', () => {
       const res = await app.request('/contributors/owner/repo')
 
       expect(res.status).toBe(500)
-      expect(res.headers.get('Content-Type')).toBe('image/svg+xml')
+      expect(res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
       expect(consoleLogSpy).toHaveBeenCalled()
 
       consoleLogSpy.mockRestore()
@@ -341,7 +344,7 @@ describe('Integration: API Endpoints', () => {
         json: async () => {
           throw new Error('Invalid JSON')
         },
-      })
+      } as unknown as Response)
 
       const res = await app.request('/contributors/owner/repo')
 

@@ -18,6 +18,65 @@ export const EXAMPLE_PATHS = [
   '/contributors/rust-lang/rust?hideLabel=true&margin=2&textOffset=0&perRow=10&title=Rust%20Lang%20Top%20Contributors&isResponsive=true&dynamic=true&footerText=none',
 ]
 
+export const DEMO_STARGAZERS_PATH =
+  '/stargazers/lissy93/readme-contribs?perRow=12&shape=squircle&textColor=cfcfcf&limit=96'
+
+const GITHUB_ICON = 'https://icon.horse/icon/github.com'
+
+function wildIcon(url) {
+  try {
+    const { hostname } = new URL(url)
+    return hostname === 'github.com' ? GITHUB_ICON : `https://icon.horse/icon/${hostname}`
+  } catch {
+    return GITHUB_ICON
+  }
+}
+
+export const IN_THE_WILD = [
+  {
+    name: 'Networking Toolbox',
+    url: 'https://networkingtoolbox.net/about',
+    description: "The sysadmin's Swiss Army knife",
+  },
+  {
+    name: 'Dashy',
+    url: 'https://dashy.to/',
+    description: 'A self-hosted dashboard app',
+  },
+  {
+    name: 'Domain Locker',
+    url: 'https://domain-locker.com/about/attributions',
+    description: 'Domain name portfolio management',
+  },
+  {
+    name: 'Awesome Privacy',
+    url: 'https://awesome-privacy.xyz/about',
+    description: 'A curated list of privacy & security-focused software and services',
+  },
+  {
+    name: 'Web Check',
+    url: 'https://web-check.xyz/about',
+    description: 'Website OSINT analysis tool',
+  },
+  {
+    name: 'Lissy93/portainer-templates',
+    url: 'https://github.com/Lissy93/portainer-templates',
+    description: '500+ 1-click Portainer app templates',
+  },
+  {
+    name: 'Lissy93/personal-security-checklist',
+    url: 'https://github.com/Lissy93/personal-security-checklist',
+    description: 'Digital security best practices',
+  },
+  {
+    name: 'Lissy93/bug-bounties',
+    url: 'https://github.com/Lissy93/bug-bounties',
+    description: 'Companies who have active programs for responsible disclosure ',
+  },
+].map((p) => ({ ...p, icon: wildIcon(p.url) }))
+
+export const SUBMIT_REPO_URL = 'https://github.com/lissy93/readme-contribs/pulls'
+
 /**
  * Builds a full URL from a path using the current origin
  * @param {string} path - Path starting with /

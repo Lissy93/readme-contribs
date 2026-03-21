@@ -30,7 +30,7 @@ describe('fetchContributors', () => {
     const result = await fetchContributors('testowner', 'testrepo')
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/testowner/testrepo/contributors?per_page=96',
+      'https://api.github.com/repos/testowner/testrepo/contributors?per_page=100',
       { headers: {} }
     )
     expect(result).toHaveLength(3)
@@ -55,12 +55,13 @@ describe('fetchContributors', () => {
   it('should respect custom limit parameter', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockContributorsResponse))
 
-    await fetchContributors('testowner', 'testrepo', 50)
+    const result = await fetchContributors('testowner', 'testrepo', 2)
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/testowner/testrepo/contributors?per_page=50',
+      'https://api.github.com/repos/testowner/testrepo/contributors?per_page=100',
       expect.any(Object)
     )
+    expect(result).toHaveLength(2)
   })
 
   it('should throw error when API returns 404', async () => {
@@ -92,20 +93,21 @@ describe('fetchStargazers', () => {
     vi.unstubAllEnvs()
   })
 
-  it('should fetch stargazers successfully', async () => {
+  it('should fetch stargazers successfully via REST when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
     const result = await fetchStargazers('testowner', 'testrepo')
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/testowner/testrepo/stargazers?per_page=96',
+      'https://api.github.com/repos/testowner/testrepo/stargazers?per_page=100',
       { headers: {} }
     )
     expect(result).toHaveLength(3)
+    // REST fallback reverses results for newest-first ordering
     expect(result[0]).toEqual({
-      login: 'alice',
-      name: 'Alice Smith',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+      login: 'charlie',
+      name: '',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/3',
     })
   })
 
@@ -114,42 +116,70 @@ describe('fetchStargazers', () => {
 
     const result = await fetchStargazers('owner', 'repo')
 
-    // Third user has empty name
-    expect(result[2].name).toBe('')
+    // Third user (now first after reverse) has empty name
+    expect(result[0].name).toBe('')
   })
 
-  it('should include Authorization header when GITHUB_TOKEN is set', async () => {
+  it('should use GraphQL when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_456')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
+    const graphQLResponse = {
+      data: {
+        repository: {
+          stargazers: {
+            nodes: [
+              {
+                login: 'alice',
+                name: 'Alice Smith',
+                avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+              },
+            ],
+          },
+        },
+      },
+    }
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(graphQLResponse))
 
-    await fetchStargazers('owner', 'repo')
+    const result = await fetchStargazers('owner', 'repo')
 
-    expect(fetch).toHaveBeenCalledWith(expect.any(String), {
-      headers: { Authorization: 'token test_token_456' },
-    })
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.github.com/graphql',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'bearer test_token_456' }),
+      })
+    )
+    expect(result).toHaveLength(1)
   })
 
-  it('should throw and log error on API failure', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('should fall back to REST when GraphQL fails', async () => {
+    vi.stubEnv('GITHUB_TOKEN', 'test_token_456')
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(createErrorResponse(401, 'Unauthorized'))
+      .mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
+
+    const result = await fetchStargazers('owner', 'repo')
+
+    expect(result).toHaveLength(3)
+  })
+
+  it('should throw error on REST API failure when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(500, 'Internal Server Error'))
 
     await expect(fetchStargazers('owner', 'repo')).rejects.toThrow(
       'GitHub API returned a 500 Internal Server Error'
     )
-    expect(consoleErrorSpy).toHaveBeenCalled()
-
-    consoleErrorSpy.mockRestore()
   })
 
   it('should respect custom limit parameter', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockStargazersResponse))
 
-    await fetchStargazers('owner', 'repo', 25)
+    const result = await fetchStargazers('owner', 'repo', 2)
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/owner/repo/stargazers?per_page=25',
+      'https://api.github.com/repos/owner/repo/stargazers?per_page=100',
       expect.any(Object)
     )
+    expect(result).toHaveLength(2)
   })
 })
 
@@ -164,7 +194,7 @@ describe('fetchForkers', () => {
     const result = await fetchForkers('testowner', 'testrepo')
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/testowner/testrepo/forks?per_page=96',
+      'https://api.github.com/repos/testowner/testrepo/forks?sort=newest&per_page=100',
       { headers: {} }
     )
     expect(result).toHaveLength(2)
@@ -207,12 +237,13 @@ describe('fetchForkers', () => {
   it('should respect custom limit parameter', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockForksResponse))
 
-    await fetchForkers('owner', 'repo', 10)
+    const result = await fetchForkers('owner', 'repo', 1)
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/owner/repo/forks?per_page=10',
+      'https://api.github.com/repos/owner/repo/forks?sort=newest&per_page=100',
       expect.any(Object)
     )
+    expect(result).toHaveLength(1)
   })
 })
 
@@ -221,32 +252,53 @@ describe('fetchWatchers', () => {
     vi.unstubAllEnvs()
   })
 
-  it('should fetch watchers successfully', async () => {
+  it('should fetch watchers successfully via REST when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
 
     const result = await fetchWatchers('testowner', 'testrepo')
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/testowner/testrepo/subscribers?per_page=96',
+      'https://api.github.com/repos/testowner/testrepo/subscribers?per_page=100',
       { headers: {} }
     )
     expect(result).toHaveLength(3)
+    // REST fallback reverses results for newest-first ordering
     expect(result[0]).toEqual({
-      login: 'alice',
-      name: 'Alice Smith',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+      login: 'charlie',
+      name: '',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/3',
     })
   })
 
-  it('should include Authorization header when GITHUB_TOKEN is set', async () => {
+  it('should use GraphQL when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_watchers')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
+    const graphQLResponse = {
+      data: {
+        repository: {
+          watchers: {
+            nodes: [
+              {
+                login: 'alice',
+                name: 'Alice Smith',
+                avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+              },
+            ],
+          },
+        },
+      },
+    }
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(graphQLResponse))
 
-    await fetchWatchers('owner', 'repo')
+    const result = await fetchWatchers('owner', 'repo')
 
-    expect(fetch).toHaveBeenCalledWith(expect.any(String), {
-      headers: { Authorization: 'token test_token_watchers' },
-    })
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.github.com/graphql',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'bearer test_token_watchers' }),
+      })
+    )
+    expect(result).toHaveLength(1)
   })
 
   it('should handle empty name field', async () => {
@@ -254,31 +306,28 @@ describe('fetchWatchers', () => {
 
     const result = await fetchWatchers('owner', 'repo')
 
-    // charlie has empty name in mock
-    expect(result[2].name).toBe('')
+    // charlie has empty name in mock, now first after reverse
+    expect(result[0].name).toBe('')
   })
 
-  it('should throw and log error on API failure', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('should throw error on REST API failure when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found'))
 
     await expect(fetchWatchers('invalid', 'repo')).rejects.toThrow(
       'GitHub API returned a 404 Not Found'
     )
-    expect(consoleErrorSpy).toHaveBeenCalled()
-
-    consoleErrorSpy.mockRestore()
   })
 
   it('should respect custom limit parameter', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockWatchersResponse))
 
-    await fetchWatchers('owner', 'repo', 30)
+    const result = await fetchWatchers('owner', 'repo', 2)
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/repos/owner/repo/subscribers?per_page=30',
+      'https://api.github.com/repos/owner/repo/subscribers?per_page=100',
       expect.any(Object)
     )
+    expect(result).toHaveLength(2)
   })
 })
 
@@ -287,55 +336,73 @@ describe('fetchFollowers', () => {
     vi.unstubAllEnvs()
   })
 
-  it('should fetch followers successfully', async () => {
+  it('should fetch followers successfully via REST when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
 
     const result = await fetchFollowers('testuser')
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/users/testuser/followers?per_page=96',
+      'https://api.github.com/users/testuser/followers?per_page=100',
       { headers: {} }
     )
     expect(result).toHaveLength(3)
+    // REST fallback reverses results for newest-first ordering
     expect(result[0]).toEqual({
-      login: 'alice',
-      name: 'Alice Smith',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+      login: 'charlie',
+      name: 'Charlie Brown',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/3',
     })
   })
 
-  it('should include Authorization header when GITHUB_TOKEN is set', async () => {
+  it('should use GraphQL when GITHUB_TOKEN is set', async () => {
     vi.stubEnv('GITHUB_TOKEN', 'test_token_followers')
-    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
+    const graphQLResponse = {
+      data: {
+        user: {
+          followers: {
+            nodes: [
+              {
+                login: 'alice',
+                name: 'Alice Smith',
+                avatarUrl: 'https://avatars.githubusercontent.com/u/1',
+              },
+            ],
+          },
+        },
+      },
+    }
+    vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(graphQLResponse))
 
-    await fetchFollowers('testuser')
+    const result = await fetchFollowers('testuser')
 
-    expect(fetch).toHaveBeenCalledWith(expect.any(String), {
-      headers: { Authorization: 'token test_token_followers' },
-    })
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.github.com/graphql',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'bearer test_token_followers' }),
+      })
+    )
+    expect(result).toHaveLength(1)
   })
 
-  it('should throw and log error on API failure', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  it('should throw error on REST API failure when no token', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createErrorResponse(404, 'Not Found'))
 
     await expect(fetchFollowers('invaliduser')).rejects.toThrow(
       'GitHub API returned a 404 Not Found'
     )
-    expect(consoleErrorSpy).toHaveBeenCalled()
-
-    consoleErrorSpy.mockRestore()
   })
 
   it('should respect custom limit parameter', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(createMockResponse(mockFollowersResponse))
 
-    await fetchFollowers('testuser', 50)
+    const result = await fetchFollowers('testuser', 2)
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://api.github.com/users/testuser/followers?per_page=50',
+      'https://api.github.com/users/testuser/followers?per_page=100',
       expect.any(Object)
     )
+    expect(result).toHaveLength(2)
   })
 
   it('should handle empty followers array', async () => {

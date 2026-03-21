@@ -14,7 +14,7 @@ describe('parseUrlOptions', () => {
       hideLabel: false,
       fontSize: 12,
       fontFamily: "'Mona Sans', 'Open Sans', Verdana, Arial, sans-serif",
-      textColor: '333333',
+      textColor: '808080',
       backgroundColor: 'transparent',
       limit: 96,
       outerBorderWidth: 0,
@@ -193,7 +193,7 @@ describe('returnSvg', () => {
     const svg = '<svg>test</svg>'
     const result = returnSvg(mockContext, svg)
 
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
     expect(result).toEqual({ content: svg, status: 200 })
   })
 
@@ -208,7 +208,7 @@ describe('returnSvg', () => {
     const svg = '<svg>error</svg>'
     const result = returnSvg(mockContext, svg, 500)
 
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
     expect(result).toEqual({ content: svg, status: 500 })
   })
 
@@ -234,10 +234,10 @@ describe('returnSvg', () => {
       body: vi.fn((content, status) => ({ content, status })),
     } as unknown as Context
 
-    const result = returnSvg(mockContext, '', 200)
+    const result = returnSvg(mockContext, '', 200) as unknown as { content: string }
 
     expect(result.content).toBe('')
-    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml')
+    expect(mockContext.res.headers.get('Content-Type')).toBe('image/svg+xml; charset=utf-8')
   })
 
   it('should add cache headers for successful responses', () => {

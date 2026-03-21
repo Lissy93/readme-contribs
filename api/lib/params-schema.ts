@@ -28,7 +28,10 @@ function buildZodSchema(config: Record<string, ParamConfig>) {
     let field: z.ZodTypeAny
 
     if (param.type === 'string') {
-      field = z.string().default(param.default as string)
+      field = z
+        .string()
+        .trim()
+        .default(param.default as string)
     } else if (param.type === 'number') {
       // Use preprocess + transform to handle invalid inputs gracefully and clamp values
       field = z.preprocess(
@@ -72,12 +75,6 @@ function buildZodSchema(config: Record<string, ParamConfig>) {
  * Auto-generated from params.json
  */
 export const badgeParamsSchema = buildZodSchema(paramsConfig as Record<string, ParamConfig>)
-
-/**
- * TypeScript type for badge parameters
- * Auto-inferred from Zod schema
- */
-export type BadgeParams = z.infer<typeof badgeParamsSchema>
 
 /**
  * Export params config for frontend use

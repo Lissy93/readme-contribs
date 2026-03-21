@@ -3,7 +3,14 @@
  * Alpine.js application for generating embeddable GitHub badges
  */
 
-import { buildFullUrl, EXAMPLE_PATHS, loadAdvancedOptions } from './config.js'
+import {
+  buildFullUrl,
+  DEMO_STARGAZERS_PATH,
+  EXAMPLE_PATHS,
+  IN_THE_WILD,
+  loadAdvancedOptions,
+  SUBMIT_REPO_URL,
+} from './config.js'
 import { sanitizeForUrl, showToast } from './utils.js'
 
 /**
@@ -28,12 +35,102 @@ function apiForm() {
     exampleLoading: false,
     loadTimeout: null,
     exampleTimeout: null,
+    demoTab: 0,
+    demoLoading: false,
+    demoLoaded: false,
+    demoTimeout: null,
+    inTheWild: IN_THE_WILD,
+    submitRepoUrl: SUBMIT_REPO_URL,
+    systemStatus: '',
 
     /**
      * Initialize the form - load advanced options from API
      */
     async init() {
       this.options = await loadAdvancedOptions()
+      this.checkSystemStatus()
+    },
+
+    async checkSystemStatus() {
+      try {
+        const res = await fetch('/health')
+        const data = await res.json()
+        if (!data.hasToken) this.systemStatus = 'Missing token'
+        else if (!data.authenticated) this.systemStatus = 'Expired/invalid token'
+        else this.systemStatus = 'Healthy'
+      } catch {
+        this.systemStatus = 'Unreachable'
+      }
+    },
+
+    setDemoTab(i) {
+      this.demoTab = i
+      if (i === 1 && !this.demoLoaded && !this.demoLoading) {
+        this.loadStargazersDemo()
+      }
+    },
+
+    loadStargazersDemo() {
+      if (this.demoTimeout) {
+        clearTimeout(this.demoTimeout)
+      }
+      this.demoLoading = true
+
+      const demoUrl = buildFullUrl(DEMO_STARGAZERS_PATH)
+
+      this.$nextTick(() => {
+        const iframe = this.$refs.demoIframe
+        if (!iframe) {
+          this.demoLoading = false
+          return
+        }
+
+        iframe.classList.remove('loaded')
+
+        this.demoTimeout = setTimeout(() => {
+          if (this.demoLoading) {
+            this.demoLoading = false
+            iframe.classList.add('loaded')
+            showToast('Demo loading timeout - please try again', 'error')
+          }
+        }, 15000)
+
+        iframe.onload = () => {
+          if (this.demoTimeout) {
+            clearTimeout(this.demoTimeout)
+            this.demoTimeout = null
+          }
+          this.demoLoading = false
+          this.demoLoaded = true
+          try {
+            const h = iframe.contentDocument.documentElement.scrollHeight
+            if (h) iframe.style.height = `${h}px`
+          } catch {
+            /* cross-origin, keep aspect-ratio fallback */
+          }
+          setTimeout(() => {
+            iframe.classList.add('loaded')
+          }, 50)
+        }
+
+        iframe.onerror = () => {
+          if (this.demoTimeout) {
+            clearTimeout(this.demoTimeout)
+            this.demoTimeout = null
+          }
+          this.demoLoading = false
+          iframe.classList.add('loaded')
+          showToast('Failed to load demo', 'error')
+        }
+
+        const cacheBuster = `${demoUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`
+        iframe.src = demoUrl + cacheBuster
+      })
+    },
+
+    refreshDemo() {
+      this.demoLoaded = false
+      this.loadStargazersDemo()
     },
 
     /**
@@ -161,19 +258,22 @@ function apiForm() {
      * @param {string} format - Format type (Markdown, HTML Image, etc.)
      * @returns {string} Formatted code snippet
      */
-    generateSnippet(format) {
+    generateSnippet(format, asLink = false) {
       const url = this.generatedUrl
       const alt = `${this.currentForm} badge`
+      const link = asLink ? this.linkUrl : ''
 
       switch (format) {
         case 'Markdown':
-          return `![${alt}](${url})`
+          return link ? `[![${alt}](${url})](${link})` : `![${alt}](${url})`
         case 'HTML Image':
-          return `<img src="${url}" alt="${alt}">`
+          return link
+            ? `<a href="${link}"><img src="${url}" alt="${alt}"></a>`
+            : `<img src="${url}" alt="${alt}">`
         case 'HTML Embed':
           return `<iframe src="${url}" title="${this.currentForm}"></iframe>`
         case 'BB Code':
-          return `[img]${url}[/img]`
+          return link ? `[url=${link}][img]${url}[/img][/url]` : `[img]${url}[/img]`
         case 'Direct Link':
           return url
         default:
@@ -200,7 +300,7 @@ function apiForm() {
 
       // Wait for Alpine to render the iframe (if first time)
       this.$nextTick(() => {
-        const iframe = document.querySelector('.example-grid iframe')
+        const iframe = this.$refs.exampleIframe
 
         if (!iframe) {
           console.error('Example iframe not found')
@@ -284,6 +384,20 @@ function apiForm() {
         .join('&')
 
       return queryParams ? `${baseUrl}?${queryParams}` : baseUrl
+    },
+
+    get linkUrl() {
+      const u = this.user ? sanitizeForUrl(this.user) : '[username]'
+      const r = this.repo ? sanitizeForUrl(this.repo) : '[repo]'
+      const paths = {
+        sponsors: `sponsors/${u}`,
+        contributors: `${u}/${r}/graphs/contributors`,
+        stargazers: `${u}/${r}/stargazers`,
+        watchers: `${u}/${r}/watchers`,
+        forkers: `${u}/${r}/forks`,
+        followers: `${u}?tab=followers`,
+      }
+      return `https://github.com/${paths[this.currentForm]}`
     },
   }
 }

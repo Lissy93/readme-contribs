@@ -40,12 +40,19 @@ export const createErrorSVG = (
   const width = options.width || 800
   const height = options.height || 120
 
+  const escaped = message
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+
   return `
     <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
       <rect width="${width}" height="${height}" fill="#ff44441A" stroke="#ff4444" stroke-width="2"/>
       <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
             font-family="Arial, sans-serif" font-size="18" fill="#ff4444">
-        Error: ${message}
+        Error: ${escaped}
       </text>
     </svg>
   `.trim()
@@ -70,7 +77,7 @@ export const handleRouteError = (
   const svg = createErrorSVG(errorMessage, options)
 
   return c.body(svg, 500, {
-    'Content-Type': 'image/svg+xml',
+    'Content-Type': 'image/svg+xml; charset=utf-8',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
   })
 }

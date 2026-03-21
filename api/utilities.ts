@@ -9,14 +9,14 @@ import type { SvgOptions } from './types'
  */
 export const parseUrlOptions = (query: Record<string, string | undefined>): SvgOptions => {
   // Zod automatically validates, coerces types, and applies defaults
-  return badgeParamsSchema.parse(query)
+  return badgeParamsSchema.parse(query) as unknown as SvgOptions
 }
 
 /**
  * Sets headers and returns an SVG response with appropriate caching
  */
 export const returnSvg = (c: Context, svg: string, statusCode: StatusCode = 200) => {
-  c.res.headers.set('Content-Type', 'image/svg+xml')
+  c.res.headers.set('Content-Type', 'image/svg+xml; charset=utf-8')
 
   // Add caching headers for successful responses
   // Cache for 1 hour in browser, 2 hours in CDN/edge cache
@@ -27,5 +27,5 @@ export const returnSvg = (c: Context, svg: string, statusCode: StatusCode = 200)
     )
   }
 
-  return c.body(svg, statusCode)
+  return c.body(svg as unknown as null, statusCode)
 }
